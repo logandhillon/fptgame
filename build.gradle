@@ -4,6 +4,7 @@ plugins {
     id 'org.javamodularity.moduleplugin' version '1.8.12'
     id 'org.openjfx.javafxplugin' version '0.0.13'
     id 'org.beryx.jlink' version '2.25.0'
+    id "com.google.protobuf" version "0.9.5"
 }
 
 group 'com.logandhillon'
@@ -26,23 +27,33 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.logandhillon.fptgame'
-    mainClass = 'com.logandhillon.fptgame.Main'
+    mainClass = 'com.logandhillon.fptgame.GameHandler'
 }
 
 javafx {
     version = '21'
-    modules = ['javafx.controls', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.media']
 }
 
 dependencies {
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+    // log4j
+    implementation("org.apache.logging.log4j:log4j-core:2.25.2")
+
+    // protobuf
+    implementation('com.google.protobuf:protobuf-java:4.28.2')
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.24.1"
+    }
 }
 
 test {
-    useJUnitPlatform()
-}
+    useJUnitPlatform()}
 
 jlink {
     imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
