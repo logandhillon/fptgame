@@ -218,7 +218,7 @@ public abstract class GameScene {
      *
      * @return is collision happening
      *
-     * @see GameScene#isEntityColliding(CollisionEntity)
+     * @see GameScene#getEntityCollision(CollisionEntity)
      */
     public boolean checkCollision(CollisionEntity a, CollisionEntity b) {
         return a.getX() < b.getX() + b.getWidth() &&
@@ -232,15 +232,16 @@ public abstract class GameScene {
      *
      * @param target entity to check collisions for
      *
-     * @return is collision happening against entity anywhere
+     * @return entity that target is colliding with, or null
      *
      * @see GameScene#checkCollision(CollisionEntity, CollisionEntity)
      */
-    public boolean isEntityColliding(CollisionEntity target) {
-        // short-circuit; return true if collision is found
-        for (CollisionEntity e: collisionEntities)
-            if (checkCollision(target, e)) return true;
-        return false;
+    public CollisionEntity getEntityCollision(CollisionEntity target) {
+        for (CollisionEntity e: collisionEntities) {
+            if (e == target) continue; // skip the target
+            if (checkCollision(target, e)) return e; // short-circuit; return if collision is found
+        }
+        return null; // no collision found
     }
 
     /**

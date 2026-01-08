@@ -7,7 +7,8 @@ package com.logandhillon.fptgame.entity.physics;
  * @author Logan Dhillon
  */
 public abstract class PhysicsEntity extends CollisionEntity {
-    private static final float GRAVITY = 0.981f;
+    private static final float GRAVITY = 0.4905f;
+    private static final float MAX_VEL = 10f; // max scalar velocity
 
     public float vx, vy;
 
@@ -23,10 +24,45 @@ public abstract class PhysicsEntity extends CollisionEntity {
         super(x, y, w, h);
     }
 
+    // Track if entity is on the ground for jumping logic
+    protected boolean grounded;
+
     @Override
     public void onUpdate(float dt) {
+        // Apply gravity, clamp velocities
         vy += GRAVITY;
-        x += vx;
-        y += vy;
+        if (vx > MAX_VEL) vx = MAX_VEL;
+        if (vx < -MAX_VEL) vx = -MAX_VEL;
+        if (vy > MAX_VEL) vy = MAX_VEL;
+        if (vy < -MAX_VEL) vy = -MAX_VEL;
+
+        boolean grounded = false;
+        var e = getCollision();
+
+        // Move horizontally and resolve collisions
+        translate(vx, 0);
+        if (e != null) {
+            if (vx > 0) translate(e.getX() - (getX() + getWidth()), 0);
+            else if (vx < 0) translate(e.getX() + e.getWidth() - getX(), 0);
+
+            vx = 0;
+        }
+
+        // Move vertically and resolve collisions
+        translate(0, vy);
+        if (e != null) {
+            if (vy > 0) {
+                // Falling, snap to top of entity
+                translate(0, e.getY() - (getY() + getHeight()));
+                grounded = true;
+            } else if (vy < 0) {
+                // Rising, snap to bottom of entity
+                translate(0, e.getY() + e.getHeight() - getY());
+            }
+            vy = 0;
+        }
+
+        // Store grounded state for jump checks
+        this.grounded = grounded;
     }
 }

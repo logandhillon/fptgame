@@ -39,12 +39,12 @@ public abstract class CollisionEntity extends Entity {
     }
 
     /**
-     * Checks if this entity is colliding with ANY entity.
+     * Checks if this is colliding with ANY other entity
      *
-     * @return is collision happening
+     * @return entity that this is colliding with, or null
      */
-    protected boolean isColliding() {
-        return parent.isEntityColliding(this);
+    protected CollisionEntity getCollision() {
+        return parent.getEntityCollision(this);
     }
 
     public float getWidth() {
