@@ -8,7 +8,10 @@ import javafx.scene.input.MouseEvent;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.function.Predicate;
 
 /**
  * A UI scene is a type of {@link GameScene} that listens to the cursor and registers events handlers for
@@ -46,6 +49,24 @@ public abstract class UIScene extends GameScene {
         for (Clickable c: clickables.keySet()) c.onDestroy();
         clickables.clear();
         cachedClickables = new Clickable[0];
+    }
+
+    @Override
+    public void clearEntities(boolean discard, Predicate<Entity> predicate) {
+        super.clearEntities(discard, predicate);
+
+        // safe removal
+        for (Iterator<Clickable> it = clickables.keySet().iterator(); it.hasNext(); ) {
+            Entity e = it.next();
+            if (predicate.test(e)) {
+                it.remove(); // safe removal
+                if (discard) e.onDestroy();
+            }
+        }
+        LOG.info("Safely removed all Clickables from this UI scene");
+
+        cachedClickables = new Clickable[0];
+        LOG.info("Cleared UI entity cache");
     }
 
     /**
