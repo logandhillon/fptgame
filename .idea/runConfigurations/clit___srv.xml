@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="clit + srv" type="CompoundRunConfigurationType">
+    <toRun name="fptgame; clit" type="GradleRunConfiguration" />
+    <toRun name="fptgame; srv" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>
