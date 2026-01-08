@@ -28,27 +28,27 @@ public class MenuHandler extends UIScene {
 
     public void setContent(MenuContent content) {
         this.content = content; // store ptr to content for future reference
-        this.clearEntities(true, (e)-> true);
+        this.clearEntities(true, (e) -> true);
         this.clearAllHandlers();
 
+        for (Entity e: content.getEntities()) addEntity(e);
         this.addMouseEvents(true); // re-bind the mouse events (they were just removed)
-        for(Entity e: content.getEntities()) addEntity(e);
     }
 
     @Override
     protected void render(GraphicsContext g) {
         // bg
         g.setFill(Color.LIGHTGRAY); // TODO: use image once available by engine
-        g.fillRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         super.render(g);
     }
 
-    public void createLobby(String roomName){
+    public void createLobby(String roomName) {
         this.mgr.createLobby(roomName);
     }
 
-    public void startGame(){
+    public void startGame() {
         this.mgr.startGame();
     }
 

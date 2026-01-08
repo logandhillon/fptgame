@@ -129,6 +129,7 @@ public abstract class GameScene {
     public void bindAllEvents() {
         if (scene == null) throw new IllegalStateException("GameScene not bound to engine yet, thus cannot bind events");
 
+        LOG.info("Binding {} events to engine", handlers.size());
         for (HandlerRef<?> h: handlers) {
             @SuppressWarnings("unchecked") EventType<Event> t = (EventType<Event>)h.type();
             @SuppressWarnings("unchecked") EventHandler<Event> eh = (EventHandler<Event>)h.handler();
@@ -244,9 +245,5 @@ public abstract class GameScene {
             scene.removeEventHandler(t, eh);
         }
         handlers.clear();
-    }
-
-    public List<HandlerRef<?>> getEventHandlers() {
-        return handlers;
     }
 }
