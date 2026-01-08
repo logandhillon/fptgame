@@ -12,7 +12,7 @@ import com.logandhillon.fptgame.scene.MainGameScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameScene;
 import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
-import com.logandhillon.fptgame.scene.menu.MainMenuScene;
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -63,7 +63,7 @@ public class GameHandler extends Application {
         stage.setMinWidth(CANVAS_WIDTH / 2f);
         stage.setMinHeight(CANVAS_HEIGHT / 2f);
 
-        setScene(new MainMenuScene(this));
+        setScene(new MenuHandler(this));
         stage.show();
     }
 
@@ -98,7 +98,7 @@ public class GameHandler extends Application {
     }
 
     public void goToMainMenu() {
-        this.setScene(new MainMenuScene(this));
+        this.setScene(new MenuHandler(this));
         setInMenu(true);
         terminateClient();
         terminateServer();
@@ -111,11 +111,11 @@ public class GameHandler extends Application {
      */
     public void createLobby(String roomName) {
         LOG.info("Creating lobby named {}", roomName);
-
-        var lobby = new LobbyGameScene(this, roomName, true);
+        MenuHandler menu = getActiveScene(MenuHandler.class);
+        var lobby = new LobbyGameScene(menu, roomName, true);
         lobby.addPlayer(
                 GameHandler.getUserConfig().getName(), UserConfigManager.parseColor(GameHandler.getUserConfig()));
-        setScene(lobby);
+        menu.updateContent(lobby);
 
         if (server != null) throw new IllegalStateException("Server already exists, cannot establish connection");
 
@@ -152,7 +152,8 @@ public class GameHandler extends Application {
     public void showJoinGameMenu() {
         discoverer = new ServerDiscoverer(this);
         discoverer.start();
-        setScene(new JoinGameScene(this, this::joinGame));
+        MenuHandler menu = getActiveScene(MenuHandler.class);
+        menu.updateContent(new JoinGameScene(menu, this::joinGame));
     }
 
     /**

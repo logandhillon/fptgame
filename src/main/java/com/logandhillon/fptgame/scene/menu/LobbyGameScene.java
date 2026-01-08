@@ -27,24 +27,28 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
  * @author Jack Ross, Logan Dhillon
  * @see LobbyPlayerEntity
  */
-public class LobbyGameScene extends UIScene {
+public class LobbyGameScene implements MenuContent {
     private static final Logger LOG = LoggerContext.getContext().getLogger(LobbyGameScene.class);
-    private static final Font   LABEL_FONT = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 18);
-    private static final float  ENTITY_GAP = 48;
+
+    private final Entity[] entities;
+
+    private static final Font LABEL_FONT = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 18);
+    private static final float ENTITY_GAP = 48;
 
     private final LabeledModalEntity lobbyModal;
-    private final String             roomName;
+    private final String roomName;
+    private final MenuHandler menu;
 
     private float playerListDy;
 
     /**
-     * @param mgr       the game manager responsible for switching active scenes.
+     * @param menu       the game manager responsible for switching active scenes.
      * @param roomName  the name of the lobby stated in {@link HostGameScene}
      * @param isHosting determines if the user is the host of the given lobby or not
      */
-    public LobbyGameScene(GameHandler mgr, String roomName, boolean isHosting) {
+    public LobbyGameScene(MenuHandler menu, String roomName, boolean isHosting) {
         this.roomName = roomName;
-
+        this.menu = menu;
         // containers for each team
         PlayerContainer leftContainer = new PlayerContainer(16, 47, 257, 206);
         PlayerContainer rightContainer = new PlayerContainer(289, 47, 257, 206);
@@ -55,8 +59,8 @@ public class LobbyGameScene extends UIScene {
 
         // shows different buttons at bottom depending on if the user is hosting
         DarkMenuButton startButton = new DarkMenuButton(isHosting ? "START GAME" : "WAITING FOR HOST TO START...",
-                                                        16, 269, 530, 48, () -> {
-            if (isHosting) mgr.startGame();
+                16, 269, 530, 48, () -> {
+            if (isHosting) menu.startGame();
             // don't do anything if not hosting (button is disabled)
         });
 
@@ -65,10 +69,10 @@ public class LobbyGameScene extends UIScene {
         }
 
         lobbyModal = new LabeledModalEntity(
-                359, 162, 562, 396, roomName, mgr,
+                359, 162, 562, 396, roomName, menu,
                 leftContainer, rightContainer, leftLabel, rightLabel, startButton);
 
-        addEntity(lobbyModal);
+        entities = new Entity[]{lobbyModal};
     }
 
     /**
@@ -88,19 +92,15 @@ public class LobbyGameScene extends UIScene {
 
     public void clearPlayers() {
         LOG.info("Clearing player list");
-        clearEntities(true, LobbyPlayerEntity.class::isInstance);
+        this.menu.clear(true, LobbyPlayerEntity.class::isInstance);
         playerListDy = 0;
     }
 
     @Override
-    protected void render(GraphicsContext g) {
-        // background
-        g.setFill(Colors.GENERIC_BG);
-        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        // render all other entities
-        super.render(g);
+    public Entity[] getEntities() {
+        return entities;
     }
+
 
     private static final class PlayerContainer extends Entity {
 

@@ -6,6 +6,8 @@ import com.logandhillon.fptgame.entity.core.Clickable;
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.fptgame.scene.menu.MainMenuScene;
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -13,7 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-
 /**
  * This is a stylized version of the {@link ModalEntity} with a header in the top-right and a MENU button on the
  * top-left. (0,0) on this custom modal is not the top-left of the modal itself, but the top-left of the modal content.
@@ -28,7 +29,7 @@ public class LabeledModalEntity extends ModalEntity {
     private static final int   MARGIN         = 16;
 
     private final String      header;
-    private final GameHandler mgr;
+    private final MenuHandler mgr;
 
     /**
      * Creates an entity at the specified position.
@@ -40,7 +41,7 @@ public class LabeledModalEntity extends ModalEntity {
      * @param w width of modal
      * @param h height of modal
      */
-    public LabeledModalEntity(float x, float y, float w, float h, String header, GameHandler mgr,
+    public LabeledModalEntity(float x, float y, float w, float h, String header, MenuHandler mgr,
                               Entity... entities) {
         super(x, y, w, h, entities);
         this.header = header;
@@ -76,14 +77,14 @@ public class LabeledModalEntity extends ModalEntity {
      * The back button in the top-left of the {@link LabeledModalEntity} that returns to the main menu.
      */
     private static final class BackButtonEntity extends Clickable {
-        private final GameHandler game;
+        private final MenuHandler game;
 
         /**
          * Creates a new back button entity
          *
          * @param game game scene manger that can set the scene
          */
-        public BackButtonEntity(float x, float y, GameHandler game) {
+        public BackButtonEntity(float x, float y, MenuHandler game) {
             super(x, y, 62, 22);
             this.game = game;
         }
@@ -95,7 +96,7 @@ public class LabeledModalEntity extends ModalEntity {
          */
         @Override
         public void onClick(MouseEvent e) {
-            game.goToMainMenu();
+            game.updateContent(new MainMenuScene(game));
         }
 
         @Override

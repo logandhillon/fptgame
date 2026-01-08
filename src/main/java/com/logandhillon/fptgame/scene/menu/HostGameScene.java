@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.engine.UIScene;
+import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
 import com.logandhillon.fptgame.entity.ui.component.InputBoxEntity;
 import com.logandhillon.fptgame.entity.ui.component.LabeledModalEntity;
@@ -16,34 +17,31 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
  *
  * @author Jack Ross, Logan Dhillon
  */
-public class HostGameScene extends UIScene {
+public class HostGameScene implements MenuContent {
     private static final String DEFAULT_ROOM_NAME = "My new room";
-    private static final int    AJITESH_CONSTANT  = 25;
+    private static final int AJITESH_CONSTANT = 25;
+    private final Entity[] entities;
 
     private final InputBoxEntity nameInput;
 
     /**
      * Creates a new main menu
      *
-     * @param mgr the game manager responsible for switching active scenes.
+     * @param menu the {@link MenuHandler} responsible for switching active scenes.
      */
-    public HostGameScene(GameHandler mgr) {
+    public HostGameScene(MenuHandler menu) {
         nameInput = new InputBoxEntity(16, 47, 530, DEFAULT_ROOM_NAME, "ROOM NAME", AJITESH_CONSTANT);
 
-        DarkMenuButton startButton = new DarkMenuButton("START GAME", 16, 337, 530, 50,
-                                                        () -> mgr.createLobby(getRoomName()));
+        DarkMenuButton startButton = new DarkMenuButton("START GAME", 16, 337, 530, 50, () -> menu.createLobby(getRoomName()));
 
-        // create background modal
-        addEntity(new LabeledModalEntity(359, 128, 562, 464, "HOST NEW GAME", mgr, nameInput, startButton));
+
+        entities = new Entity[]{nameInput, startButton, new LabeledModalEntity(359, 128, 562, 464, "HOST NEW GAME", menu, nameInput, startButton)};
+
     }
 
     @Override
-    protected void render(GraphicsContext g) {
-        g.setFill(Colors.GENERIC_BG);
-        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        // render all entities
-        super.render(g);
+    public Entity[] getEntities() {
+        return entities;
     }
 
     /**
@@ -53,3 +51,4 @@ public class HostGameScene extends UIScene {
         return nameInput.getInput().isBlank() ? DEFAULT_ROOM_NAME : nameInput.getInput();
     }
 }
+
