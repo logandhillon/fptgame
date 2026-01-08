@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.networking;
 
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.scene.menu.JoinGameScene;
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -107,8 +108,8 @@ public class ServerDiscoverer {
     }
 
     private void updateJoinGameScene() {
-        var scene = game.getActiveScene(JoinGameScene.class);
-        if (scene == null) return;
+        var menu = game.getActiveScene(MenuHandler.class);
+        if (!(menu.getContent() instanceof JoinGameScene scene)) return;
         LOG.debug("Updating join game scene with {} servers", discoveredServers.size());
         scene.setDiscoveredServers(discoveredServers);
     }
