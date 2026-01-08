@@ -42,7 +42,7 @@ public class PlayerEntity extends PhysicsEntity {
     }
 
     private void onKeyPressed(KeyEvent e) {
-        if (e.getCode() == KeyCode.SPACE) {
+        if (e.getCode() == KeyCode.SPACE && this.grounded) {
             LOG.info("Jumping!");
             this.vy = -JUMP_POWER;
         }
