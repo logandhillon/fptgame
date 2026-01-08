@@ -15,9 +15,12 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class PlayerEntity extends PhysicsEntity {
     private static final Logger LOG = LoggerContext.getContext().getLogger(PlayerEntity.class);
 
-    private static final float JUMP_POWER = 30f;
+    private static final float JUMP_POWER = 75f; // m/s
+    private static final float MOVE_SPEED = 400f; // px/s
 
-    private static final int SIZE = 48;
+    private static final int SIZE = 48; // px^2
+
+    private int moveDirection = 0; // left=-1, 0=none, 1=right
 
     public PlayerEntity(float x, float y) {
         super(x, y, SIZE, SIZE);
@@ -35,16 +38,32 @@ public class PlayerEntity extends PhysicsEntity {
     }
 
     @Override
+    public void onUpdate(float dt) {
+        super.onUpdate(dt);
+
+        if (Math.abs(moveDirection) > 0) x += MOVE_SPEED * dt * moveDirection;
+    }
+
+    @Override
     public void onAttach(GameScene parent) {
         super.onAttach(parent);
         LOG.info("Registering events");
         parent.addHandler(KeyEvent.KEY_PRESSED, this::onKeyPressed);
+        parent.addHandler(KeyEvent.KEY_RELEASED, this::onKeyReleased);
     }
 
     private void onKeyPressed(KeyEvent e) {
-        if (e.getCode() == KeyCode.SPACE && this.grounded) {
-            LOG.info("Jumping!");
+        if (e.getCode() == KeyCode.SPACE && this.grounded)
             this.vy = -JUMP_POWER;
-        }
+
+        if (e.getCode() == KeyCode.A) moveDirection = -1;
+        else if (e.getCode() == KeyCode.D) moveDirection = 1;
+
+    }
+
+    private void onKeyReleased(KeyEvent e) {
+        if ((e.getCode() == KeyCode.A && moveDirection == -1) ||
+                (e.getCode() == KeyCode.D && moveDirection == 1))
+            moveDirection = 0;
     }
 }

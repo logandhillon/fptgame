@@ -7,7 +7,7 @@ package com.logandhillon.fptgame.entity.physics;
  * @author Logan Dhillon
  */
 public abstract class PhysicsEntity extends CollisionEntity {
-    private static final float GRAVITY = 0.4905f;
+    private static final float GRAVITY = 0.391f;
     private static final float MAX_VEL = 10f; // max scalar velocity
 
     public float vx, vy;
