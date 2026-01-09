@@ -26,10 +26,21 @@ public class MenuAlertScene extends UIScene {
     private static final Font BODY_FONT  = Font.font(Fonts.DOGICA, 16);
 
     public MenuAlertScene(String title, String msg, GameHandler game) {
+        String t = title.toUpperCase();
+        String m = msg.toUpperCase();
+
         addEntity(new ModalEntity(
                 375, 255, 530, 212,
-                new TextEntity(title.toUpperCase(), TITLE_FONT, TextAlignment.CENTER, VPos.TOP, 265, 16),
-                new TextEntity(msg.toUpperCase(), BODY_FONT, TextAlignment.CENTER, VPos.TOP, 265, 74),
+                new TextEntity.Builder(256, 16).setText(() -> t)
+                                               .setFont(TITLE_FONT)
+                                               .setAlign(TextAlignment.CENTER)
+                                               .setBaseline(VPos.TOP)
+                                               .build(),
+                new TextEntity.Builder(265, 74).setText(() -> m)
+                                               .setFont(BODY_FONT)
+                                               .setAlign(TextAlignment.CENTER)
+                                               .setBaseline(VPos.TOP)
+                                               .build(),
                 new DarkMenuButton("OK", 16, 151, 498, 48, game::goToMainMenu)));
     }
 

@@ -15,7 +15,6 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
 
 import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
@@ -26,7 +25,7 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
  * @author Logan Dhillon
  */
 public class MainMenuScene extends UIScene {
-    private final InputBoxEntity userInput;
+    private final InputBoxEntity      userInput;
     private final SkinOptionsEntity[] skins;
 
     private static final int[][] SKIN_OPTION_POSITIONS = new int[][]{
@@ -60,8 +59,11 @@ public class MainMenuScene extends UIScene {
         userInput.setInput(GameHandler.getUserConfig().getName());
         userInput.setOnBlur(() -> GameHandler.updateUserConfig(
                 ConfigProto.UserConfig.newBuilder().setName(userInput.getInput()).buildPartial()));
-        TextEntity skinLabel = new TextEntity("CHOOSE SKIN", Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 18),
-                                              Colors.FOREGROUND, TextAlignment.LEFT, VPos.TOP, 16, 113);
+        TextEntity skinLabel = new TextEntity.Builder(16, 113)
+                .setText("CHOOSE SKIN")
+                .setFont(Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 18))
+                .setBaseline(VPos.TOP)
+                .build();
 
         skins = new SkinOptionsEntity[4];
 
