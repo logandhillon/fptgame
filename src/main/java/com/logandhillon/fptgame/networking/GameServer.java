@@ -3,7 +3,7 @@ package com.logandhillon.fptgame.networking;
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.engine.disk.UserConfigManager;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
-import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
+import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.scene.paint.Color;
@@ -133,7 +133,7 @@ public class GameServer implements Runnable {
                         MenuHandler menu = game.getActiveScene(MenuHandler.class);
                         if (menu != null) {
                             MenuContent content = menu.getContent();
-                            if (content instanceof LobbyGameScene lobby) {
+                            if (content instanceof LobbyGameContent lobby) {
                                 propagateLobbyUpdate(lobby);
                             }
                         }
@@ -209,7 +209,7 @@ public class GameServer implements Runnable {
 
             // get the lobby in advance, so it can get null if we shouldn't do this
             var menu = game.getActiveScene(MenuHandler.class);
-            if (menu == null || !(menu.getContent() instanceof LobbyGameScene lobby)) {
+            if (menu == null || !(menu.getContent() instanceof LobbyGameContent lobby)) {
                 // if lobby IS null, then just throw a warn and return early ;)
                 LOG.warn(
                         "Server got a registration request, but was not ready for it. Closing client at {}.",
@@ -239,7 +239,7 @@ public class GameServer implements Runnable {
     /**
      * Updates the player list and broadcasts the new list to every client
      */
-    private void propagateLobbyUpdate(LobbyGameScene lobby) {
+    private void propagateLobbyUpdate(LobbyGameContent lobby) {
         LOG.info("Propagating update for lobby player list");
         lobby.clearPlayers();
 
@@ -302,7 +302,7 @@ public class GameServer implements Runnable {
                     // only listen in lobby
                     if (game.isInGame()) continue;
                     var menu = game.getActiveScene(MenuHandler.class);
-                    if (!(menu.getContent() instanceof LobbyGameScene lobby)) {
+                    if (!(menu.getContent() instanceof LobbyGameContent lobby)) {
                         LOG.warn("Supposed to be in lobby, but lobby was null. Will not advertise this frame.");
                         return;
                     }

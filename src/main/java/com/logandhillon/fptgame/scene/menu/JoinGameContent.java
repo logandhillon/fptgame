@@ -23,12 +23,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The join game menu allows users to join existing servers through manual IP Address searching or local server
- * discovery. When the user has joined a game, they will be transported to the {@link LobbyGameScene}
+ * discovery. When the user has joined a game, they will be transported to the {@link LobbyGameContent}
  *
  * @author Jack Ross, Logan Dhillon
  */
-public class JoinGameScene implements MenuContent {
-    private static final Logger LOG = LoggerContext.getContext().getLogger(JoinGameScene.class);
+public class JoinGameContent implements MenuContent {
+    private static final Logger LOG = LoggerContext.getContext().getLogger(JoinGameContent.class);
 
     private final Entity[] entities;
 
@@ -47,7 +47,7 @@ public class JoinGameScene implements MenuContent {
     /**
      * @param menu the {@link MenuHandler} responsible for switching active menus.
      */
-    public JoinGameScene(MenuHandler menu, JoinGameHandler onJoin) {
+    public JoinGameContent(MenuHandler menu, JoinGameHandler onJoin) {
         // rect in background for server list
         Entity serverListRect = new Entity(16, 152) {
             @Override
@@ -135,7 +135,7 @@ public class JoinGameScene implements MenuContent {
     }
 
     /**
-     * Clears the UI discovered server list and repopulates it with the values of {@link JoinGameScene#serverList}
+     * Clears the UI discovered server list and repopulates it with the values of {@link JoinGameContent#serverList}
      */
     private void updateServerList() {
         // repopulate items and add to list

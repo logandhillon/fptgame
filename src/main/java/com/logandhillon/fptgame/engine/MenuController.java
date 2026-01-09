@@ -2,7 +2,7 @@ package com.logandhillon.fptgame.engine;
 
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.MenuButton;
-import com.logandhillon.fptgame.scene.menu.MainMenuScene;
+import com.logandhillon.fptgame.scene.menu.MainMenuContent;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -49,7 +49,7 @@ public class MenuController extends Entity {
      * Handles key presses from JavaFX, used to change the actively selected button or press it.
      */
     public void onKeyPressed(KeyEvent e) {
-        if(!MainMenuScene.getUserInput().getIsActive()) {
+        if(!MainMenuContent.getUserInput().getIsActive()) {
             // when W/UP/SHIFT+TAB pressed, go up (-1) in buttons
             if (e.getCode() == KeyCode.UP || e.getCode() == KeyCode.W ||
                     (e.isShiftDown() && e.getCode() == KeyCode.TAB)) {

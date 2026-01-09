@@ -10,8 +10,8 @@ import com.logandhillon.fptgame.networking.ServerDiscoverer;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.scene.MainGameScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
-import com.logandhillon.fptgame.scene.menu.JoinGameScene;
-import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
+import com.logandhillon.fptgame.scene.menu.JoinGameContent;
+import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -112,7 +112,7 @@ public class GameHandler extends Application {
     public void createLobby(String roomName) {
         LOG.info("Creating lobby named {}", roomName);
         MenuHandler menu = getActiveScene(MenuHandler.class);
-        var lobby = new LobbyGameScene(menu, roomName, true);
+        var lobby = new LobbyGameContent(menu, roomName, true);
         menu.setContent(lobby); // set content first so we can populate lobby after
         lobby.addPlayer(
                 GameHandler.getUserConfig().getName(), UserConfigManager.parseColor(GameHandler.getUserConfig()));
@@ -157,7 +157,7 @@ public class GameHandler extends Application {
         discoverer = new ServerDiscoverer(this);
         discoverer.start();
         MenuHandler menu = getActiveScene(MenuHandler.class);
-        menu.setContent(new JoinGameScene(menu, this::joinGame));
+        menu.setContent(new JoinGameContent(menu, this::joinGame));
     }
 
     /**

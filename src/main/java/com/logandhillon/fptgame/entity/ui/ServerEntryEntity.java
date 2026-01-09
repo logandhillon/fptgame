@@ -4,7 +4,7 @@ import com.logandhillon.fptgame.entity.ui.component.ButtonEntity;
 import com.logandhillon.fptgame.entity.ui.component.DynamicButtonEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
-import com.logandhillon.fptgame.scene.menu.JoinGameScene;
+import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -85,7 +85,7 @@ public class ServerEntryEntity extends DynamicButtonEntity {
         g.fillText(this.serverAddress, x + 216, y + h / 2);
     }
 
-    public void setData(JoinGameScene.ServerEntry data) {
+    public void setData(JoinGameContent.ServerEntry data) {
         this.serverName = data.name();
         this.serverAddress = data.address();
     }

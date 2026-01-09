@@ -24,7 +24,7 @@ public class MenuHandler extends UIScene {
     private MenuContent content;
 
     public MenuHandler(GameHandler mgr) {
-        this.content = new MainMenuScene(this);
+        this.content = new MainMenuContent(this);
         this.mgr = mgr;
     }
 
@@ -95,7 +95,7 @@ public class MenuHandler extends UIScene {
     /**
      * Communicates with engine to return back to main menu
      *
-     * @see CreditsMenuScene
+     * @see CreditsMenuContent
      */
     public void goToMainMenu() {
         this.mgr.goToMainMenu();

@@ -5,7 +5,7 @@ import com.logandhillon.fptgame.entity.core.Clickable;
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
-import com.logandhillon.fptgame.scene.menu.MainMenuScene;
+import com.logandhillon.fptgame.scene.menu.MainMenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -95,7 +95,7 @@ public class LabeledModalEntity extends ModalEntity {
          */
         @Override
         public void onClick(MouseEvent e) {
-            game.setContent(new MainMenuScene(game));
+            game.setContent(new MainMenuContent(game));
         }
 
         @Override

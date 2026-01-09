@@ -12,7 +12,7 @@ import com.logandhillon.fptgame.entity.ui.component.LabeledModalEntity;
  *
  * @author Jack Ross, Logan Dhillon
  */
-public class HostGameScene implements MenuContent {
+public class HostGameContent implements MenuContent {
     private static final String DEFAULT_ROOM_NAME = "My new room";
     private static final int AJITESH_CONSTANT = 25;
     private final Entity[] entities;
@@ -24,7 +24,7 @@ public class HostGameScene implements MenuContent {
      *
      * @param menu the {@link MenuHandler} responsible for switching active scenes.
      */
-    public HostGameScene(MenuHandler menu) {
+    public HostGameContent(MenuHandler menu) {
         nameInput = new InputBoxEntity(16, 47, 530, DEFAULT_ROOM_NAME, "ROOM NAME", AJITESH_CONSTANT);
 
         DarkMenuButton startButton = new DarkMenuButton("START GAME", 16, 337, 530, 50, () -> menu.createLobby(getRoomName()));

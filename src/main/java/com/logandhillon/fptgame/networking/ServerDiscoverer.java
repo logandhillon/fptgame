@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.networking;
 
 import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.scene.menu.JoinGameScene;
+import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -19,8 +19,8 @@ import java.util.List;
 public class ServerDiscoverer {
     private static final Logger LOG = LoggerContext.getContext().getLogger(ServerDiscoverer.class);
 
-    private final List<JoinGameScene.ServerEntry> discoveredServers = new ArrayList<>();
-    private final GameHandler                     game;
+    private final List<JoinGameContent.ServerEntry> discoveredServers = new ArrayList<>();
+    private final GameHandler                       game;
     private       Thread                          discoverer;
     private       Thread                          purger;
 
@@ -63,7 +63,7 @@ public class ServerDiscoverer {
                     }
 
                     String ip = packet.getAddress().getHostAddress();
-                    discoveredServers.add(new JoinGameScene.ServerEntry(parts[1], ip));
+                    discoveredServers.add(new JoinGameContent.ServerEntry(parts[1], ip));
                     LOG.info("Discovered server at {}:{}", ip, pkt);
 
                     updateJoinGameScene();
@@ -109,7 +109,7 @@ public class ServerDiscoverer {
 
     private void updateJoinGameScene() {
         var menu = game.getActiveScene(MenuHandler.class);
-        if (!(menu.getContent() instanceof JoinGameScene scene)) return;
+        if (!(menu.getContent() instanceof JoinGameContent scene)) return;
         LOG.debug("Updating join game scene with {} servers", discoveredServers.size());
         scene.setDiscoveredServers(discoveredServers);
     }

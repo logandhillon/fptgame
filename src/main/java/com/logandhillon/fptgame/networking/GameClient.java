@@ -3,7 +3,7 @@ package com.logandhillon.fptgame.networking;
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.engine.disk.UserConfigManager;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
-import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
+import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
@@ -135,7 +135,7 @@ public class GameClient {
                 this.players = data.getPlayersList();
 
                 MenuHandler menu = game.getActiveScene(MenuHandler.class);
-                var lobby = new LobbyGameScene(menu, data.getName(), false);
+                var lobby = new LobbyGameContent(menu, data.getName(), false);
                 lobby.clearPlayers();
 
                 for (var p: this.players)

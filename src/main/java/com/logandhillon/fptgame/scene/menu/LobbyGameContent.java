@@ -22,8 +22,8 @@ import org.apache.logging.log4j.core.LoggerContext;
  * @author Jack Ross, Logan Dhillon
  * @see LobbyPlayerEntity
  */
-public class LobbyGameScene implements MenuContent {
-    private static final Logger LOG = LoggerContext.getContext().getLogger(LobbyGameScene.class);
+public class LobbyGameContent implements MenuContent {
+    private static final Logger LOG = LoggerContext.getContext().getLogger(LobbyGameContent.class);
 
     private final Entity[] entities;
 
@@ -38,10 +38,10 @@ public class LobbyGameScene implements MenuContent {
 
     /**
      * @param menu       the game manager responsible for switching active scenes.
-     * @param roomName  the name of the lobby stated in {@link HostGameScene}
+     * @param roomName  the name of the lobby stated in {@link HostGameContent}
      * @param isHosting determines if the user is the host of the given lobby or not
      */
-    public LobbyGameScene(MenuHandler menu, String roomName, boolean isHosting) {
+    public LobbyGameContent(MenuHandler menu, String roomName, boolean isHosting) {
         this.roomName = roomName;
         this.menu = menu;
         // containers for each team

@@ -15,7 +15,7 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 /**
  * @author Logan Dhillon
  */
-public class CreditsMenuScene implements MenuContent {
+public class CreditsMenuContent implements MenuContent {
 
     private final Entity[] entities;
     /**
@@ -27,7 +27,7 @@ public class CreditsMenuScene implements MenuContent {
     private static final int      TEXT_X      = CANVAS_WIDTH / 2;
     private static final int      LINE_HEIGHT = (int)(1.5 * 18);
 
-    public CreditsMenuScene(MenuHandler menu) {
+    public CreditsMenuContent(MenuHandler menu) {
         //FIXME: Adjust menu handler to work with new credits entity system
 //        for (int i = 0; i < CREDITS.length; i++) {
 //            addEntity(new TextEntity(CREDITS[i], FONT, Colors.FOREGROUND, TextAlignment.CENTER, VPos.TOP, TEXT_X,
@@ -39,7 +39,7 @@ public class CreditsMenuScene implements MenuContent {
 
     static {
         // read credits from resources and store them into static
-        try (InputStream is = CreditsMenuScene.class.getResourceAsStream("/credits.txt")) {
+        try (InputStream is = CreditsMenuContent.class.getResourceAsStream("/credits.txt")) {
             if (is == null) {
                 throw new IllegalStateException("credits.txt not found on classpath");
             }
