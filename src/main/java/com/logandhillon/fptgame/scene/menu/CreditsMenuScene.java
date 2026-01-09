@@ -5,13 +5,12 @@ import com.logandhillon.fptgame.engine.UIScene;
 import com.logandhillon.fptgame.entity.ui.component.GameButton;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
+import com.logandhillon.fptgame.resource.Resource;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
@@ -48,11 +47,8 @@ public class CreditsMenuScene extends UIScene {
 
     static {
         // read credits from resources and store them into static
-        try (InputStream is = CreditsMenuScene.class.getResourceAsStream("/credits.txt")) {
-            if (is == null) {
-                throw new IllegalStateException("credits.txt not found on classpath");
-            }
-            CREDITS = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        try (Resource res = new Resource("credits.txt")) {
+            CREDITS = res.readString();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load credits.txt", e);
         }
