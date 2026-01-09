@@ -3,7 +3,8 @@ package com.logandhillon.fptgame.networking;
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.engine.disk.UserConfigManager;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
-import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
+import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import org.apache.logging.log4j.Logger;
@@ -133,7 +134,8 @@ public class GameClient {
                 var data = PlayerProto.Lobby.parseFrom(packet.payload());
                 this.players = data.getPlayersList();
 
-                var lobby = new LobbyGameScene(game, data.getName(), false);
+                MenuHandler menu = game.getActiveScene(MenuHandler.class);
+                var lobby = new LobbyGameContent(menu, data.getName(), false);
                 lobby.clearPlayers();
 
                 for (var p: this.players)
@@ -141,8 +143,8 @@ public class GameClient {
 
                 game.setInMenu(true);
 
-                // run setScene on the FX thread
-                Platform.runLater(() -> game.setScene(lobby));
+                // run setContent on the FX thread
+                Platform.runLater(() -> menu.setContent(lobby));
             }
             case SRV_DENY_CONN__USERNAME_TAKEN, SRV_DENY_CONN__FULL -> {
                 LOG.error("Failed to join: {}", packet.type());

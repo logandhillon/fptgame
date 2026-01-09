@@ -10,8 +10,9 @@ import com.logandhillon.fptgame.networking.ServerDiscoverer;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.scene.DebugGameScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
-import com.logandhillon.fptgame.scene.menu.JoinGameScene;
-import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
+import com.logandhillon.fptgame.scene.menu.JoinGameContent;
+import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -62,7 +63,7 @@ public class GameHandler extends Application {
         stage.setMinWidth(CANVAS_WIDTH / 2f);
         stage.setMinHeight(CANVAS_HEIGHT / 2f);
 
-        setScene(new DebugGameScene());
+        setScene(new MenuHandler());
         stage.show();
     }
 
@@ -97,7 +98,7 @@ public class GameHandler extends Application {
     }
 
     public void goToMainMenu() {
-        this.setScene(new DebugGameScene());
+        this.setScene(new MenuHandler());
         setInMenu(true);
         terminateClient();
         terminateServer();
@@ -110,11 +111,11 @@ public class GameHandler extends Application {
      */
     public void createLobby(String roomName) {
         LOG.info("Creating lobby named {}", roomName);
-
-        var lobby = new LobbyGameScene(this, roomName, true);
+        MenuHandler menu = getActiveScene(MenuHandler.class);
+        var lobby = new LobbyGameContent(menu, roomName, true);
+        menu.setContent(lobby); // set content first so we can populate lobby after
         lobby.addPlayer(
                 GameHandler.getUserConfig().getName(), UserConfigManager.parseColor(GameHandler.getUserConfig()));
-        setScene(lobby);
 
         if (server != null) throw new IllegalStateException("Server already exists, cannot establish connection");
 
@@ -148,10 +149,15 @@ public class GameHandler extends Application {
         Platform.runLater(() -> setScene(new DebugGameScene()));
     }
 
+    /**
+     * @deprecated not updated to use {@link MenuHandler}, implement that before using this method
+     */
+    @Deprecated
     public void showJoinGameMenu() {
         discoverer = new ServerDiscoverer(this);
         discoverer.start();
-        setScene(new JoinGameScene(this, this::joinGame));
+        MenuHandler menu = getActiveScene(MenuHandler.class);
+        menu.setContent(new JoinGameContent(menu, this::joinGame));
     }
 
     /**
