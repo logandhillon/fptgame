@@ -3,9 +3,8 @@ package com.logandhillon.fptgame.entity.physics;
 import com.logandhillon.fptgame.entity.core.Entity;
 
 /**
- * A collision entity is a static {@link Entity} that interacts with other collision entities, but does not move. You
- * may think of it like a static physics entity, whereof it is affected by physics but shall never move (from the
- * physics engine).
+ * A collision entity is a static {@link Entity} that interacts with other collision entities, but does not move.
+ * You may think of it like a static physics entity.
  *
  * @author Logan Dhillon
  */
@@ -31,10 +30,9 @@ public abstract class CollisionEntity extends Entity {
      * Checks if this entity is colliding with another entity
      *
      * @param e the entity to check against
-     *
      * @return is collision happening
      */
-    protected boolean checkCollision(CollisionEntity e) {
+    public boolean checkCollision(CollisionEntity e) {
         return parent.checkCollision(this, e);
     }
 
@@ -43,7 +41,7 @@ public abstract class CollisionEntity extends Entity {
      *
      * @return entity that this is colliding with, or null
      */
-    protected CollisionEntity getCollision() {
+    public CollisionEntity getCollision() {
         return parent.getEntityCollision(this);
     }
 

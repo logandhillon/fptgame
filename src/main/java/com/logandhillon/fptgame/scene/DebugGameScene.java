@@ -30,18 +30,29 @@ public class DebugGameScene extends GameScene {
         addEntity(player);
 
         addEntity(new TextEntity.Builder(10, 30)
-                          .setText(() -> String.format(
-                                  "[PLAYER]\nisGrounded: %s\npos: %.1f, %.1f\nvel: %.1f, %.1f",
-                                  player.isGrounded(),
-                                  player.getX(), player.getY(),
-                                  player.vx, player.vy))
-                          .setFontSize(14)
-                          .build());
+                .setText(() -> String.format(
+                        """
+                                [PLAYER]
+                                isGrounded: %s
+                                pos: %.1f, %.1f
+                                vel: %.1f, %.1f
+                                collision: %s
+
+                                [DEBUG]
+                                press [T] to force jump""",
+                        player.isGrounded(),
+                        player.getX(), player.getY(),
+                        player.vx, player.vy,
+                        player.getCollision() != null))
+                .setFontSize(14)
+                .build());
 
         addHandler(KeyEvent.KEY_PRESSED, e -> {
             // create new instance when R pressed (reload)
             if (e.getCode() == KeyCode.R)
                 getParent().setScene(new DebugGameScene());
+            if (e.getCode() == KeyCode.T)
+                player.vy -= 10f;
         });
     }
 

@@ -228,6 +228,24 @@ public abstract class GameScene {
     }
 
     /**
+     * Checks for a collision between an entity and a hitbox
+     *
+     * @param x x pos of hitbox
+     * @param y y pos of hitbox
+     * @param w width of hitbox
+     * @param h height of hitbox
+     * @param e other entity to check against
+     *
+     * @return true if they are colliding
+     */
+    public boolean checkCollision(float x, float y, float w, float h, CollisionEntity e) {
+        return x < e.getX() + e.getWidth() &&
+               x + w > e.getX() &&
+               y < e.getY() + e.getHeight() &&
+               y + h > e.getY();
+    }
+
+    /**
      * Checks if entity A is colliding with entity B
      *
      * @param a entity 1
@@ -257,6 +275,23 @@ public abstract class GameScene {
         for (CollisionEntity e: collisionEntities) {
             if (e == target) continue; // skip the target
             if (checkCollision(target, e)) return e; // short-circuit; return if collision is found
+        }
+        return null; // no collision found
+    }
+
+    /**
+     * Checks a given (x,y) and size for collisions and returns the entity if there is one
+     *
+     * @param caller the entity that is checking for collisions (can be null)
+     *
+     * @return entity that target is colliding with, or null
+     *
+     * @see GameScene#checkCollision(CollisionEntity, CollisionEntity)
+     */
+    public CollisionEntity getCollisionAt(float x, float y, float w, float h, CollisionEntity caller) {
+        for (CollisionEntity e: collisionEntities) {
+            if (e == caller) continue; // skip the caller
+            if (checkCollision(x, y, w, h, e)) return e;
         }
         return null; // no collision found
     }
