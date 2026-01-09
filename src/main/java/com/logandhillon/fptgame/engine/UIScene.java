@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.engine;
 
 import com.logandhillon.fptgame.entity.core.Clickable;
 import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +21,7 @@ import java.util.function.Predicate;
  *
  * @author Logan Dhillon
  * @see Clickable
+ * @see MenuHandler
  */
 public abstract class UIScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(UIScene.class);

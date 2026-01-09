@@ -28,6 +28,7 @@ public class CreditsMenuScene implements MenuContent {
     private static final int      LINE_HEIGHT = (int)(1.5 * 18);
 
     public CreditsMenuScene(MenuHandler menu) {
+        //FIXME: Adjust menu handler to work with new credits entity system
 //        for (int i = 0; i < CREDITS.length; i++) {
 //            addEntity(new TextEntity(CREDITS[i], FONT, Colors.FOREGROUND, TextAlignment.CENTER, VPos.TOP, TEXT_X,
 //                                     TEXT_Y + i * LINE_HEIGHT));

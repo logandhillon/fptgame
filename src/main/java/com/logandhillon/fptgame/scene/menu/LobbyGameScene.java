@@ -67,11 +67,12 @@ public class LobbyGameScene implements MenuContent {
                 359, 162, 562, 396, roomName, menu,
                 leftContainer, rightContainer, leftLabel, rightLabel, startButton);
 
+        // creates list of entities to be used by menu handler
         entities = new Entity[]{lobbyModal};
     }
 
     /**
-     * Adds a player to the list of players on the corresponding team.
+     * Adds a player to the list of players
      *
      * @param name  player name
      * @param color player skin's color
@@ -85,12 +86,20 @@ public class LobbyGameScene implements MenuContent {
         lobbyModal.addEntity(p);
     }
 
+    /**
+     * Clears players from list of players
+     */
     public void clearPlayers() {
         LOG.info("Clearing player list");
         this.menu.clearEntities(true, LobbyPlayerEntity.class::isInstance);
         playerListDy = 0;
     }
 
+    /**
+     * Allows {@link MenuHandler} to access content for this menu
+     *
+     * @return entity list
+     */
     @Override
     public Entity[] getEntities() {
         return entities;

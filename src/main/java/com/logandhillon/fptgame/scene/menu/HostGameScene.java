@@ -34,6 +34,11 @@ public class HostGameScene implements MenuContent {
 
     }
 
+    /**
+     * Allows {@link MenuHandler} to access content for this menu
+     *
+     * @return entity list
+     */
     @Override
     public Entity[] getEntities() {
         return entities;

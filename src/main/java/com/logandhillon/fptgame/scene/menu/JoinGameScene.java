@@ -45,7 +45,7 @@ public class JoinGameScene implements MenuContent {
     private List<ServerEntry> serverList = new ArrayList<>();
 
     /**
-     * @param menu the {@link MenuHandler} responsible for switching active scenes.
+     * @param menu the {@link MenuHandler} responsible for switching active menus.
      */
     public JoinGameScene(MenuHandler menu, JoinGameHandler onJoin) {
         // rect in background for server list
@@ -112,6 +112,7 @@ public class JoinGameScene implements MenuContent {
                 359, 99, 562, 523, "JOIN A GAME", menu, serverListRect, serverListLabel, joinServer, joinDirectButton,
                 joinDiscoverButton);
 
+        // creates list of entities to be used by menu handler
         entities = new Entity[]{joinModal};
 
         // create event handler that uses the event and the array of buttons
@@ -185,6 +186,11 @@ public class JoinGameScene implements MenuContent {
         updateServerList();
     }
 
+    /**
+     * Allows {@link MenuHandler} to access content for this menu
+     *
+     * @return entity list
+     */
     @Override
     public Entity[] getEntities() {
         return entities;
