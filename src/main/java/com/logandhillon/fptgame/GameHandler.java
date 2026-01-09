@@ -93,7 +93,7 @@ public class GameHandler extends Application {
      * @param scene the GameScene to switch
      */
     public void setScene(GameScene scene) {
-        activeScene = GameEngine.setScene(stage, activeScene, scene);
+        activeScene = GameEngine.setScene(this, stage, activeScene, scene);
     }
 
     public void goToMainMenu() {

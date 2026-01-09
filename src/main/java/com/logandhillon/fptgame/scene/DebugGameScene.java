@@ -3,8 +3,10 @@ package com.logandhillon.fptgame.scene;
 import com.logandhillon.fptgame.engine.GameScene;
 import com.logandhillon.fptgame.entity.game.PlatformEntity;
 import com.logandhillon.fptgame.entity.game.PlayerEntity;
+import com.logandhillon.fptgame.resource.Colors;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
@@ -16,14 +18,26 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
  */
 public class DebugGameScene extends GameScene {
     public DebugGameScene() {
-        addEntity(new PlatformEntity(0, 680, 1280, 720 - 680));
+        addEntity(new PlatformEntity(0, 680, 1280, 40));
+        addEntity(new PlatformEntity(200, 550, 200, 40));
+        addEntity(new PlatformEntity(400, 400, 200, 40));
+        addEntity(new PlatformEntity(600, 280, 200, 40));
+        addEntity(new PlatformEntity(700, 100, 40, 300));
+        addEntity(new PlatformEntity(1100, 200, 40, 300));
+
         addEntity(new PlayerEntity(1280 / 2f, 200));
+
+        addHandler(KeyEvent.KEY_PRESSED, e -> {
+            // create new instance when R pressed (reload)
+            if (e.getCode() == KeyCode.R)
+                getParent().setScene(new DebugGameScene());
+        });
     }
 
     @Override
     protected void render(GraphicsContext g) {
         // background
-        g.setFill(Color.WHITESMOKE);
+        g.setFill(Colors.GENERIC_BG);
         g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         // render all other entities

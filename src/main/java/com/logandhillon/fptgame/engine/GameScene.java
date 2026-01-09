@@ -1,5 +1,6 @@
 package com.logandhillon.fptgame.engine;
 
+import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.physics.CollisionEntity;
 import javafx.animation.AnimationTimer;
@@ -13,7 +14,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -27,8 +27,8 @@ import static com.logandhillon.fptgame.GameHandler.*;
 /**
  * A GameScene is the lowest-level of the engine; controlling the game's lifecycle, rendering, and creating a game loop.
  * It represents a "scene" of the game, that being a section of the game that is related (e.g. a game level, the main
- * menu, etc.) GameScenes are rendered with {@link GameScene#build(Stage)}, which prepares the engine code for JavaFX,
- * allowing it to be executed and ran.
+ * menu, etc.) GameScenes are rendered with {@link GameScene#build(GameHandler)}, which prepares the engine code for
+ * JavaFX, allowing it to be executed and ran.
  *
  * @author Logan Dhillon
  */
@@ -40,13 +40,14 @@ public abstract class GameScene {
     private final List<HandlerRef<?>>   handlers          = new ArrayList<>();
 
     private AnimationTimer lifecycle;
+    private GameHandler    game;
 
     private record HandlerRef<T extends Event>(EventType<T> type, EventHandler<? super T> handler) {}
 
     /**
      * Do not instantiate this class.
      *
-     * @see GameScene#build(Stage)
+     * @see GameScene#build(GameHandler)
      */
     protected GameScene() {}
 
@@ -75,7 +76,7 @@ public abstract class GameScene {
      *
      * @return Scene containing the GameScene's GUI elements
      */
-    public Scene build(Stage stage) {
+    public Scene build(GameHandler game) {
         LOG.debug("Building game scene {} to stage", this);
 
         Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -114,6 +115,7 @@ public abstract class GameScene {
             scene.addEventHandler(t, eh);
         }
 
+        this.game = game;
         return scene;
     }
 
@@ -144,26 +146,14 @@ public abstract class GameScene {
     /**
      * Updates the scaling of the canvas wrapper (parent) based on the dimensions of the window (scene)
      *
-     * @param scene  the {@link Scene} that contains the canvas from {@link GameScene#build(Stage)}
+     * @param scene  the {@link Scene} that contains the canvas from {@link GameScene#build(GameHandler)}
      * @param parent the parent of the canvas (not the canvas itself) that has the content
      */
     private void updateScale(Scene scene, Group parent) {
         float windowWidth = (float)scene.getWidth();
         float windowHeight = (float)scene.getHeight();
-        float currentAspect = windowWidth / windowHeight;
 
-        float scale;
-
-        if (currentAspect > ASPECT_RATIO * (1 + SCALING_TOLERANCE)) {
-            // slightly wider than target, allow cropping horizontally
-            scale = windowHeight / CANVAS_HEIGHT;
-        } else if (currentAspect < ASPECT_RATIO * (1 - SCALING_TOLERANCE)) {
-            // slightly taller than target, allow cropping vertically
-            scale = windowWidth / CANVAS_WIDTH;
-        } else {
-            // within tolerance; scale uniformly
-            scale = Math.max(windowWidth / CANVAS_WIDTH, windowHeight / CANVAS_HEIGHT);
-        }
+        float scale = calculateScale(windowWidth, windowHeight);
 
         parent.setScaleX(scale);
         parent.setScaleY(scale);
@@ -171,6 +161,33 @@ public abstract class GameScene {
         // center the canvas (cropped edges are hidden)
         parent.setLayoutX((windowWidth - CANVAS_WIDTH * scale) / 2);
         parent.setLayoutY((windowHeight - CANVAS_HEIGHT * scale) / 2);
+    }
+
+    /**
+     * Calculates the scale factor for the canvas based on the window height and width
+     *
+     * @param w window width
+     * @param h window height
+     *
+     * @return scale factor
+     *
+     * @see GameScene#updateScale(Scene, Group)
+     */
+    private static float calculateScale(float w, float h) {
+        float currentAspect = w / h;
+        float scale;
+
+        if (currentAspect > ASPECT_RATIO * (1 + SCALING_TOLERANCE)) {
+            // slightly wider than target, allow cropping horizontally
+            scale = h / CANVAS_HEIGHT;
+        } else if (currentAspect < ASPECT_RATIO * (1 - SCALING_TOLERANCE)) {
+            // slightly taller than target, allow cropping vertically
+            scale = w / CANVAS_WIDTH;
+        } else {
+            // within tolerance; scale uniformly
+            scale = Math.max(w / CANVAS_WIDTH, h / CANVAS_HEIGHT);
+        }
+        return scale;
     }
 
     /**
@@ -252,5 +269,9 @@ public abstract class GameScene {
      */
     public <T extends Event> void addHandler(EventType<T> type, EventHandler<? super T> handler) {
         handlers.add(new HandlerRef<>(type, handler));
+    }
+
+    protected GameHandler getParent() {
+        return game;
     }
 }

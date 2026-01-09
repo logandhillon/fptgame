@@ -1,5 +1,6 @@
 package com.logandhillon.fptgame.engine;
 
+import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.resource.Colors;
 import javafx.animation.FadeTransition;
 import javafx.scene.Scene;
@@ -30,7 +31,7 @@ public class GameEngine {
      *
      * @return a pointer to the {@link GameScene} that is now displayed
      */
-    public static GameScene setScene(Stage stage, GameScene oldScene, GameScene newScene) {
+    public static GameScene setScene(GameHandler game, Stage stage, GameScene oldScene, GameScene newScene) {
         LOG.info("Switching scene to {}", newScene);
 
         Scene currentScene = stage.getScene();
@@ -43,7 +44,7 @@ public class GameEngine {
 
         if (currentScene == null) {
             // no previous scene, just immediately show the new one
-            stage.setScene(newScene.build(stage));
+            stage.setScene(newScene.build(game));
             return newScene;
         }
 
@@ -59,7 +60,7 @@ public class GameEngine {
             if (oldScene != null) oldScene.discard(currentScene);
 
             // Switch scene
-            Scene newFxScene = newScene.build(stage);
+            Scene newFxScene = newScene.build(game);
             stage.setScene(newFxScene);
 
             // put the rect on the new scene too...
