@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class InputBoxEntity extends Clickable {
     private static final Logger LOG = LoggerContext.getContext().getLogger(InputBoxEntity.class);
 
-    private static final int  INPUT_FONT_SIZE  = 18;
+    private static final float  INPUT_FONT_SIZE  = 18.5f;
     private static final int  INPUT_CHAR_WIDTH = 11;
     private static final int  CORNER_RADIUS    = 16;
     private static final int  MARGIN_X         = 16;
@@ -137,6 +137,7 @@ public class InputBoxEntity extends Clickable {
         // ignore blank/control characters
         if (c.isEmpty() || Character.isISOControl(c.charAt(0)) || input.length() >= charLimit) return;
 
+        LOG.debug("Key Typed");
         input.append(c);
         e.consume();
     }
@@ -172,6 +173,10 @@ public class InputBoxEntity extends Clickable {
     public void onClick(MouseEvent e) {
         LOG.debug("Input box clicked");
         this.isActive = true;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
     }
 
     @Override

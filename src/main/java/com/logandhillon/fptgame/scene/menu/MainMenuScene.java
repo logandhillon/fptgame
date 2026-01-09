@@ -13,12 +13,11 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 /**
  * The main menu allows the user to navigate to other submenus, play or quit the game, and view game branding.
  *
- * @author Logan Dhillon
+ * @author Logan Dhillon, Jack Ross
  */
 public class MainMenuScene implements MenuContent {
-    private final InputBoxEntity userInput;
+    private static InputBoxEntity userInput;
     private final Entity[] entities;
-
     /**
      * Creates a new main menu
      *
@@ -47,13 +46,15 @@ public class MainMenuScene implements MenuContent {
                 ConfigProto.UserConfig.newBuilder().setName(userInput.getInput()).buildPartial()));
 
 
-        entities = new Entity[2];
-        entities[0] = new ModalEntity(618, y, 348, 368 - dy, userInput);
-        entities[1] = controller;
+        entities = new Entity[]{new ModalEntity(618, y, 348, 368 - dy, userInput), controller};
     }
 
     @Override
     public Entity[] getEntities() {
         return entities;
+    }
+
+    public static InputBoxEntity getUserInput() {
+        return userInput;
     }
 }

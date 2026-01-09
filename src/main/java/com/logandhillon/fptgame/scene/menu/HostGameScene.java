@@ -1,16 +1,11 @@
 package com.logandhillon.fptgame.scene.menu;
 
-import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.engine.UIScene;
+
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
 import com.logandhillon.fptgame.entity.ui.component.InputBoxEntity;
 import com.logandhillon.fptgame.entity.ui.component.LabeledModalEntity;
-import com.logandhillon.fptgame.resource.Colors;
-import javafx.scene.canvas.GraphicsContext;
 
-import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
-import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
 /**
  * The host game menu allows the user to input parameters needed for hosting a live server
@@ -35,7 +30,7 @@ public class HostGameScene implements MenuContent {
         DarkMenuButton startButton = new DarkMenuButton("START GAME", 16, 337, 530, 50, () -> menu.createLobby(getRoomName()));
 
 
-        entities = new Entity[]{nameInput, startButton, new LabeledModalEntity(359, 128, 562, 464, "HOST NEW GAME", menu, nameInput, startButton)};
+        entities = new Entity[]{startButton, new LabeledModalEntity(359, 128, 562, 464, "HOST NEW GAME", menu, nameInput, startButton)};
 
     }
 

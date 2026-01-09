@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.engine;
 
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.MenuButton;
+import com.logandhillon.fptgame.scene.menu.MainMenuScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -48,23 +49,27 @@ public class MenuController extends Entity {
      * Handles key presses from JavaFX, used to change the actively selected button or press it.
      */
     public void onKeyPressed(KeyEvent e) {
-        // when W/UP/SHIFT+TAB pressed, go up (-1) in buttons
-        if (e.getCode() == KeyCode.UP || e.getCode() == KeyCode.W ||
-            (e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
-            if (activeBtnIdx >= 0) buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
-            activeBtnIdx = Math.max(0, activeBtnIdx - 1);   // decrement idx (no lower than 0)
-            buttons[activeBtnIdx].setActive(true, false); // select new active button
-        }
-        // when S/DOWN/TAB pressed, go down (+1) in buttons
-        else if (e.getCode() == KeyCode.DOWN || e.getCode() == KeyCode.S ||
-                 (!e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
-            if (activeBtnIdx >= 0) buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
-            activeBtnIdx = Math.min(buttons.length - 1, activeBtnIdx + 1); // increment idx (no higher than highest idx)
-            buttons[activeBtnIdx].setActive(true, false);  // select new active button
-        }
-        // when ENTER/SPACE pressed, simulate a click on the active button
-        else if ((e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.SPACE) && activeBtnIdx >= 0) {
-            buttons[activeBtnIdx].onPress();
+        if(!MainMenuScene.getUserInput().getIsActive()) {
+            // when W/UP/SHIFT+TAB pressed, go up (-1) in buttons
+            if (e.getCode() == KeyCode.UP || e.getCode() == KeyCode.W ||
+                    (e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
+                if (activeBtnIdx >= 0)
+                    buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
+                activeBtnIdx = Math.max(0, activeBtnIdx - 1);   // decrement idx (no lower than 0)
+                buttons[activeBtnIdx].setActive(true, false); // select new active button
+            }
+            // when S/DOWN/TAB pressed, go down (+1) in buttons
+            else if (e.getCode() == KeyCode.DOWN || e.getCode() == KeyCode.S ||
+                    (!e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
+                if (activeBtnIdx >= 0)
+                    buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
+                activeBtnIdx = Math.min(buttons.length - 1, activeBtnIdx + 1); // increment idx (no higher than highest idx)
+                buttons[activeBtnIdx].setActive(true, false);  // select new active button
+            }
+            // when ENTER/SPACE pressed, simulate a click on the active button
+            else if ((e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.SPACE) && activeBtnIdx >= 0) {
+                buttons[activeBtnIdx].onPress();
+            }
         }
     }
 
