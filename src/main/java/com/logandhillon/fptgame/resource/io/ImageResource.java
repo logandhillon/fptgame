@@ -3,9 +3,12 @@ package com.logandhillon.fptgame.resource.io;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 /**
  * Loads a resource from the /gfx/ folder as an {@link Image}
@@ -13,6 +16,10 @@ import java.io.InputStream;
  * @author Logan Dhillon
  */
 public class ImageResource extends Resource<Image> {
+    private static final Logger LOG = LoggerContext.getContext().getLogger(ImageResource.class);
+
+    private static final HashMap<Integer, Image> CACHED_RECOLORS = new HashMap<>();
+
     /**
      * Creates a new resource and opens an {@link InputStream} for it.
      *
@@ -25,6 +32,12 @@ public class ImageResource extends Resource<Image> {
     }
 
     public static Image recolor(Image src, Color tint) {
+        int hash = src.hashCode() + tint.hashCode();
+        Image cache = CACHED_RECOLORS.get(hash);
+        if (cache != null) return cache;
+
+        LOG.debug("Recolored image not cached, calculating");
+
         int w = (int)src.getWidth();
         int h = (int)src.getHeight();
         WritableImage output = new WritableImage(w, h);
@@ -41,6 +54,7 @@ public class ImageResource extends Resource<Image> {
             }
         }
 
+        CACHED_RECOLORS.put(hash, output);
         return output;
     }
 
