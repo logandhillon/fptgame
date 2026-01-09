@@ -1,20 +1,15 @@
 package com.logandhillon.fptgame.scene.menu;
 
-
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.GameButton;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;
-import com.logandhillon.fptgame.resource.Colors;
 import javafx.geometry.VPos;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.TextAlignment;
-import com.logandhillon.fptgame.resource.Fonts;
-import javafx.scene.text.Font;
-
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
 /**
@@ -34,16 +29,6 @@ public class CreditsMenuContent implements MenuContent {
                           .build();
 
         entities = new Entity[]{text, new GameButton("BACK TO MENU", 481, 613, 318, 45, menu::goToMainMenu)};
-    }
-
-    @Override
-    protected void render(GraphicsContext g) {
-        // background
-        g.setFill(Colors.GENERIC_BG);
-        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        // render all other entities
-        super.render(g);
     }
 
     static {

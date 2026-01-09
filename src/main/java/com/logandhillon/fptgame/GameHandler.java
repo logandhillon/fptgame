@@ -13,8 +13,6 @@ import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
-import com.logandhillon.fptgame.scene.menu.JoinGameScene;
-import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;

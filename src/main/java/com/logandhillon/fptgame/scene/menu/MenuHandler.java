@@ -11,9 +11,9 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
 /**
- * The menu handler is the only {@link UIScene} in the menu screens. It allows users to switch between menus
- * without switching scenes by changing between each menu's {@link MenuContent}, allowing for easier menu management
- * and smoother transitions.
+ * The menu handler is the only {@link UIScene} in the menu screens. It allows users to switch between menus without
+ * switching scenes by changing between each menu's {@link MenuContent}, allowing for easier menu management and
+ * smoother transitions.
  *
  * @author Jack Ross
  * @see MenuContent
@@ -98,6 +98,6 @@ public class MenuHandler extends UIScene {
      * @see CreditsMenuContent
      */
     public void goToMainMenu() {
-        this.mgr.goToMainMenu();
+        this.setContent(new MainMenuContent(this));
     }
 }

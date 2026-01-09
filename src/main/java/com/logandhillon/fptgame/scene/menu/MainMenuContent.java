@@ -24,7 +24,6 @@ public class MainMenuContent implements MenuContent {
      * @param menu the main class that can switch scenes, manage connections, etc.
      */
     public MainMenuContent(MenuHandler menu) {
-        int defaultColor = 0;
         float x = (CANVAS_WIDTH - 652) / 2f;
         int dy = 48 + 16; // ∆y per button height
         int y = 176;
