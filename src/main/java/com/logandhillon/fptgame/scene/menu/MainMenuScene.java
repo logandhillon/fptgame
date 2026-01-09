@@ -36,7 +36,7 @@ public class MainMenuScene implements MenuContent {
                         new JoinGameScene(menu, addr -> System.out.println("NOT IMPLEMENTED!")))),
                 new MenuButton("Settings", x, y + 2 * dy, 256, 48, () -> {
                 }),
-//                new MenuButton("Credits", x, y + 3 * dy, 256, 48, () -> menu.updateContent(new CreditsMenuScene(menu))),
+                new MenuButton("Credits", x, y + 3 * dy, 256, 48, () -> menu.setContent(new CreditsMenuScene(menu))),
                 new MenuButton("Quit", x, y + 4 * dy, 256, 48, () -> System.exit(0))
         );
 
@@ -45,10 +45,15 @@ public class MainMenuScene implements MenuContent {
         userInput.setOnBlur(() -> GameHandler.updateUserConfig(
                 ConfigProto.UserConfig.newBuilder().setName(userInput.getInput()).buildPartial()));
 
-
+        // creates list of entities to be used by menu handler
         entities = new Entity[]{new ModalEntity(618, y, 348, 368 - dy, userInput), controller};
     }
 
+    /**
+     * Allows {@link MenuHandler} to access content for this menu
+     *
+     * @return entity list
+     */
     @Override
     public Entity[] getEntities() {
         return entities;
