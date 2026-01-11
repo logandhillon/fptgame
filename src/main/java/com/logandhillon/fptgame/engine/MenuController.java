@@ -6,6 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.util.function.Supplier;
+
 /**
  * A MenuController controls an ordered list of {@link MenuButton}s, providing keyboard controls and a simplified method
  * for entity registration.
@@ -15,7 +17,8 @@ import javafx.scene.input.KeyEvent;
  * @author Logan Dhillon
  */
 public class MenuController extends Entity {
-    private final MenuButton[] buttons;
+    private final MenuButton[]      buttons;
+    private final Supplier<Boolean> active;
 
     /** idx of currently active button; -1 means none */
     private int activeBtnIdx;
@@ -25,8 +28,9 @@ public class MenuController extends Entity {
      *
      * @param buttons ordered list of buttons from top to bottom, which will be used to sort navigation.
      */
-    public MenuController(MenuButton... buttons) {
+    public MenuController(Supplier<Boolean> isActive, MenuButton... buttons) {
         super(0, 0); // pos doesn't matter, do whatever
+        this.active = isActive;
         this.buttons = buttons;
         this.activeBtnIdx = -1;
 
@@ -46,19 +50,25 @@ public class MenuController extends Entity {
 
     /**
      * Handles key presses from JavaFX, used to change the actively selected button or press it.
+     *
+     * @apiNote only runs if isActive returns true
      */
     public void onKeyPressed(KeyEvent e) {
+        if (!active.get()) return;
+
         // when W/UP/SHIFT+TAB pressed, go up (-1) in buttons
         if (e.getCode() == KeyCode.UP || e.getCode() == KeyCode.W ||
             (e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
-            if (activeBtnIdx >= 0) buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
+            if (activeBtnIdx >= 0)
+                buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
             activeBtnIdx = Math.max(0, activeBtnIdx - 1);   // decrement idx (no lower than 0)
             buttons[activeBtnIdx].setActive(true, false); // select new active button
         }
         // when S/DOWN/TAB pressed, go down (+1) in buttons
         else if (e.getCode() == KeyCode.DOWN || e.getCode() == KeyCode.S ||
                  (!e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
-            if (activeBtnIdx >= 0) buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
+            if (activeBtnIdx >= 0)
+                buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
             activeBtnIdx = Math.min(buttons.length - 1, activeBtnIdx + 1); // increment idx (no higher than highest idx)
             buttons[activeBtnIdx].setActive(true, false);  // select new active button
         }

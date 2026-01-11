@@ -1,48 +1,34 @@
 package com.logandhillon.fptgame.scene.menu;
 
-import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.engine.UIScene;
+import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.GameButton;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.io.TextResource;
 import javafx.geometry.VPos;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
 
-import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
 /**
  * @author Logan Dhillon
  */
-public class CreditsMenuScene extends UIScene {
-    /**
-     * Original credits text from resources, split by newlines.
-     */
+public class CreditsMenuContent implements MenuContent {
+    private final Entity[] entities;
+
     private static final String CREDITS;
 
-    public CreditsMenuScene(GameHandler game) {
-        addEntity(new TextEntity.Builder(150, CANVAS_WIDTH / 2f)
+    public CreditsMenuContent(MenuHandler menu) {
+        var text = new TextEntity.Builder(150, CANVAS_WIDTH / 2f)
                           .setText(CREDITS)
                           .setFontSize(18)
                           .setAlign(TextAlignment.CENTER)
                           .setBaseline(VPos.TOP)
-                          .build());
+                          .build();
 
-        addEntity(new GameButton("BACK TO MENU", 481, 613, 318, 45, game::goToMainMenu));
-    }
-
-    @Override
-    protected void render(GraphicsContext g) {
-        // background
-        g.setFill(Colors.GENERIC_BG);
-        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        // render all other entities
-        super.render(g);
+        entities = new Entity[]{text, new GameButton("BACK TO MENU", 481, 613, 318, 45, menu::goToMainMenu)};
     }
 
     static {
@@ -52,5 +38,15 @@ public class CreditsMenuScene extends UIScene {
         } catch (IOException e) {
             throw new RuntimeException("Failed to load credits.txt", e);
         }
+    }
+
+    /**
+     * Allows {@link MenuHandler} to access content for this menu
+     *
+     * @return entity list
+     */
+    @Override
+    public Entity[] getEntities() {
+        return entities;
     }
 }

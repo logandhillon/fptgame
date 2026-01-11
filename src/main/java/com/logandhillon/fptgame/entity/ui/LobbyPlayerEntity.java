@@ -4,7 +4,7 @@ import com.logandhillon.fptgame.engine.UIScene;
 import com.logandhillon.fptgame.entity.core.BoundEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
-import com.logandhillon.fptgame.scene.menu.LobbyGameScene;
+import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -13,7 +13,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
 /**
- * An entity used in {@link LobbyGameScene} to show a graphical representation of a
+ * An entity used in {@link LobbyGameContent} to show a graphical representation of a
  * user in the lobby's name, colour, and latency
  *
  * @author Jack Ross, Logan Dhillon
