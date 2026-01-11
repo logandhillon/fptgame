@@ -117,7 +117,7 @@ public class TextEntity extends Entity {
         }
 
         public Builder setFontSize(int fontSize) {
-            this.font = Font.font(Fonts.DOGICA, fontSize);
+            this.font = Font.font(Fonts.TREMOLO, fontSize);
             return this;
         }
 

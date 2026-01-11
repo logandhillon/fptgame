@@ -18,7 +18,7 @@ import javafx.scene.text.TextAlignment;
  * @apiNote Do not attach entities inside this modal, just the modal itself.
  */
 public class LabeledModalEntity extends ModalEntity {
-    private static final Font  HEADER_FONT    = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 24);
+    private static final Font  HEADER_FONT    = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 24);
 
     private static final int   MARGIN         = 16;
 

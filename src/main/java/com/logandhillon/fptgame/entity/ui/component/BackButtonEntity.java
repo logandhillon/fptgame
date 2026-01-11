@@ -19,7 +19,7 @@ import javafx.scene.text.TextAlignment;
 public final class BackButtonEntity extends Clickable {
     private final MenuHandler menu;
 
-    private static final Font  BACK_BTN_FONT  = Font.font(Fonts.DOGICA, 17);
+    private static final Font  BACK_BTN_FONT  = Font.font(Fonts.TREMOLO, 17);
     private static final     Color BACK_BTN_COLOR = Color.rgb(6, 147, 255);
 
     /**

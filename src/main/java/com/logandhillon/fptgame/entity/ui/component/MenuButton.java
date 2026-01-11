@@ -14,9 +14,9 @@ import javafx.scene.text.TextAlignment;
  */
 public class MenuButton extends DynamicButtonEntity {
     private static final ButtonEntity.Style DEFAULT_STYLE = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_NORMAL, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 20));
+            Colors.FOREGROUND, Colors.BUTTON_NORMAL, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20));
     private static final ButtonEntity.Style ACTIVE_STYLE  = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_HOVER, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 21));
+            Colors.FOREGROUND, Colors.BUTTON_HOVER, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 21));
 
     private final Runnable pressHandler;
 

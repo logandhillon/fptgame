@@ -26,7 +26,7 @@ public class LobbyGameContent implements MenuContent {
 
     private final Entity[] entities;
 
-    private static final Font HEADER_FONT = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 40);
+    private static final Font HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 40);
 
 
     private static final float ENTITY_GAP = 167.5f;

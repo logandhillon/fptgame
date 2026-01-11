@@ -17,7 +17,7 @@ import javafx.scene.text.FontWeight;
 public class HostGameContent implements MenuContent {
     private static final String   DEFAULT_ROOM_NAME = "My new room";
     private static final String   header            = "Host a New Game";
-    private static final Font     HEADER_FONT       = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 32);
+    private static final Font     HEADER_FONT       = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 32);
     private final        Entity[] entities;
 
     private final InputBoxEntity nameInput;

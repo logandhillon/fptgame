@@ -3,6 +3,8 @@ package com.logandhillon.fptgame.scene.menu;
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.engine.UIScene;
 import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.fptgame.gfx.ParallaxBackground;
+import com.logandhillon.fptgame.resource.Textures;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -20,7 +22,8 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
  */
 public class MenuHandler extends UIScene {
 
-    private MenuContent content;
+    private       MenuContent        content;
+    private final ParallaxBackground background = Textures.ocean8();
 
     public MenuHandler() {
         this.content = new MainMenuContent(this);
@@ -59,10 +62,14 @@ public class MenuHandler extends UIScene {
     @Override
     protected void render(GraphicsContext g) {
         // bg
-        g.setFill(Color.LIGHTGRAY); // TODO: use image once available by engine
-        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
+        background.render(g);
         super.render(g);
+    }
+
+    @Override
+    protected void onUpdate(float dt) {
+        super.onUpdate(dt);
+        background.onUpdate(dt);
     }
 
     /**

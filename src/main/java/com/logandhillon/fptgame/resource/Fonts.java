@@ -16,7 +16,7 @@ public class Fonts {
     // root path of all font resources
     private static final String ROOT = "/font/";
 
-    public static final String DOGICA = load("tremolo", "tremolo-mono.ttf");
+    public static final String TREMOLO = load("tremolo", "tremolo-mono.ttf");
 
     /**
      * Loads a font into the runtime and returns the name of the font family.

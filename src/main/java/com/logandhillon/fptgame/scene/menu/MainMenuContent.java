@@ -2,14 +2,18 @@ package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.engine.MenuController;
+import com.logandhillon.fptgame.entity.core.Clickable;
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.*;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
 import javafx.geometry.VPos;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 
 import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 
@@ -19,9 +23,10 @@ import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
  * @author Logan Dhillon, Jack Ross
  */
 public class MainMenuContent implements MenuContent {
-    private final            Entity[] entities;
-    private static final Font HEADER_FONT   = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 40);
-    private static final String header      = "Game Logo";
+    private final        Entity[] entities;
+    private static final Font     HEADER_FONT  = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 40);
+    private static final Font     CREDITS_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 14);
+    private static final String   header       = "Game Logo";
 
     private final InputBoxEntity userInput;
 
@@ -49,19 +54,51 @@ public class MainMenuContent implements MenuContent {
                 new MenuButton(
                         "Level Creator", x, y + 2 * dy, 256, 48, () -> {
                 }),
-                new MenuButton("", x, y + 3 * dy, 120, 48, () -> System.exit(0)), // TODO: Turn this into the settings menu
+                new MenuButton("", x, y + 3 * dy, 120, 48, () -> System.exit(0)),
+                // TODO: Turn this into the settings menu
                 new MenuButton("", x + 136, y + 3 * dy, 120, 48, () -> System.exit(0))
         );
 
         // creates list of entities to be used by menu handler
-        entities = new Entity[]{ new MenuModalEntity(0, 0, 442, CANVAS_HEIGHT, false, menu), new ModalEntity(
-                896, 79, 434, 131, userInput),
-                                 new TextEntity.Builder(32, 32)
-                                         .setColor(Colors.ACTIVE)
-                                         .setText(header::toUpperCase)
-                                         .setFont(HEADER_FONT)
-                                         .setBaseline(VPos.TOP).build()
-                , controller};
+        entities = new Entity[]{
+                new MenuModalEntity(0, 0, 442, CANVAS_HEIGHT, false, menu),
+
+                new ModalEntity(896, 79, 434, 131, userInput),
+
+                new TextEntity.Builder(32, 32)
+                        .setColor(Colors.ACTIVE)
+                        .setText(header::toUpperCase)
+                        .setFont(HEADER_FONT)
+                        .setBaseline(VPos.TOP).build(),
+
+                new Clickable(1209, 672, 59, 22) {
+
+            @Override
+            public void onClick(MouseEvent e) {
+                menu.setContent(new CreditsMenuContent(menu));
+            }
+
+            @Override
+            protected void onRender(GraphicsContext g, float x, float y) {
+                g.setFont(CREDITS_FONT);
+                g.setFill(Colors.ACTIVE_TRANS_1);
+                g.setStroke(Colors.ACTIVE_TRANS_1);
+                g.setLineWidth(1);
+                g.strokeLine(x, y + 21, x + 58, y + 21);
+                g.setTextAlign(TextAlignment.LEFT);
+                g.fillText("LICENSE", x, y + 18);
+            }
+
+            @Override
+            public void onUpdate(float dt) {
+
+            }
+
+            @Override
+            public void onDestroy() {
+
+            }
+        }, controller};
     }
 
     /**

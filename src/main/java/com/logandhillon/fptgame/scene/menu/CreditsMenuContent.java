@@ -1,7 +1,10 @@
 package com.logandhillon.fptgame.scene.menu;
 
+import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
 import com.logandhillon.fptgame.entity.ui.component.GameButton;
+import com.logandhillon.fptgame.entity.ui.component.ModalEntity;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.io.TextResource;
@@ -10,10 +13,11 @@ import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
 
+import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
 /**
- * @author Logan Dhillon
+ * @author Logan Dhillon, Jack Ross
  */
 public class CreditsMenuContent implements MenuContent {
     private final Entity[] entities;
@@ -21,14 +25,17 @@ public class CreditsMenuContent implements MenuContent {
     private static final String CREDITS;
 
     public CreditsMenuContent(MenuHandler menu) {
-        var text = new TextEntity.Builder(150, CANVAS_WIDTH / 2f)
+        var text = new TextEntity.Builder(CANVAS_WIDTH / 2f, 229)
                           .setText(CREDITS)
+                          .setColor(Colors.ACTIVE)
                           .setFontSize(18)
                           .setAlign(TextAlignment.CENTER)
                           .setBaseline(VPos.TOP)
                           .build();
 
-        entities = new Entity[]{text, new GameButton("BACK TO MENU", 481, 613, 318, 45, menu::goToMainMenu)};
+        entities = new Entity[]{ new ModalEntity(349, 213, 583, 294,
+                                 new DarkMenuButton("BACK TO MENU", 16, 230, 551, 48, menu::goToMainMenu)),
+                                 text};
     }
 
     static {

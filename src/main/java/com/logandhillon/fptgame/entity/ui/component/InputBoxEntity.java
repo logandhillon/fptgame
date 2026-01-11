@@ -32,8 +32,8 @@ public class InputBoxEntity extends Clickable {
     private static final int CORNER_DIAMETER  = 50;
     private static final int MARGIN_X         = 16;
     private static final int  MARGIN_Y         = 12;
-    private static final Font INPUT_FONT       = Font.font(Fonts.DOGICA, INPUT_FONT_SIZE);
-    private static final Font LABEL_FONT       = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 20);
+    private static final Font INPUT_FONT       = Font.font(Fonts.TREMOLO, INPUT_FONT_SIZE);
+    private static final Font LABEL_FONT       = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20);
 
     private final   float  maxWidth;
     private final   String placeholder;

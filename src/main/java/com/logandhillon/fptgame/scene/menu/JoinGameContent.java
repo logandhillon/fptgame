@@ -29,12 +29,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class JoinGameContent implements MenuContent {
     private static final Logger LOG       = LoggerContext.getContext().getLogger(JoinGameContent.class);
-    private static final Font HEADER_FONT = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 32);
+    private static final Font HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 32);
     private static final String header    = "Join a Game";
 
     private final Entity[] entities;
 
-    private static final Font LABEL_FONT            = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 18);
+    private static final Font LABEL_FONT            = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 18);
     private static final int  ENTITY_GAP            = 16;
     private static final int CORNER_DIAMETER        = 53;
     private final MenuModalEntity     joinModal;
@@ -54,7 +54,7 @@ public class JoinGameContent implements MenuContent {
         Entity serverListRect = new Entity(32, 326) {
             @Override
             protected void onRender(GraphicsContext g, float x, float y) {
-                g.setFill(Colors.ACTIVE);
+                g.setFill(Colors.BUTTON_NORMAL);
                 g.fillRoundRect(x, y, 459, 228, CORNER_DIAMETER, CORNER_DIAMETER);
             }
 

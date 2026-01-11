@@ -12,9 +12,9 @@ import javafx.scene.text.FontWeight;
  */
 public class GameButton extends DynamicButtonEntity {
     private static final ButtonEntity.Style DEFAULT_STYLE = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_NORMAL, Variant.OUTLINE, true, Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 16));
+            Colors.FOREGROUND, Colors.BUTTON_NORMAL, Variant.OUTLINE, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 16));
     private static final ButtonEntity.Style ACTIVE_STYLE  = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_HOVER, Variant.OUTLINE, true, Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 17));
+            Colors.FOREGROUND, Colors.BUTTON_HOVER, Variant.OUTLINE, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 17));
 
     /**
      * Creates a new dynamic button entity using the preset styles for menu buttons.
