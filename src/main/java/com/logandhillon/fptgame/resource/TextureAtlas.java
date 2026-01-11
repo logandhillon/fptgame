@@ -18,8 +18,8 @@ import java.io.IOException;
  * @author Logan Dhillon
  */
 public class TextureAtlas {
-    private final Image    image;
-    private final Metadata meta;
+    protected final Image    image;
+    protected final Metadata meta;
 
     /**
      * Creates a new texture atlas, loading the {@code gfx/{image.png}} and the {@code gfx/{image.png}.atlas} files.
