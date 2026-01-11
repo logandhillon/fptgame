@@ -7,10 +7,6 @@ import com.logandhillon.fptgame.gfx.ParallaxBackground;
 import com.logandhillon.fptgame.resource.Textures;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
-import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
-import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
 /**
  * The menu handler is the only {@link UIScene} in the menu screens. It allows users to switch between menus without
