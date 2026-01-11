@@ -3,12 +3,12 @@ package com.logandhillon.fptgame.scene.menu;
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.GameButton;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;
+import com.logandhillon.fptgame.resource.Colors;
+import com.logandhillon.fptgame.resource.io.TextResource;
 import javafx.geometry.VPos;
 import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
@@ -33,11 +33,8 @@ public class CreditsMenuContent implements MenuContent {
 
     static {
         // read credits from resources and store them into static
-        try (InputStream is = CreditsMenuContent.class.getResourceAsStream("/credits.txt")) {
-            if (is == null) {
-                throw new IllegalStateException("credits.txt not found on classpath");
-            }
-            CREDITS = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        try (TextResource res = new TextResource("credits.txt")) {
+            CREDITS = res.load();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load credits.txt", e);
         }

@@ -2,12 +2,18 @@ package com.logandhillon.fptgame.entity.game;
 
 import com.logandhillon.fptgame.engine.GameScene;
 import com.logandhillon.fptgame.entity.physics.PhysicsEntity;
+import com.logandhillon.fptgame.resource.Colors;
+import com.logandhillon.fptgame.resource.Textures;
+import com.logandhillon.fptgame.resource.io.ImageResource;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+
+import java.io.IOException;
 
 /**
  * @author Logan Dhillon
@@ -15,21 +21,28 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class PlayerEntity extends PhysicsEntity {
     private static final Logger LOG = LoggerContext.getContext().getLogger(PlayerEntity.class);
 
+    private static final Image TEXTURE;
+
+    static {
+        try (ImageResource res = new ImageResource("playeratlas.png")) {
+            TEXTURE = res.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static final float JUMP_POWER = 75f; // m/s
     private static final float MOVE_SPEED = 400f; // px/s
-
-    private static final int SIZE = 48; // px^2
 
     private int moveDirection = 0; // left=-1, 0=none, 1=right
 
     public PlayerEntity(float x, float y) {
-        super(x, y, SIZE, SIZE);
+        super(x, y, 42, 84);
     }
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        g.setFill(Color.RED);
-        g.fillRect(x, y, w, h);
+        Textures.PLAYER.draw(g, 0, 0, x, y, w, h, Colors.PLAYER_SKINS.getFirst());
     }
 
     @Override

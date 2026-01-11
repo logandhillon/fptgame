@@ -25,7 +25,7 @@ public final class Colors {
      * The color of the player skin, indexed by the order they appear on the main menu.
      */
     public static final List<Color> PLAYER_SKINS = List.of(
-            // red, blue, turquoise, yellow
-            Color.valueOf("#E92727"), Color.valueOf("424CDF"), Color.valueOf("#27E9A8"), Color.valueOf("#E5E927")
+            // red, blue, green, yellow
+            Color.valueOf("#E23B36"), Color.valueOf("#4184E8"), Color.valueOf("#26DE99"), Color.valueOf("#E1DE23")
     );
 }
