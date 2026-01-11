@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.entity.game;
 
 import com.logandhillon.fptgame.engine.GameScene;
 import com.logandhillon.fptgame.entity.physics.PhysicsEntity;
+import com.logandhillon.fptgame.gfx.AnimationSequence;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Textures;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +20,8 @@ public class PlayerEntity extends PhysicsEntity {
     private static final float JUMP_POWER = 75f; // m/s
     private static final float MOVE_SPEED = 400f; // px/s
 
+    private final AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();
+
     private int moveDirection = 0; // left=-1, 0=none, 1=right
 
     public PlayerEntity(float x, float y) {
@@ -27,7 +30,7 @@ public class PlayerEntity extends PhysicsEntity {
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        Textures.PLAYER_IDLE.draw(g, 0, 0, x, y, w, h, Colors.PLAYER_SKINS.getFirst());
+        texture.draw(g, x, y, w, h, Colors.PLAYER_SKINS.getFirst());
     }
 
     @Override
@@ -38,6 +41,7 @@ public class PlayerEntity extends PhysicsEntity {
     @Override
     public void onUpdate(float dt) {
         super.onUpdate(dt);
+        texture.onUpdate(dt);
 
         if (Math.abs(moveDirection) > 0) x += MOVE_SPEED * dt * moveDirection;
     }

@@ -63,7 +63,7 @@ public class GameHandler extends Application {
         stage.setMinWidth(CANVAS_WIDTH / 2f);
         stage.setMinHeight(CANVAS_HEIGHT / 2f);
 
-        setScene(new MenuHandler());
+        setScene(new DebugGameScene());
         stage.show();
     }
 
