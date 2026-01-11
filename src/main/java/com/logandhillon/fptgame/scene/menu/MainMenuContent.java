@@ -35,7 +35,7 @@ public class MainMenuContent implements MenuContent {
         int dy = 48 + 16; // ∆y per button height
         int y = 448;
 
-        userInput = new InputBoxEntity(16, 47, 316, "YOUR NAME", "YOUR NAME", 20);
+        userInput = new InputBoxEntity(20, 57, 336, "Player1", "YOUR NAME", 9);
         userInput.setInput(GameHandler.getUserConfig().getName());
         userInput.setOnBlur(() -> GameHandler.updateUserConfig(
                 ConfigProto.UserConfig.newBuilder().setName(userInput.getInput()).buildPartial()));
@@ -55,14 +55,13 @@ public class MainMenuContent implements MenuContent {
 
         // creates list of entities to be used by menu handler
         entities = new Entity[]{ new MenuModalEntity(0, 0, 442, CANVAS_HEIGHT, false, menu), new ModalEntity(
-                896, 79, 434, 131, new InputBoxEntity(
-                20, 57, 336, "Player1", "YOUR NAME", 20)),
+                896, 79, 434, 131, userInput),
                                  new TextEntity.Builder(32, 32)
                                          .setColor(Colors.ACTIVE)
                                          .setText(header::toUpperCase)
                                          .setFont(HEADER_FONT)
                                          .setBaseline(VPos.TOP).build()
-                , controller };
+                , controller};
     }
 
     /**

@@ -70,7 +70,7 @@ public class InputBoxEntity extends Clickable {
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        g.setFill(Colors.ACTIVE_TRANS);
+        g.setFill(Colors.ACTIVE_TRANS_1);
         g.fillRoundRect(x, y, w, h, CORNER_DIAMETER, CORNER_DIAMETER);
 
         g.setTextAlign(TextAlignment.LEFT);
@@ -108,7 +108,7 @@ public class InputBoxEntity extends Clickable {
 
     @Override
     public void onDestroy() {
-
+        // TODO: Blur inputs when input box is destroyed
     }
 
     /**

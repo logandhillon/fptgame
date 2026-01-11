@@ -18,7 +18,6 @@ public class HostGameContent implements MenuContent {
     private static final String   DEFAULT_ROOM_NAME = "My new room";
     private static final String   header            = "Host a New Game";
     private static final Font     HEADER_FONT       = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 32);
-    private static final int      AJITESH_CONSTANT  = 25;
     private final        Entity[] entities;
 
     private final InputBoxEntity nameInput;
@@ -29,7 +28,7 @@ public class HostGameContent implements MenuContent {
      * @param menu the {@link MenuHandler} responsible for switching active scenes.
      */
     public HostGameContent(MenuHandler menu) {
-        nameInput = new InputBoxEntity(32, 189, 327, DEFAULT_ROOM_NAME, "ROOM NAME", AJITESH_CONSTANT);
+        nameInput = new InputBoxEntity(32, 189, 327, DEFAULT_ROOM_NAME, "ROOM NAME", 16);
 
         DarkMenuButton startButton = new DarkMenuButton(
                 "START GAME", 32, 640, 304, 48, () -> menu.createLobby(getRoomName()));

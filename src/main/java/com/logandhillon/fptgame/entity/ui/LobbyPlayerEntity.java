@@ -38,15 +38,12 @@ public class LobbyPlayerEntity extends BoundEntity<UIScene> {
         g.setFont(LABEL_FONT);
         g.setFill(color);
 
-        // render player skin
-        g.fillRect(x, y, 32, 32);
-
         g.setTextAlign(TextAlignment.LEFT);
-        g.setTextBaseline(VPos.CENTER);
-        g.setFill(Colors.FOREGROUND);
+        g.setTextBaseline(VPos.TOP);
+        g.setFill(Colors.ACTIVE);
 
         // render player name
-        g.fillText(this.playerName, x + 48, y + 16);
+        g.fillText(this.playerName, x, y);
 
         g.setTextAlign(TextAlignment.RIGHT);
         g.setFill(Color.GREY);

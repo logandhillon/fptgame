@@ -1,14 +1,19 @@
 package com.logandhillon.fptgame.scene.menu;
 
+import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.LobbyPlayerEntity;
 import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
 import com.logandhillon.fptgame.entity.ui.component.LabeledModalEntity;
+import com.logandhillon.fptgame.entity.ui.component.MenuModalEntity;
+import com.logandhillon.fptgame.entity.ui.component.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.fptgame.resource.Textures;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -26,34 +31,30 @@ public class LobbyGameContent implements MenuContent {
 
     private final Entity[] entities;
 
-    private static final Font LABEL_FONT = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 18);
-    private static final float ENTITY_GAP = 48;
+    private static final Font HEADER_FONT = Font.font(Fonts.DOGICA, FontWeight.MEDIUM, 40);
 
-    private final LabeledModalEntity lobbyModal;
-    private final String roomName;
-    private final MenuHandler menu;
 
-    private float playerListDy;
+    private static final float ENTITY_GAP = 167.5f;
+
+    private final MenuModalEntity lobbyModal;
+    private final String          roomName;
+    private final MenuHandler     menu;
+
+    private float playerListDx;
 
     /**
-     * @param menu       the game manager responsible for switching active scenes.
+     * @param menu      the game manager responsible for switching active scenes.
      * @param roomName  the name of the lobby stated in {@link HostGameContent}
      * @param isHosting determines if the user is the host of the given lobby or not
      */
     public LobbyGameContent(MenuHandler menu, String roomName, boolean isHosting) {
         this.roomName = roomName;
         this.menu = menu;
-        // containers for each team
-        PlayerContainer leftContainer = new PlayerContainer(16, 47, 257, 206);
-        PlayerContainer rightContainer = new PlayerContainer(289, 47, 257, 206);
-
-        // labels for each container
-        ContainerLabel leftLabel = new ContainerLabel(16, 16, 1);
-        ContainerLabel rightLabel = new ContainerLabel(289, 16, 2);
 
         // shows different buttons at bottom depending on if the user is hosting
-        DarkMenuButton startButton = new DarkMenuButton(isHosting ? "START GAME" : "WAITING FOR HOST TO START...",
-                16, 269, 530, 48, () -> {
+        DarkMenuButton startButton = new DarkMenuButton(
+                isHosting ? "START GAME" : "WAITING FOR HOST TO START...",
+                32, 640, 304, 48, () -> {
             if (isHosting) menu.startGame();
             // don't do anything if not hosting (button is disabled)
         });
@@ -62,12 +63,17 @@ public class LobbyGameContent implements MenuContent {
             startButton.setActive(false, true);
         }
 
-        lobbyModal = new LabeledModalEntity(
-                359, 162, 562, 396, roomName, menu,
-                leftContainer, rightContainer, leftLabel, rightLabel, startButton);
+        lobbyModal = new MenuModalEntity(
+                0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, startButton, new PlayerIconEntity(48, 143, 0),
+                new PlayerIconEntity(215, 143, 1), //TODO: Make this join only when the other player is in lobby (have fun logan ;) )
+                new TextEntity.Builder(32, 66).setColor(Colors.ACTIVE)
+                                              .setText(roomName::toUpperCase)
+                                              .setFont(HEADER_FONT)
+                                              .setBaseline(VPos.TOP)
+                                              .build());
 
         // creates list of entities to be used by menu handler
-        entities = new Entity[]{lobbyModal};
+        entities = new Entity[]{ lobbyModal };
     }
 
     /**
@@ -78,10 +84,12 @@ public class LobbyGameContent implements MenuContent {
      */
     public void addPlayer(String name, Color color) {
         LOG.info("Adding player \"{}\" with color {}", name, color.toString());
-
-        var p = new LobbyPlayerEntity(color, name);
-        p.setPosition(32, p.getY() + playerListDy + 128);
-        playerListDy += ENTITY_GAP;
+        var p = new TextEntity.Builder(0 + playerListDx +  32, 262)
+                .setColor(Colors.ACTIVE)
+                .setText(name::toUpperCase)
+                .setFontSize(18)
+                .setBaseline(VPos.TOP).build();
+        playerListDx += ENTITY_GAP;
         lobbyModal.addEntity(p);
     }
 
@@ -91,7 +99,7 @@ public class LobbyGameContent implements MenuContent {
     public void clearPlayers() {
         LOG.info("Clearing player list");
         this.menu.clearEntities(true, LobbyPlayerEntity.class::isInstance);
-        playerListDy = 0;
+        playerListDx = 0;
     }
 
     /**
@@ -104,82 +112,46 @@ public class LobbyGameContent implements MenuContent {
         return entities;
     }
 
-
-    private static final class PlayerContainer extends Entity {
-
-        private final float w;
-        private final float h;
-
-        /**
-         * Creates an entity at the specified position.
-         *
-         * @param x x-position (from left)
-         * @param y y-position (from top)
-         */
-        public PlayerContainer(float x, float y, float w, float h) {
-            super(x, y);
-            this.w = w;
-            this.h = h;
-        }
-
-        @Override
-        protected void onRender(GraphicsContext g, float x, float y) {
-            // render container
-            g.setFill(Colors.ACTIVE);
-            g.fillRoundRect(x, y, w, h, 8, 8);
-        }
-
-        @Override
-        public void onUpdate(float dt) {
-
-        }
-
-        @Override
-        public void onDestroy() {
-
-        }
-    }
-
-    private static final class ContainerLabel extends Entity {
-
-        private final int teamNumber;
-
-        /**
-         * Creates an entity at the specified position.
-         *
-         * @param x x-position (from left)
-         * @param y y-position (from top)
-         */
-        public ContainerLabel(float x, float y, int teamNumber) {
-            super(x, y);
-            this.teamNumber = teamNumber;
-        }
-
-        @Override
-        protected void onRender(GraphicsContext g, float x, float y) {
-            // set initial text variables
-            g.setTextAlign(TextAlignment.LEFT);
-            g.setTextBaseline(VPos.TOP);
-            g.setFont(LABEL_FONT);
-            g.setFill(Colors.FOREGROUND);
-
-            // render label
-            g.fillText("TEAM " + this.teamNumber, x, y);
-        }
-
-        @Override
-        public void onUpdate(float dt) {
-
-        }
-
-        @Override
-        public void onDestroy() {
-
-        }
-    }
-
     public String getRoomName() {
         return roomName;
     }
-}
 
+    private static class PlayerIconEntity extends Entity {
+
+        private final int color;
+
+        /**
+         * Creates an entity at the specified position.
+         *
+         * @param x x-position (from left)
+         * @param y y-position (from top)
+         */
+        public PlayerIconEntity(float x, float y, int color) {
+            super(x, y);
+            this.color = color;
+        }
+
+        @Override
+        protected void onRender(GraphicsContext g, float x, float y) {
+            g.save();
+            g.beginPath();
+            int radius = 49;
+            g.arc(x + 33, y + 58, radius, radius, 0, 360);
+            g.clip();
+            g.setFill(Colors.ACTIVE_TRANS_2);
+            g.fillArc(x - 16, 153, radius * 2, radius * 2, 0, 360, ArcType.ROUND);
+            Textures.PLAYER_IDLE.draw(g, 0, 0, x, y, 66, 132, Colors.PLAYER_SKINS.get(color));
+            g.restore();
+        }
+
+        @Override
+        public void onUpdate(float dt) {
+
+        }
+
+        @Override
+        public void onDestroy() {
+
+        }
+    }
+}

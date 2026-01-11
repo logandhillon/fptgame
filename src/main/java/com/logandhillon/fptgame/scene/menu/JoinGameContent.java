@@ -103,7 +103,7 @@ public class JoinGameContent implements MenuContent {
 
         // join button (discovery)
         DarkMenuButton joinDiscoverButton = new DarkMenuButton(
-                "JOIN", 32, 606, 459, 48, () -> {
+                "JOIN", 32, 640, 459, 48, () -> {
             if (selectedServerAddr == null) {
                 LOG.warn("Tried to join discovered server, but no server was selected. Ignoring");
                 return;
