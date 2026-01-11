@@ -32,14 +32,15 @@ public class DebugGameScene extends GameScene {
         addEntity(new TextEntity.Builder(10, 30)
                 .setText(() -> String.format(
                         """
-                                [PLAYER]
-                                isGrounded: %s
-                                pos: %.1f, %.1f
-                                vel: %.1f, %.1f
-                                collision: %s
+                        [PLAYER]
+                        isGrounded: %s
+                        pos: %.1f, %.1f
+                        vel: %.1f, %.1f
+                        collision: %s
 
-                                [DEBUG]
-                                press [T] to force jump""",
+                        [DEBUG]
+                        press [R] to restart
+                        press [T] to force jump""",
                         player.isGrounded(),
                         player.getX(), player.getY(),
                         player.vx, player.vy,

@@ -12,13 +12,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
 /**
+ * The player is a physics entity that is controlled by a human either on the device or over the network.
+ *
  * @author Logan Dhillon
  */
 public class PlayerEntity extends PhysicsEntity {
     private static final Logger LOG = LoggerContext.getContext().getLogger(PlayerEntity.class);
 
-    private static final float JUMP_POWER = 75f; // m/s
-    private static final float MOVE_SPEED = 400f; // px/s
+    private static final float JUMP_POWER = 12f * PX_PER_METER; // m/s
+    private static final float MOVE_SPEED = 6f * PX_PER_METER; // m/s
     private static final int   Y_OFFSET   = 12;
 
     private final AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();

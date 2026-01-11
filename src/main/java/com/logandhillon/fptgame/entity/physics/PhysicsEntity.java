@@ -7,8 +7,10 @@ package com.logandhillon.fptgame.entity.physics;
  * @author Logan Dhillon
  */
 public abstract class PhysicsEntity extends CollisionEntity {
-    private static final float GRAVITY = 0.391f;
-    private static final float MAX_VEL = 10f; // max scalar velocity
+    public static final float PX_PER_METER = 48; // 1/2 of player height, whereof player is 6'4 (one ross tall)
+
+    private static final float GRAVITY       = 30f * PX_PER_METER; // m/s²
+    private static final float MAX_VEL       = 1000f * PX_PER_METER; // m/s
     private static final float PROBE_EPSILON = 0.01f; // how far from the obj to check for collisions during movement
 
     public float vx, vy;
@@ -31,17 +33,15 @@ public abstract class PhysicsEntity extends CollisionEntity {
     /**
      * Updates this physics object:
      * <p>
-     * 1. apply gravity;
-     * 2. clamp velocities to not exceed terminal velocity;
-     * 3. check for collisions (and resolve if there is one);
-     * 4. handle grounding
+     * 1. apply gravity; 2. clamp velocities to not exceed terminal velocity; 3. check for collisions (and resolve if
+     * there is one); 4. handle grounding
      *
      * @param dt the delta time: change in time (seconds) since the last frame
      */
     @Override
     public void onUpdate(float dt) {
         // Apply gravity only if not grounded
-        if (!grounded) vy += GRAVITY;
+        if (!grounded) vy += GRAVITY * dt;
 
         // Clamp velocities
         if (vx > MAX_VEL) vx = MAX_VEL;
@@ -50,13 +50,13 @@ public abstract class PhysicsEntity extends CollisionEntity {
         if (vy < -MAX_VEL) vy = -MAX_VEL;
 
         // collision handling
-        float tx = x + vx;
-        float ty = y + vy;
+        float tx = x + vx * dt;
+        float ty = y + vy * dt;
         var coll = parent.getCollisionAt(tx, ty, w, h, this);
         if (coll == null) {
             // move normally, apply velocities
-            x += vx;
-            y += vy;
+            x = tx;
+            y = ty;
         } else {
             // try to resolve collision by moving to the nearest edge
             float ld = Math.abs((tx + w) - coll.getX()); // distance from left edge
@@ -70,13 +70,13 @@ public abstract class PhysicsEntity extends CollisionEntity {
                 if (ld < rd) x += coll.getX() - (x + w);
                 else x += (coll.getX() + coll.getWidth()) - x;
                 vx = 0;
-                y += vy;
+                y = ty;
             } else {
                 // y
                 if (td < bd) y += coll.getY() - (y + h);
                 else y += (coll.getY() + coll.getHeight()) - y;
                 vy = 0;
-                x += vx;
+                x = tx;
             }
         }
 
