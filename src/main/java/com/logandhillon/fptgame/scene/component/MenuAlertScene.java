@@ -1,56 +1,49 @@
 package com.logandhillon.fptgame.scene.component;
 
-import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.engine.UIScene;
+import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
 import com.logandhillon.fptgame.entity.ui.component.ModalEntity;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.fptgame.scene.menu.MenuContent;
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.geometry.VPos;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
-import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
-
 /**
  * This scene simply shows a modal with a message, and a button to return to the main menu.
  *
- * @author Logan Dhillon
+ * @author Logan Dhillon, Jack Ross
  */
-public class MenuAlertScene extends UIScene {
+public class MenuAlertScene implements MenuContent {
     private static final Font TITLE_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20);
     private static final Font BODY_FONT  = Font.font(Fonts.TREMOLO, 16);
-
-    public MenuAlertScene(String title, String msg, GameHandler game) {
+    private final Entity[] entities;
+    public MenuAlertScene(String title, String msg, MenuHandler menu) {
         String t = title.toUpperCase();
-        String m = msg.toUpperCase();
 
-        addEntity(new ModalEntity(
-                375, 255, 530, 212,
-                new TextEntity.Builder(256, 16).setText(() -> t)
+        entities = new Entity[]{ new ModalEntity(
+                375, 229.5f, 530, 262,
+                new TextEntity.Builder(265, 16).setText(() -> t)
                                                .setFont(TITLE_FONT)
+                                               .setColor(Colors.ACTIVE)
                                                .setAlign(TextAlignment.CENTER)
                                                .setBaseline(VPos.TOP)
                                                .build(),
-                new TextEntity.Builder(265, 74).setText(() -> m)
+                new TextEntity.Builder(265, 74).setText(() -> msg)
                                                .setFont(BODY_FONT)
+                                               .setColor(Colors.ACTIVE)
                                                .setAlign(TextAlignment.CENTER)
                                                .setBaseline(VPos.TOP)
                                                .build(),
-                new DarkMenuButton("OK", 16, 151, 498, 48, game::goToMainMenu)));
+                new DarkMenuButton("BACK TO MAIN MENU", 16, 198, 498, 48, menu::goToMainMenu))};
     }
 
     @Override
-    protected void render(GraphicsContext g) {
-        // background
-        g.setFill(Colors.GENERIC_BG);
-        g.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        // render all other entities
-        super.render(g);
+    public Entity[] getEntities() {
+        return entities;
     }
 }
