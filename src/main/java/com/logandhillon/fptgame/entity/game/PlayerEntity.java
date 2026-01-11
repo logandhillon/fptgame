@@ -19,18 +19,19 @@ public class PlayerEntity extends PhysicsEntity {
 
     private static final float JUMP_POWER = 75f; // m/s
     private static final float MOVE_SPEED = 400f; // px/s
+    private static final int   Y_OFFSET   = 12;
 
     private final AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();
 
     private int moveDirection = 0; // left=-1, 0=none, 1=right
 
     public PlayerEntity(float x, float y) {
-        super(x, y, 42, 84);
+        super(x, y, 42, 72);
     }
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        texture.draw(g, x, y, w, h, Colors.PLAYER_SKINS.getFirst());
+        texture.draw(g, x, y - Y_OFFSET, w, h + Y_OFFSET, Colors.PLAYER_SKINS.getFirst());
     }
 
     @Override
