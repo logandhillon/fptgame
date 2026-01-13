@@ -28,7 +28,10 @@ public class DarkMenuButton extends DynamicButtonEntity {
      * @param w       width
      * @param h       height
      * @param onPress the action that should happen when this button is clicked
+     *
+     * @deprecated use {@link MenuButton} instead
      */
+    @Deprecated
     public DarkMenuButton(String label, float x, float y, float w, float h, Runnable onPress) {
         super(label.toUpperCase(), x, y, w, h, e -> onPress.run(), DEFAULT_STYLE, ACTIVE_STYLE);
         this.pressHandler = onPress;

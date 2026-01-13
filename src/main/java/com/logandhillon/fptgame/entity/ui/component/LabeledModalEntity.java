@@ -34,7 +34,10 @@ public class LabeledModalEntity extends ModalEntity {
      * @param y y-position (from top)
      * @param w width of modal
      * @param h height of modal
+     *
+     * @deprecated this is a leftover from the old engine, use {@link MenuModalEntity}
      */
+    @Deprecated
     public LabeledModalEntity(float x, float y, float w, float h, String header, MenuHandler menu,
                               Entity... entities) {
         super(x, y, w, h, entities);
