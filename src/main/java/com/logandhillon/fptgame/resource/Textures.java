@@ -22,10 +22,10 @@ public class Textures {
 
     // TODO: fine tune animations (i have no idea if these frames are correct lmao)
     public static final AnimationSequence ANIM_PLAYER_WALK = new AnimationSequence(PLAYER_WALK, 6,
-                                                                                   0, 0,
-                                                                                   1, 0,
-                                                                                   2, 0,
-                                                                                   3, 0);
+                                                                                   0, 2,
+                                                                                   1, 2,
+                                                                                   2, 2,
+                                                                                   3, 2);
     public static final AnimationSequence ANIM_PLAYER_RUN  = new AnimationSequence(PLAYER_RUN, 6,
                                                                                    0, 0,
                                                                                    1, 0,
