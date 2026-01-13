@@ -12,8 +12,8 @@ import java.util.List;
  */
 public final class Colors {
     public static final Color ACTIVE         = Color.WHITE;
-    public static final Color ACTIVE_TRANS_1 = Color.rgb(255, 255, 255, 0.5);
-    public static final Color ACTIVE_TRANS_2 = Color.rgb(255, 255, 255, 0.15);
+    public static final Color ACTIVE_TRANS_050 = Color.rgb(255, 255, 255, 0.5);
+    public static final Color ACTIVE_TRANS_015= Color.rgb(255, 255, 255, 0.15);
     public static final Color FOREGROUND     = Color.BLACK;
     public static final Color FOREGROUND_TRANS = Color.rgb(0, 0, 0, 0.4);
 
