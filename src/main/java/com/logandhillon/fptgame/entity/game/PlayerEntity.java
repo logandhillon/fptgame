@@ -34,6 +34,7 @@ public class PlayerEntity extends PhysicsEntity {
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
+        // render the active texture
         texture.draw(g, x, y - Y_OFFSET, w, h + Y_OFFSET, Colors.PLAYER_SKINS.getFirst());
     }
 
@@ -49,6 +50,7 @@ public class PlayerEntity extends PhysicsEntity {
 
         if (state == AnimationState.JUMP && isGrounded()) setAnimation(AnimationState.IDLE);
 
+        // move player in right direction and update animations
         if (moveDirection > 0) {
             x += MOVE_SPEED * dt;
             setAnimation(AnimationState.WALK_RIGHT);
@@ -84,6 +86,13 @@ public class PlayerEntity extends PhysicsEntity {
             moveDirection = 0;
     }
 
+    /**
+     * Safely updates the active {@link AnimationState} and the currently visible {@link PlayerEntity#texture}.
+     * <p>
+     * Does not update anything if the current {@link AnimationState} is equal to the new state
+     *
+     * @param state the new state
+     */
     private void setAnimation(AnimationState state) {
         if (this.state == state) return;
 
@@ -96,6 +105,9 @@ public class PlayerEntity extends PhysicsEntity {
         }
     }
 
+    /**
+     * The current animation that should be visible on the player, each ordinal represents an {@link AnimationSequence}
+     */
     private enum AnimationState {
         IDLE, JUMP, WALK_LEFT, WALK_RIGHT
     }
