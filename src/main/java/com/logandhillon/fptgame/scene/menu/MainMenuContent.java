@@ -8,12 +8,17 @@ import com.logandhillon.fptgame.entity.ui.component.*;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.fptgame.resource.io.ImageResource;
+import com.logandhillon.logangamelib.entity.Renderable;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+
+import java.io.FileNotFoundException;
 
 import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 
@@ -29,6 +34,32 @@ public class MainMenuContent implements MenuContent {
     private static final String HEADER       = "Game Logo";
 
     private final InputBoxEntity userInput;
+
+    private final ImageResource SETTINGS_ICON;
+
+    {
+        try {
+            SETTINGS_ICON = new ImageResource("menuicons/cog.png");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    Image cog = SETTINGS_ICON.load();
+
+    private final ImageResource QUIT_ICON;
+
+    {
+        try {
+            QUIT_ICON = new ImageResource("menuicons/X.png");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    Image X = QUIT_ICON.load();
+
+    //HACK: Clean this up for the future (?)
 
     /**
      * Creates a new main menu
@@ -69,38 +100,49 @@ public class MainMenuContent implements MenuContent {
 
                 new TextEntity.Builder(32, 32)
                         .setColor(Colors.ACTIVE)
-                        .setText(HEADER::toUpperCase)
+                        .setText(HEADER.toUpperCase())
                         .setFont(HEADER_FONT)
                         .setBaseline(VPos.TOP).build(),
 
                 new Clickable(1209, 672, 59, 22) {
 
-            @Override
-            public void onClick(MouseEvent e) {
-                menu.setContent(new CreditsMenuContent(menu));
-            }
+                    @Override
+                    public void onClick(MouseEvent e) {
+                        menu.setContent(new CreditsMenuContent(menu));
+                    }
 
+                    @Override
+                    protected void onRender(GraphicsContext g, float x, float y) {
+                        g.setFont(CREDITS_FONT);
+                        g.setFill(Colors.ACTIVE_TRANS_50);
+                        g.setStroke(Colors.ACTIVE_TRANS_50);
+                        g.setLineWidth(1);
+                        g.strokeLine(x, y + 21, x + 58, y + 21);
+                        g.setTextAlign(TextAlignment.LEFT);
+                        g.fillText("LICENSE", x, y + 18);
+                    }
+
+                    @Override
+                    public void onUpdate(float dt) {
+
+                    }
+
+                    @Override
+                    public void onDestroy() {
+
+                    }
+                }, controller
+                , new Renderable(79.17f, 651.17f) {
             @Override
             protected void onRender(GraphicsContext g, float x, float y) {
-                g.setFont(CREDITS_FONT);
-                g.setFill(Colors.ACTIVE_TRANS_50);
-                g.setStroke(Colors.ACTIVE_TRANS_50);
-                g.setLineWidth(1);
-                g.strokeLine(x, y + 21, x + 58, y + 21);
-                g.setTextAlign(TextAlignment.LEFT);
-                g.fillText("LICENSE", x, y + 18);
+                g.drawImage(cog, x, y, 28, 28);
             }
-
+        }, new Renderable(218, 654) {
             @Override
-            public void onUpdate(float dt) {
-
+            protected void onRender(GraphicsContext g, float x, float y) {
+                g.drawImage(X, x, y, 20, 20);
             }
-
-            @Override
-            public void onDestroy() {
-
-            }
-        }, controller};
+        } };
     }
 
     /**
