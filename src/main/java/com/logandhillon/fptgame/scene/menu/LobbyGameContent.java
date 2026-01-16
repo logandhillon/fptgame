@@ -21,14 +21,15 @@ import org.apache.logging.log4j.core.LoggerContext;
  * @see PlayerIconEntity
  */
 public class LobbyGameContent implements MenuContent {
-    private static final Logger LOG = LoggerContext.getContext().getLogger(LobbyGameContent.class);
+    private static final Logger LOG         = LoggerContext.getContext().getLogger(LobbyGameContent.class);
+    private static final Font   HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 40);
 
-    private final Entity[] entities;
+    private static final int[][] PLAYER_ICON_ARGS = new int[][]{
+            // iconX, iconY, colorIdx, textX, textY
+            { 48, 143, 0, 32, 262 },
+            { 215, 143, 1, 200, 262 } };
 
-    private static final Font HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 40);
-
-    private static final float ENTITY_GAP = 167.5f;
-
+    private final Entity[]        entities;
     private final MenuModalEntity lobbyModal;
     private final String          roomName;
     private final MenuHandler     menu;
@@ -57,8 +58,7 @@ public class LobbyGameContent implements MenuContent {
         }
 
         lobbyModal = new MenuModalEntity(
-                0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, startButton, new PlayerIconEntity(48, 143, 0),
-                new PlayerIconEntity(215, 143, 1),
+                0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, startButton,
                 //TODO: Make this join only when the other player is in lobby (have fun logan ;) )
                 new TextEntity.Builder(32, 66).setColor(Colors.ACTIVE)
                                               .setText(roomName.toUpperCase())
@@ -78,13 +78,13 @@ public class LobbyGameContent implements MenuContent {
      */
     public void addPlayer(String name, boolean isHost) {
         LOG.info("Adding player \"{}\" (host={})", name, isHost);
-        var p = new TextEntity.Builder(0 + playerListDx + 32, 262)
-                .setColor(Colors.ACTIVE)
-                .setText(name.toUpperCase())
-                .setFontSize(18)
-                .setBaseline(VPos.TOP).build();
-        playerListDx += ENTITY_GAP;
-        lobbyModal.addEntity(p);
+        int[] args = PLAYER_ICON_ARGS[isHost ? 0 : 1];
+        lobbyModal.addEntity(new PlayerIconEntity(args[0], args[1], args[2]));
+        lobbyModal.addEntity(new TextEntity.Builder(args[3], args[4])
+                                     .setColor(Colors.ACTIVE)
+                                     .setText(name.toUpperCase())
+                                     .setFontSize(18)
+                                     .setBaseline(VPos.TOP).build());
     }
 
     /**
@@ -93,7 +93,6 @@ public class LobbyGameContent implements MenuContent {
     public void clearPlayers() {
         LOG.info("Clearing player list");
         this.menu.clearEntities(true, PlayerIconEntity.class::isInstance);
-        playerListDx = 0;
     }
 
     /**
