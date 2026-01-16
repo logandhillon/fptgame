@@ -1,6 +1,6 @@
 package com.logandhillon.fptgame.entity.ui;
 
-import com.logandhillon.fptgame.entity.core.Clickable;
+import com.logandhillon.logangamelib.entity.Clickable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;

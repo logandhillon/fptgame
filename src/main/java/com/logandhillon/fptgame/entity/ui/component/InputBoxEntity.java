@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.entity.ui.component;
 
 import com.logandhillon.fptgame.engine.GameScene;
-import com.logandhillon.fptgame.entity.core.Clickable;
+import com.logandhillon.logangamelib.entity.Clickable;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
 import javafx.geometry.VPos;

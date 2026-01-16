@@ -1,6 +1,6 @@
 package com.logandhillon.fptgame.engine;
 
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.entity.ui.component.MenuButton;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;

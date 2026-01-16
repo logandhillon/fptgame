@@ -1,7 +1,9 @@
 package com.logandhillon.fptgame.entity.physics;
 
+import com.logandhillon.logangamelib.entity.Entity;
+
 /**
- * A physics entity is an {@link com.logandhillon.fptgame.entity.core.Entity} that (a) is affected by gravity, (b) has
+ * A physics entity is an {@link Entity} that (a) is affected by gravity, (b) has
  * collisions, and (c) has internal velocity that can be modulated to more (physically) accurately move the entity.
  *
  * @author Logan Dhillon

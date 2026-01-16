@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.gfx;
 
 import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.resource.io.ImageResource;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

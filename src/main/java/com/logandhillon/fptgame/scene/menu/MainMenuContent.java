@@ -2,8 +2,8 @@ package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.engine.MenuController;
-import com.logandhillon.fptgame.entity.core.Clickable;
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Clickable;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.entity.ui.component.*;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.resource.Colors;

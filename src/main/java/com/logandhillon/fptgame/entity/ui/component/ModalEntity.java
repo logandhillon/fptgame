@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.entity.ui.component;
 
 import com.logandhillon.fptgame.engine.GameScene;
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.resource.Colors;
 import javafx.scene.canvas.GraphicsContext;
 

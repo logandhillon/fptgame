@@ -1,7 +1,6 @@
 package com.logandhillon.fptgame.scene.component;
 
-import com.logandhillon.fptgame.entity.core.Entity;
-import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.entity.ui.component.MenuButton;
 import com.logandhillon.fptgame.entity.ui.component.ModalEntity;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;

@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.engine;
 
-import com.logandhillon.fptgame.entity.core.Clickable;
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Clickable;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Scene;

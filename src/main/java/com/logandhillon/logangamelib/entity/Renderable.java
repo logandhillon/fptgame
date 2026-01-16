@@ -1,6 +1,5 @@
 package com.logandhillon.logangamelib.entity;
 
-import com.logandhillon.fptgame.entity.core.Entity;
 import javafx.scene.canvas.GraphicsContext;
 
 /**

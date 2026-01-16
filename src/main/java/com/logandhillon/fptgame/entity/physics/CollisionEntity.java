@@ -1,6 +1,6 @@
 package com.logandhillon.fptgame.entity.physics;
 
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Entity;
 
 /**
  * A collision entity is a static {@link Entity} that interacts with other collision entities, but does not move.

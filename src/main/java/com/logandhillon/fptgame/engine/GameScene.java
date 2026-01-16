@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.engine;
 
 import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.entity.physics.CollisionEntity;
 import javafx.animation.AnimationTimer;
 import javafx.event.Event;
