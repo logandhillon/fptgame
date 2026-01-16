@@ -61,7 +61,6 @@ public class MenuHandler extends UIScene {
      */
     @Override
     protected void render(GraphicsContext g) {
-        // bg
         background.render(g);
         super.render(g);
     }
@@ -82,12 +81,5 @@ public class MenuHandler extends UIScene {
      */
     public MenuContent getContent() {
         return content;
-    }
-
-    /**
-     * Sets the content of this handler to the main menu
-     */
-    public void goToMainMenu() {
-        this.setContent(new MainMenuContent(this));
     }
 }

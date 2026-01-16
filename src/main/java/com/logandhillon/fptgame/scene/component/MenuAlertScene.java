@@ -39,7 +39,7 @@ public class MenuAlertScene implements MenuContent {
                                                .setAlign(TextAlignment.CENTER)
                                                .setBaseline(VPos.TOP)
                                                .build(),
-                new MenuButton("BACK TO MAIN MENU", 16, 198, 498, 48, menu::goToMainMenu))};
+                new MenuButton("BACK TO MAIN MENU", 16, 198, 498, 48, () -> menu.getGameHandler().goToMainMenu()))};
     }
 
     @Override

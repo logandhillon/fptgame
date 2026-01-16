@@ -9,6 +9,7 @@ import com.logandhillon.fptgame.scene.DebugGameScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
+import com.logandhillon.fptgame.scene.menu.MainMenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.engine.GameEngine;
 import com.logandhillon.logangamelib.engine.GameScene;
@@ -98,7 +99,9 @@ public class GameHandler extends Application {
     }
 
     public void goToMainMenu() {
-        this.setScene(new MenuHandler());
+        var menu = this.getActiveScene(MenuHandler.class);
+        if (menu == null) this.setScene(new MenuHandler());
+        else menu.setContent(new MainMenuContent(menu));
         setInMenu(true);
         terminateClient();
         terminateServer();
@@ -148,7 +151,6 @@ public class GameHandler extends Application {
         Platform.runLater(() -> setScene(new DebugGameScene()));
     }
 
-
     public void showJoinGameMenu() {
         discoverer = new ServerDiscoverer(this);
         discoverer.start();
@@ -166,7 +168,7 @@ public class GameHandler extends Application {
             LOG.warn("Server address is blank");
             return;
         }
-        
+
         String host;
         int port;
         int i = serverAddress.lastIndexOf(':');
