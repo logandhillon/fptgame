@@ -73,4 +73,8 @@ public class DynamicButtonEntity extends ButtonEntity {
     public boolean isActive() {
         return active;
     }
+
+    public boolean isLocked() {
+        return locked;
+    }
 }

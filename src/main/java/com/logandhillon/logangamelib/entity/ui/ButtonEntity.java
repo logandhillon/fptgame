@@ -18,10 +18,11 @@ import javafx.scene.text.TextAlignment;
  * @see Style
  */
 public class ButtonEntity extends Clickable {
-    private static final int STROKE          = 2;
+    private static final int STROKE            = 2;
     private static final int ROUNDING_DIAMETER = 50;
 
-    private final String            label;
+    private String label;
+
     private final MouseEventHandler clickHandler;
 
     private MouseEventHandler mouseEnterHandler;
@@ -142,6 +143,10 @@ public class ButtonEntity extends Clickable {
      */
     public interface MouseEventHandler {
         void handle(MouseEvent e);
+    }
+
+    public void setText(String label) {
+        this.label = label;
     }
 
     /**

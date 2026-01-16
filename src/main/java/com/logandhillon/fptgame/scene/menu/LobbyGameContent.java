@@ -33,8 +33,10 @@ public class LobbyGameContent implements MenuContent {
     private final MenuModalEntity lobbyModal;
     private final String          roomName;
     private final MenuHandler     menu;
+    private final boolean         isHosting;
+    private final MenuButton      startButton;
 
-    private float playerListDx;
+    private boolean isStartingAllowed;
 
     /**
      * @param menu      the game manager responsible for switching active scenes.
@@ -44,18 +46,19 @@ public class LobbyGameContent implements MenuContent {
     public LobbyGameContent(MenuHandler menu, String roomName, boolean isHosting) {
         this.roomName = roomName;
         this.menu = menu;
+        this.isHosting = isHosting;
 
         // shows different buttons at bottom depending on if the user is hosting
-        MenuButton startButton = new MenuButton(
-                isHosting ? "START GAME" : "WAITING FOR HOST TO START...",
-                32, 640, 304, 48, () -> {
-            if (isHosting) menu.getGameHandler().startGame();
-            // don't do anything if not hosting (button is disabled)
-        });
+        startButton = new MenuButton(
+                isHosting ? "WAITING FOR PLAYER..." : "WAITING FOR HOST...", 32, 640, 304, 48,
+                () -> {
+                    if (isStartingAllowed) menu.getGameHandler().startGame();
+                });
 
         if (!isHosting) {
             startButton.setActive(false);
             startButton.setLocked(true);
+            isStartingAllowed = false;
         }
 
         lobbyModal = new MenuModalEntity(
@@ -86,6 +89,12 @@ public class LobbyGameContent implements MenuContent {
                                      .setText(name.toUpperCase())
                                      .setFontSize(18)
                                      .setBaseline(VPos.TOP).build());
+        // if a guest joins, and this is the hosting lobby, unlock the start button
+        if (!isHost && isHosting) {
+            startButton.setLocked(false);
+            isStartingAllowed = true;
+            startButton.setText("START GAME");
+        }
     }
 
     /**
@@ -93,7 +102,10 @@ public class LobbyGameContent implements MenuContent {
      */
     public void clearPlayers() {
         LOG.info("Clearing player list");
-        this.menu.clearEntities(true, PlayerIconEntity.class::isInstance);
+        menu.clearEntities(true, PlayerIconEntity.class::isInstance);
+        startButton.setFlags(false, true);
+        isStartingAllowed = false;
+        startButton.setText("WAITING FOR PLAYER...");
     }
 
     /**
