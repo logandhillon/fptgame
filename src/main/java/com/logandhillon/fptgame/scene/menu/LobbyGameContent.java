@@ -3,7 +3,7 @@ package com.logandhillon.fptgame.scene.menu;
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.PlayerIconEntity;
-import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
+import com.logandhillon.fptgame.entity.ui.component.MenuButton;
 import com.logandhillon.fptgame.entity.ui.component.MenuModalEntity;
 import com.logandhillon.fptgame.entity.ui.component.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
@@ -47,7 +47,7 @@ public class LobbyGameContent implements MenuContent {
         this.menu = menu;
 
         // shows different buttons at bottom depending on if the user is hosting
-        DarkMenuButton startButton = new DarkMenuButton(
+        MenuButton startButton = new MenuButton(
                 isHosting ? "START GAME" : "WAITING FOR HOST TO START...",
                 32, 640, 304, 48, () -> {
             if (isHosting) menu.startGame();

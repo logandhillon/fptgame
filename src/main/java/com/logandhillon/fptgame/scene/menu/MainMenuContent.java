@@ -8,17 +8,13 @@ import com.logandhillon.fptgame.entity.ui.component.*;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
-import com.logandhillon.fptgame.resource.io.ImageResource;
-import com.logandhillon.logangamelib.entity.Renderable;
+import com.logandhillon.fptgame.resource.Textures;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-
-import java.io.FileNotFoundException;
 
 import static com.logandhillon.fptgame.GameHandler.CANVAS_HEIGHT;
 
@@ -34,32 +30,6 @@ public class MainMenuContent implements MenuContent {
     private static final String HEADER       = "Game Logo";
 
     private final InputBoxEntity userInput;
-
-    private final ImageResource SETTINGS_ICON;
-
-    {
-        try {
-            SETTINGS_ICON = new ImageResource("menuicons/cog.png");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    Image cog = SETTINGS_ICON.load();
-
-    private final ImageResource QUIT_ICON;
-
-    {
-        try {
-            QUIT_ICON = new ImageResource("menuicons/X.png");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    Image X = QUIT_ICON.load();
-
-    //HACK: Clean this up for the future (?)
 
     /**
      * Creates a new main menu
@@ -85,11 +55,11 @@ public class MainMenuContent implements MenuContent {
                 new MenuButton("Level Creator", x, y + 2 * dy, 256, 48, () -> {
                             throw new IllegalStateException("Menu under construction");
                 }),
-                new MenuButton("", x, y + 3 * dy, 120, 48, () -> {
+                new MenuButton(Textures.settingsIcon(), x, y + 3 * dy, 120, 48, 75.84f, 651.17f, 28, 28, () -> {
                     throw new IllegalStateException("Menu under construction");
                 }),
                 // TODO: Turn this into the settings menu
-                new MenuButton("", x + 136, y + 3 * dy, 120, 48, () -> System.exit(0))
+                new MenuButton(Textures.quitIcon(), x + 136, y + 3 * dy, 120, 48, 218, 654, 20, 20, () -> System.exit(0))
         );
 
         // creates list of entities to be used by menu handler
@@ -131,18 +101,7 @@ public class MainMenuContent implements MenuContent {
                     public void onDestroy() {
 
                     }
-                }, controller
-                , new Renderable(75.84f, 651.17f) {
-            @Override
-            protected void onRender(GraphicsContext g, float x, float y) {
-                g.drawImage(cog, x, y, 25.67, 25.67);
-            }
-        }, new Renderable(218, 654) {
-            @Override
-            protected void onRender(GraphicsContext g, float x, float y) {
-                g.drawImage(X, x, y, 20, 20);
-            }
-        } };
+                }, controller};
     }
 
     /**

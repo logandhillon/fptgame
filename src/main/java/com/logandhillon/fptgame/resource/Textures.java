@@ -2,6 +2,10 @@ package com.logandhillon.fptgame.resource;
 
 import com.logandhillon.fptgame.gfx.AnimationSequence;
 import com.logandhillon.fptgame.gfx.ParallaxBackground;
+import com.logandhillon.fptgame.resource.io.ImageResource;
+import javafx.scene.image.Image;
+
+import java.io.FileNotFoundException;
 
 /**
  * References to static textures
@@ -47,5 +51,25 @@ public class Textures {
                 new ParallaxBackground.Layer("bg/ocean8/2.png", 25f),
                 new ParallaxBackground.Layer("bg/ocean8/3.png", 50f),
                 new ParallaxBackground.Layer("bg/ocean8/4.png", 80f));
+    }
+
+    public static Image settingsIcon() {
+        ImageResource SETTINGS;
+        try {
+            SETTINGS = new ImageResource("menuicons/cog.png");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return SETTINGS.load();
+    }
+
+    public static Image quitIcon() {
+        ImageResource QUIT;
+        try {
+            QUIT = new ImageResource("menuicons/X.png");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return QUIT.load();
     }
 }
