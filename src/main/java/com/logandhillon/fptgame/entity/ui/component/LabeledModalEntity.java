@@ -1,9 +1,9 @@
 package com.logandhillon.fptgame.entity.ui.component;
 
-import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
+import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.logangamelib.entity.ui.ModalEntity;
 import javafx.geometry.VPos;

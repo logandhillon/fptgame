@@ -1,10 +1,10 @@
 package com.logandhillon.fptgame.entity.game;
 
+import com.logandhillon.fptgame.resource.Colors;
+import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.physics.PhysicsEntity;
 import com.logandhillon.logangamelib.gfx.AnimationSequence;
-import com.logandhillon.fptgame.resource.Colors;
-import com.logandhillon.fptgame.resource.Textures;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;

@@ -1,8 +1,8 @@
 package com.logandhillon.logangamelib.engine;
 
+import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.entity.Clickable;
 import com.logandhillon.logangamelib.entity.Entity;
-import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;

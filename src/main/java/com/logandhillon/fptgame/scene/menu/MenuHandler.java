@@ -1,10 +1,10 @@
 package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
+import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.UIScene;
 import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.logangamelib.gfx.ParallaxBackground;
-import com.logandhillon.fptgame.resource.Textures;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 

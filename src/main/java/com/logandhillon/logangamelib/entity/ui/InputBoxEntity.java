@@ -1,9 +1,9 @@
 package com.logandhillon.logangamelib.entity.ui;
 
-import com.logandhillon.logangamelib.engine.GameScene;
-import com.logandhillon.logangamelib.entity.Clickable;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.entity.Clickable;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;

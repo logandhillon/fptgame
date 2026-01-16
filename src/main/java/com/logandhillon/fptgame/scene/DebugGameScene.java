@@ -1,11 +1,11 @@
 package com.logandhillon.fptgame.scene;
 
-import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.fptgame.entity.game.PlatformEntity;
 import com.logandhillon.fptgame.entity.game.PlayerEntity;
-import com.logandhillon.logangamelib.entity.ui.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Textures;
+import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.entity.ui.TextEntity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
