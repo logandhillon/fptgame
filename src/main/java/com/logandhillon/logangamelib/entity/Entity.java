@@ -1,6 +1,6 @@
 package com.logandhillon.logangamelib.entity;
 
-import com.logandhillon.fptgame.engine.GameScene;
+import com.logandhillon.logangamelib.engine.GameScene;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
@@ -9,7 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
  * by your subclass.
  *
  * @author Logan Dhillon
- * @see com.logandhillon.fptgame.engine.GameScene
+ * @see GameScene
  */
 public abstract class Entity implements GameObject {
     protected GameScene parent;

@@ -1,4 +1,4 @@
-package com.logandhillon.fptgame.engine.disk;
+package com.logandhillon.logangamelib.engine.disk;
 
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.networking.proto.ConfigProto.UserConfig;

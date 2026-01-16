@@ -1,6 +1,6 @@
 package com.logandhillon.logangamelib.entity;
 
-import com.logandhillon.fptgame.engine.UIScene;
+import com.logandhillon.logangamelib.engine.UIScene;
 import javafx.scene.input.MouseEvent;
 
 /**

@@ -1,6 +1,6 @@
 package com.logandhillon.fptgame.entity.game;
 
-import com.logandhillon.fptgame.engine.GameScene;
+import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.physics.PhysicsEntity;
 import com.logandhillon.logangamelib.gfx.AnimationSequence;
 import com.logandhillon.fptgame.resource.Colors;

@@ -1,11 +1,12 @@
 package com.logandhillon.logangamelib.entity;
 
+import com.logandhillon.logangamelib.engine.GameScene;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
  * A GameObject is very the layer below {@link Entity}, which is an independent game object that can be added to scenes.
  * Unlike its independent counterpart, GameObject cannot be rendered on its own (it cannot be added to a
- * {@link com.logandhillon.fptgame.engine.GameScene}).
+ * {@link GameScene}).
  * <p>
  * A GameObject can only be rendered by other objects within the {@link com.logandhillon.fptgame.entity} package.
  *

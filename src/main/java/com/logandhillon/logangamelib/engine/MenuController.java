@@ -1,4 +1,4 @@
-package com.logandhillon.fptgame.engine;
+package com.logandhillon.logangamelib.engine;
 
 import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.entity.ui.component.MenuButton;

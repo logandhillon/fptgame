@@ -1,6 +1,6 @@
 package com.logandhillon.logangamelib.entity.ui;
 
-import com.logandhillon.fptgame.engine.GameScene;
+import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.Clickable;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;

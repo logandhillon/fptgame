@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.engine.MenuController;
+import com.logandhillon.logangamelib.engine.MenuController;
 import com.logandhillon.logangamelib.entity.Clickable;
 import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.fptgame.entity.ui.component.*;

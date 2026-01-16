@@ -1,6 +1,6 @@
 package com.logandhillon.fptgame.scene;
 
-import com.logandhillon.fptgame.engine.GameScene;
+import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.fptgame.entity.game.PlatformEntity;
 import com.logandhillon.fptgame.entity.game.PlayerEntity;
 import com.logandhillon.logangamelib.entity.ui.TextEntity;

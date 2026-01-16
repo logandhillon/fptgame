@@ -1,7 +1,7 @@
 package com.logandhillon.fptgame.networking;
 
 import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.engine.disk.UserConfigManager;
+import com.logandhillon.logangamelib.engine.disk.UserConfigManager;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuContent;
