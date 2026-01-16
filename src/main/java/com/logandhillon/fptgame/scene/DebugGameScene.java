@@ -26,8 +26,8 @@ public class DebugGameScene extends GameScene {
         addEntity(new PlatformEntity(200, 550, 200, 40));
         addEntity(new PlatformEntity(400, 400, 200, 40));
         addEntity(new PlatformEntity(600, 280, 200, 40));
-        addEntity(new PlatformEntity(700, 100, 40, 300));
-        addEntity(new PlatformEntity(1100, 200, 40, 300));
+        addEntity(new PlatformEntity(700, 100, 40, 320));
+        addEntity(new PlatformEntity(1100, 200, 40, 320));
 
         var player = new PlayerEntity(1280 / 2f, 200);
         addEntity(player);
