@@ -1,8 +1,9 @@
 package com.logandhillon.fptgame.resource;
 
-import com.logandhillon.fptgame.gfx.AnimationSequence;
-import com.logandhillon.fptgame.gfx.ParallaxBackground;
-import com.logandhillon.fptgame.resource.io.ImageResource;
+import com.logandhillon.logangamelib.gfx.AnimationSequence;
+import com.logandhillon.logangamelib.gfx.ParallaxBackground;
+import com.logandhillon.logangamelib.gfx.TextureAtlas;
+import com.logandhillon.logangamelib.resource.ImageResource;
 import javafx.scene.image.Image;
 
 import java.io.IOException;
@@ -13,8 +14,8 @@ import java.io.IOException;
  * @author Logan Dhillon
  */
 public class Textures {
-    public static final TextureAtlas PLAYER_IDLE      = new TextureAtlas("player/idle.png");
-    public static final TextureAtlas PLAYER_RUN_LEFT  = new TextureAtlas("player/run_left.png");
+    public static final TextureAtlas PLAYER_IDLE     = new TextureAtlas("player/idle.png");
+    public static final TextureAtlas PLAYER_RUN_LEFT = new TextureAtlas("player/run_left.png");
     public static final TextureAtlas PLAYER_RUN_RIGHT = new TextureAtlas("player/run.png");
     public static final TextureAtlas PLAYER_JUMP      = new TextureAtlas("player/jump.png");
 

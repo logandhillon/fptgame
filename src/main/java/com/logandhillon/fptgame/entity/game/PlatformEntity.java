@@ -1,6 +1,6 @@
 package com.logandhillon.fptgame.entity.game;
 
-import com.logandhillon.fptgame.entity.physics.CollisionEntity;
+import com.logandhillon.logangamelib.entity.physics.CollisionEntity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

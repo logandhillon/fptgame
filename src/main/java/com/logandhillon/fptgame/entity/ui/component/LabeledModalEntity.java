@@ -1,26 +1,30 @@
 package com.logandhillon.fptgame.entity.ui.component;
 
-import com.logandhillon.fptgame.engine.GameScene;
-import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
+import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.entity.Entity;
+import com.logandhillon.logangamelib.entity.ui.ModalEntity;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+
 /**
  * This is a stylized version of the {@link ModalEntity} with a header in the top-right and a MENU button on the
  * top-left. (0,0) on this custom modal is not the top-left of the modal itself, but the top-left of the modal content.
  *
  * @author Logan Dhillon
  * @apiNote Do not attach entities inside this modal, just the modal itself.
+ * @deprecated this is a leftover from the old engine, use {@link MenuModalEntity}
  */
+@Deprecated
 public class LabeledModalEntity extends ModalEntity {
-    private static final Font  HEADER_FONT    = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 24);
+    private static final Font HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 24);
 
-    private static final int   MARGIN         = 16;
+    private static final int MARGIN = 16;
 
     private final String      header;
     private final MenuHandler menu;

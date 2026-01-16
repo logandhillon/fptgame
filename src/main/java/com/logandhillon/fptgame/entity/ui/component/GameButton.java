@@ -2,6 +2,8 @@ package com.logandhillon.fptgame.entity.ui.component;
 
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.logangamelib.entity.ui.ButtonEntity;
+import com.logandhillon.logangamelib.entity.ui.DynamicButtonEntity;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -10,6 +12,7 @@ import javafx.scene.text.FontWeight;
  *
  * @author Logan Dhillon
  */
+@Deprecated
 public class GameButton extends DynamicButtonEntity {
     private static final ButtonEntity.Style DEFAULT_STYLE = new ButtonEntity.Style(
             Colors.FOREGROUND, Colors.BUTTON_NORMAL, Variant.OUTLINE, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 16));

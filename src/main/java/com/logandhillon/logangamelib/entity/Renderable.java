@@ -1,6 +1,5 @@
 package com.logandhillon.logangamelib.entity;
 
-import com.logandhillon.fptgame.entity.core.Entity;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
@@ -9,19 +8,24 @@ import javafx.scene.canvas.GraphicsContext;
  *
  * @author Logan Dhillon
  */
-public abstract class Renderable extends Entity {
+public class Renderable extends Entity {
+    private final RenderAgent renderer;
+
     /**
      * Creates an entity at the specified position.
      *
      * @param x x-position (from left)
      * @param y y-position (from top)
      */
-    public Renderable(float x, float y) {
+    public Renderable(float x, float y, RenderAgent renderer) {
         super(x, y);
+        this.renderer = renderer;
     }
 
     @Override
-    protected abstract void onRender(GraphicsContext g, float x, float y);
+    protected void onRender(GraphicsContext g, float x, float y) {
+        renderer.render(g, x, y);
+    }
 
     @Override
     public void onUpdate(float dt) {
@@ -29,5 +33,9 @@ public abstract class Renderable extends Entity {
 
     @Override
     public void onDestroy() {
+    }
+
+    public interface RenderAgent {
+        void render(GraphicsContext g, float x, float y);
     }
 }

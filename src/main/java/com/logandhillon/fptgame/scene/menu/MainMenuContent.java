@@ -1,14 +1,18 @@
 package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.engine.MenuController;
-import com.logandhillon.fptgame.entity.core.Clickable;
-import com.logandhillon.fptgame.entity.core.Entity;
-import com.logandhillon.fptgame.entity.ui.component.*;
+import com.logandhillon.fptgame.entity.ui.component.MenuButton;
+import com.logandhillon.fptgame.entity.ui.component.MenuModalEntity;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
 import com.logandhillon.fptgame.resource.Textures;
+import com.logandhillon.logangamelib.engine.MenuController;
+import com.logandhillon.logangamelib.entity.Clickable;
+import com.logandhillon.logangamelib.entity.Entity;
+import com.logandhillon.logangamelib.entity.ui.InputBoxEntity;
+import com.logandhillon.logangamelib.entity.ui.ModalEntity;
+import com.logandhillon.logangamelib.entity.ui.TextEntity;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;

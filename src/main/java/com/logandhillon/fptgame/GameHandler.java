@@ -1,8 +1,5 @@
 package com.logandhillon.fptgame;
 
-import com.logandhillon.fptgame.engine.GameEngine;
-import com.logandhillon.fptgame.engine.GameScene;
-import com.logandhillon.fptgame.engine.disk.UserConfigManager;
 import com.logandhillon.fptgame.networking.GameClient;
 import com.logandhillon.fptgame.networking.GamePacket;
 import com.logandhillon.fptgame.networking.GameServer;
@@ -13,6 +10,9 @@ import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
+import com.logandhillon.logangamelib.engine.GameEngine;
+import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.engine.disk.UserConfigManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;

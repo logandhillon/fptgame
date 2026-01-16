@@ -1,5 +1,5 @@
 package com.logandhillon.fptgame.scene.menu;
-import com.logandhillon.fptgame.entity.core.Entity;
+import com.logandhillon.logangamelib.entity.Entity;
 
 /**
  * Interface that handles each menu screen's content. Allows parent {@link MenuHandler} to use content to update

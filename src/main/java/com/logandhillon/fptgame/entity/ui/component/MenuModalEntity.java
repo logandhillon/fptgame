@@ -1,8 +1,9 @@
 package com.logandhillon.fptgame.entity.ui.component;
 
-import com.logandhillon.fptgame.engine.GameScene;
-import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
+import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.entity.Entity;
+import com.logandhillon.logangamelib.entity.ui.ModalEntity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -12,7 +13,7 @@ import javafx.scene.paint.Color;
  * @apiNote This cannot be moved as the x-y points are fixed
  * @author Jack Ross
  */
-public class MenuModalEntity extends ModalEntity{
+public class MenuModalEntity extends ModalEntity {
     private static final float MARGIN = 32;
     private final boolean back;
     private final MenuHandler menu;

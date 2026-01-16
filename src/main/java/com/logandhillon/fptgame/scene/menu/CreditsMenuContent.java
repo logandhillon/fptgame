@@ -1,17 +1,16 @@
 package com.logandhillon.fptgame.scene.menu;
 
-
-import com.logandhillon.fptgame.entity.core.Entity;
-import com.logandhillon.fptgame.entity.ui.component.DarkMenuButton;
 import com.logandhillon.fptgame.entity.ui.component.MenuButton;
-import com.logandhillon.fptgame.entity.ui.component.ModalEntity;
-import com.logandhillon.fptgame.entity.ui.component.TextEntity;
 import com.logandhillon.fptgame.resource.Colors;
-import com.logandhillon.fptgame.resource.io.TextResource;
+import com.logandhillon.logangamelib.entity.Entity;
+import com.logandhillon.logangamelib.entity.ui.ModalEntity;
+import com.logandhillon.logangamelib.entity.ui.TextEntity;
+import com.logandhillon.logangamelib.resource.TextResource;
 import javafx.geometry.VPos;
 import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
+
 import static com.logandhillon.fptgame.GameHandler.CANVAS_WIDTH;
 
 /**

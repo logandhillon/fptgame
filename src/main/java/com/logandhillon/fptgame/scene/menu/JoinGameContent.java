@@ -1,14 +1,16 @@
 package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
-import com.logandhillon.fptgame.entity.core.Entity;
 import com.logandhillon.fptgame.entity.ui.ServerEntryEntity;
-import com.logandhillon.fptgame.entity.ui.component.*;
+import com.logandhillon.fptgame.entity.ui.component.MenuButton;
+import com.logandhillon.fptgame.entity.ui.component.MenuModalEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.logangamelib.entity.Renderable;
+import com.logandhillon.logangamelib.entity.ui.InputBoxEntity;
+import com.logandhillon.logangamelib.entity.ui.TextEntity;
 import javafx.geometry.VPos;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
@@ -52,13 +54,10 @@ public class JoinGameContent implements MenuContent {
      */
     public JoinGameContent(MenuHandler menu, JoinGameHandler onJoin) {
         // rect in background for server list
-        Renderable serverListRect = new Renderable(32, 326) {
-            @Override
-            protected void onRender(GraphicsContext g, float x, float y) {
-                g.setFill(Colors.BUTTON_NORMAL);
-                g.fillRoundRect(x, y, 459, 228, CORNER_DIAMETER, CORNER_DIAMETER);
-            }
-        };
+        Renderable serverListRect = new Renderable(32, 326, (g, x, y) -> {
+            g.setFill(Colors.BUTTON_NORMAL);
+            g.fillRoundRect(x, y, 459, 228, CORNER_DIAMETER, CORNER_DIAMETER);
+        });
 
         // label for server list
         TextEntity serverListLabel = new TextEntity.Builder(32, 295)

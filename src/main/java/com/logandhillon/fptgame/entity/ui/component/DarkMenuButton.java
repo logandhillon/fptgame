@@ -2,6 +2,8 @@ package com.logandhillon.fptgame.entity.ui.component;
 
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.logangamelib.entity.ui.ButtonEntity;
+import com.logandhillon.logangamelib.entity.ui.DynamicButtonEntity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -12,12 +14,16 @@ import javafx.scene.text.TextAlignment;
  *
  * @author Logan Dhillon, Jack Ross
  * @see DynamicButtonEntity
+ * @deprecated use {@link MenuButton} instead
  */
+@Deprecated
 public class DarkMenuButton extends DynamicButtonEntity {
     private static final ButtonEntity.Style DEFAULT_STYLE = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_NORMAL, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20));
+            Colors.FOREGROUND, Colors.BUTTON_NORMAL, ButtonEntity.Variant.SOLID, true,
+            Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20));
     private static final ButtonEntity.Style ACTIVE_STYLE  = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_HOVER, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 21));
+            Colors.FOREGROUND, Colors.BUTTON_HOVER, ButtonEntity.Variant.SOLID, true,
+            Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 21));
 
     private final Runnable pressHandler;
 
