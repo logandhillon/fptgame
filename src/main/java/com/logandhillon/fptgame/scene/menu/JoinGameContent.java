@@ -144,7 +144,7 @@ public class JoinGameContent implements MenuContent {
                 // runnable (runs on click)
 
                 // highlight button
-                serverButtons[finalI].setActive(true, true);
+                serverButtons[finalI].setFlags(true, true);
                 currentServer.set(finalI);
 
                 currentServerIndex = finalI;
@@ -154,7 +154,7 @@ public class JoinGameContent implements MenuContent {
                 // reset button highlight for non-clicked buttons
                 for (int j = 0; j < serverButtons.length; j++) {
                     if (currentServer.get() != j) {
-                        serverButtons[j].setActive(false, false);
+                        serverButtons[j].setFlags(false, false);
                     }
                 }
             });
@@ -205,25 +205,25 @@ public class JoinGameContent implements MenuContent {
                 rawCurrentServerIndex++;
                 // un-highlight all buttons
                 for (ServerEntryEntity entry: entries) {
-                    entry.setActive(false, false);
+                    entry.setFlags(false, false);
                 }
                 if (currentServerIndex < entries.length - 1 && rawCurrentServerIndex > 0) {
                     currentServerIndex++;
                     // re-highlight button if it isn't still off-screen
-                    entries[currentServerIndex].setActive(true, true);
+                    entries[currentServerIndex].setFlags(true, true);
                 }
 
                 if (currentServerIndex == 0) {
                     if (rawCurrentServerIndex < -1) {
                         // un-highlight all buttons if the selected button is not in the array
                         for (ServerEntryEntity entry: entries) {
-                            entry.setActive(false, false);
+                            entry.setFlags(false, false);
                         }
                     }
                     // if the button was put back in the array by moving up, put it at the start
                     if (rawCurrentServerIndex > -1) {
                         currentServerIndex = 0;
-                        entries[0].setActive(true, true);
+                        entries[0].setFlags(true, true);
                     }
                 }
                 // increments entire list of shown servers
@@ -235,23 +235,23 @@ public class JoinGameContent implements MenuContent {
                 // opposite to KeyCode.UP, the index of the current button must decrease when down arrow is pressed
                 rawCurrentServerIndex--;
                 for (ServerEntryEntity entry: entries) {
-                    entry.setActive(false, false);
+                    entry.setFlags(false, false);
                 }
 
                 if (currentServerIndex > 0 && rawCurrentServerIndex < entries.length - 1) {
                     currentServerIndex--;
 
-                    entries[currentServerIndex].setActive(true, true);
+                    entries[currentServerIndex].setFlags(true, true);
                 }
                 if (currentServerIndex == entries.length - 1) {
                     if (rawCurrentServerIndex > entries.length) {
                         for (ServerEntryEntity entry: entries) {
-                            entry.setActive(false, false);
+                            entry.setFlags(false, false);
                         }
                     }
                     if (rawCurrentServerIndex < entries.length) {
                         currentServerIndex = entries.length - 1;
-                        entries[entries.length - 1].setActive(true, true);
+                        entries[entries.length - 1].setFlags(true, true);
                     }
                 }
                 // decrements entire list of shown servers

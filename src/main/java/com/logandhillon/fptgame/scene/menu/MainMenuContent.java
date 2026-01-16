@@ -53,17 +53,17 @@ public class MainMenuContent implements MenuContent {
         MenuController controller = new MenuController(
                 () -> !userInput.getIsActive(),
                 new MenuButton("Host Game", x, y, 256, 48, () -> menu.setContent(new HostGameContent(menu))),
-                new MenuButton(
-                        "Join Game", x, y + dy, 256, 48, () -> menu.setContent(
-                        new JoinGameContent(menu, addr -> System.out.println("NOT IMPLEMENTED!")))),
+
+                new MenuButton("Join Game", x, y + dy, 256, 48, () -> menu.getGameHandler().showJoinGameMenu()),
+
                 new MenuButton("Level Creator", x, y + 2 * dy, 256, 48, () -> {
-                    throw new IllegalStateException("Menu under construction");
+                    throw new IllegalStateException("Level creator does not exist");
                 }),
 
                 new MenuButton(Textures.SETTINGS_ICON, x, y + 3 * dy, 120, 48, 75.84f, 651.17f, 28, 28, () -> {
-                    throw new IllegalStateException(
-                            "Menu under construction"); // TODO: Turn this into the settings menu
+                    throw new IllegalStateException("Settings menu does not exist");
                 }),
+
                 new MenuButton(Textures.X_ICON, x + 136, y + 3 * dy, 120, 48, 218, 654, 20, 20, () -> System.exit(0))
         );
 

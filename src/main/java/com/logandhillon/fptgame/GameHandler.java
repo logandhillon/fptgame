@@ -148,10 +148,7 @@ public class GameHandler extends Application {
         Platform.runLater(() -> setScene(new DebugGameScene()));
     }
 
-    /**
-     * @deprecated not updated to use {@link MenuHandler}, implement that before using this method
-     */
-    @Deprecated
+
     public void showJoinGameMenu() {
         discoverer = new ServerDiscoverer(this);
         discoverer.start();
@@ -165,6 +162,11 @@ public class GameHandler extends Application {
      * @param serverAddress address and port of the server to join (addr:port)
      */
     public void joinGame(String serverAddress) {
+        if (serverAddress.isBlank()) {
+            LOG.warn("Server address is blank");
+            return;
+        }
+        
         String host;
         int port;
         int i = serverAddress.lastIndexOf(':');

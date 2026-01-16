@@ -7,6 +7,8 @@ import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.logangamelib.gfx.ParallaxBackground;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 /**
  * The menu handler is the only {@link UIScene} in the menu screens. It allows users to switch between menus without
@@ -17,9 +19,11 @@ import javafx.scene.canvas.GraphicsContext;
  * @see MenuContent
  */
 public class MenuHandler extends UIScene {
+    private static final Logger LOG = LoggerContext.getContext().getLogger(MenuHandler.class);
 
-    private       MenuContent        content;
     private final ParallaxBackground background = Textures.ocean8();
+
+    private MenuContent content;
 
     public MenuHandler() {
         this.content = new MainMenuContent(this);
@@ -68,22 +72,9 @@ public class MenuHandler extends UIScene {
         background.onUpdate(dt);
     }
 
-    /**
-     * Creates a joinable game lobby using the context of the game engine
-     *
-     * @param roomName Name of the lobby
-     *
-     * @see GameHandler
-     */
-    public void createLobby(String roomName) {
-        this.getParent().createLobby(roomName);
-    }
-
-    /**
-     * Communicates with engine to start the game
-     */
-    public void startGame() {
-        this.getParent().startGame();
+    public GameHandler getGameHandler() {
+        if (getParent() == null) LOG.warn("Current GameHandler is null");
+        return getParent();
     }
 
     /**
@@ -94,9 +85,7 @@ public class MenuHandler extends UIScene {
     }
 
     /**
-     * Communicates with engine to return back to main menu
-     *
-     * @see CreditsMenuContent
+     * Sets the content of this handler to the main menu
      */
     public void goToMainMenu() {
         this.setContent(new MainMenuContent(this));

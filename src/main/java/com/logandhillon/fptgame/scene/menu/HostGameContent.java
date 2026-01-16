@@ -34,7 +34,7 @@ public class HostGameContent implements MenuContent {
         nameInput = new InputBoxEntity(32, 189, 327, DEFAULT_ROOM_NAME, "ROOM NAME", 16);
 
         MenuButton startButton = new MenuButton(
-                "START GAME", 32, 640, 304, 48, () -> menu.createLobby(getRoomName()));
+                "START GAME", 32, 640, 304, 48, () -> menu.getGameHandler().createLobby(getRoomName()));
 
         entities = new Entity[]{ new MenuModalEntity(
                 0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, nameInput, startButton),

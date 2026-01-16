@@ -49,12 +49,13 @@ public class LobbyGameContent implements MenuContent {
         MenuButton startButton = new MenuButton(
                 isHosting ? "START GAME" : "WAITING FOR HOST TO START...",
                 32, 640, 304, 48, () -> {
-            if (isHosting) menu.startGame();
+            if (isHosting) menu.getGameHandler().startGame();
             // don't do anything if not hosting (button is disabled)
         });
 
         if (!isHosting) {
-            startButton.setActive(false, true);
+            startButton.setActive(false);
+            startButton.setLocked(true);
         }
 
         lobbyModal = new MenuModalEntity(
