@@ -19,6 +19,8 @@ public class Textures {
     public static final TextureAtlas PLAYER_RUN_RIGHT = new TextureAtlas("player/run.png");
     public static final TextureAtlas PLAYER_JUMP      = new TextureAtlas("player/jump.png");
 
+    public static final TextureAtlas UNDERGROUND = new TextureAtlas("theme/underground/spritesheet.png");
+
     public static final AnimationSequence ANIM_PLAYER_IDLE = new AnimationSequence(PLAYER_IDLE, 2,
                                                                                    0, 0,
                                                                                    1, 0,
