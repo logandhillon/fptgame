@@ -65,9 +65,10 @@ public class PlayerEntity extends PhysicsEntity {
     }
 
     /**
-     * Overrides the default collision handler from {@link CollisionEntity} to ignore collisions with other {@link PlayerEntity}
-     * 
-     * @see GameScene#getCollisionIf(float, float, float, float, CollisionEntity, Predicate) 
+     * Overrides the default collision handler from {@link CollisionEntity} to ignore collisions with other
+     * {@link PlayerEntity}
+     *
+     * @see GameScene#getCollisionIf(float, float, float, float, CollisionEntity, Predicate)
      */
     @Override
     protected CollisionEntity getCollisionAt(float x, float y, float w, float h, CollisionEntity caller) {
@@ -129,6 +130,11 @@ public class PlayerEntity extends PhysicsEntity {
         IDLE, JUMP, WALK_LEFT, WALK_RIGHT
     }
 
+    /**
+     * Abstractly handles movement instructions from a given {@link PlayerEntity}
+     *
+     * @see PlayerInputSender
+     */
     public interface PlayerMovementListener {
         void onJump();
 
