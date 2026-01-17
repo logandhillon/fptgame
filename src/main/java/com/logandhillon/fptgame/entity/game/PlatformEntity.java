@@ -4,7 +4,6 @@ import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.level.LevelObject;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.resource.Colors;
-import com.logandhillon.logangamelib.entity.physics.CollisionEntity;
 import com.logandhillon.logangamelib.gfx.AtlasTile;
 import com.logandhillon.logangamelib.gfx.TextureAtlas;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,7 +11,7 @@ import javafx.scene.canvas.GraphicsContext;
 /**
  * @author Logan Dhillon, Jack Ross
  */
-public class PlatformEntity extends CollisionEntity implements LevelObject {
+public class PlatformEntity extends LevelObject {
     private static final int          TEXTURE_SCALE = 40;
     private final        int          shadowOffset;
     private final        AtlasTile    texture;

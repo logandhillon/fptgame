@@ -5,7 +5,9 @@ import com.logandhillon.fptgame.networking.GamePacket;
 import com.logandhillon.fptgame.networking.GameServer;
 import com.logandhillon.fptgame.networking.ServerDiscoverer;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
-import com.logandhillon.fptgame.scene.DebugGameScene;
+import com.logandhillon.fptgame.resource.Levels;
+import com.logandhillon.fptgame.scene.SingleplayerGameScene;
+import com.logandhillon.fptgame.scene.DynamicLevelScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
@@ -66,7 +68,7 @@ public class GameHandler extends Application {
 
         String debugMode = System.getenv("LGL_DEBUG_MODE");
         setScene(debugMode != null && debugMode.equalsIgnoreCase("true")
-                 ? new DebugGameScene() // debug scene if LGL_DEBUG_MODE is true
+                 ? new SingleplayerGameScene(Levels.DEBUG_LEVEL) // debug scene if LGL_DEBUG_MODE is true
                  : new MenuHandler());
         stage.show();
     }
@@ -155,7 +157,8 @@ public class GameHandler extends Application {
 
         isInMenu = false;
 
-        Platform.runLater(() -> setScene(new DebugGameScene()));
+        // TODO: dont load debug level here
+        Platform.runLater(() -> setScene(new DynamicLevelScene(Levels.DEBUG_LEVEL)));
     }
 
     public void showJoinGameMenu() {
