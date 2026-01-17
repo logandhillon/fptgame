@@ -1,7 +1,6 @@
 package com.logandhillon.fptgame.entity.ui.component;
 
 import com.logandhillon.fptgame.resource.Fonts;
-import com.logandhillon.fptgame.scene.menu.MainMenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.entity.Clickable;
 import javafx.geometry.VPos;
@@ -20,7 +19,7 @@ public final class BackButtonEntity extends Clickable {
     private final MenuHandler menu;
 
     private static final Font  BACK_BTN_FONT  = Font.font(Fonts.TREMOLO, 17);
-    private static final     Color BACK_BTN_COLOR = Color.rgb(189, 197, 251);
+    private static final Color BACK_BTN_COLOR = Color.rgb(189, 197, 251);
 
     /**
      * Creates a new back button entity
@@ -39,7 +38,8 @@ public final class BackButtonEntity extends Clickable {
      */
     @Override
     public void onClick(MouseEvent e) {
-        menu.setContent(new MainMenuContent(menu));
+        // ask the handler to go to main menu, so it can shut down any threads
+        menu.getGameHandler().goToMainMenu();
     }
 
     @Override

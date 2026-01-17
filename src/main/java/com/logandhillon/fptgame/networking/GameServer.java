@@ -5,9 +5,7 @@ import com.logandhillon.fptgame.networking.proto.PlayerProto;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
-import com.logandhillon.logangamelib.engine.disk.UserConfigManager;
 import com.logandhillon.logangamelib.networking.PacketWriter;
-import javafx.scene.paint.Color;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -15,10 +13,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * A game server handles all outgoing communications to {@link GameClient}s via a valid network connection.
@@ -30,23 +27,21 @@ import java.util.stream.Stream;
  * @see GameClient
  */
 public class GameServer implements Runnable {
-    private static final Logger LOG             = LoggerContext.getContext().getLogger(GameServer.class);
-    public static final  int    DEFAULT_PORT    = 20670; // default port for game
-    public static final  int    ADVERTISE_PORT  = 20671; // for UDP broadcast discovery
-    private static final int    MAX_CONNECTIONS = 8;
+    private static final Logger LOG            = LoggerContext.getContext().getLogger(GameServer.class);
+    public static final  int    DEFAULT_PORT   = 20670; // default port for game
+    public static final  int    ADVERTISE_PORT = 20671; // for UDP broadcast discovery
 
-    private volatile boolean      running; // if the server is running
-    private final    GameHandler  game;
-    private          ServerSocket socket;
-    private          Thread       advertiser;
+    private volatile boolean     running; // if the server is running
+    private final    GameHandler game;
+
+    private ServerSocket      socket;
+    private Thread            advertiser;
+    private ConnectionDetails guest;
 
     /** the list of ALL active client connections, including unregistered ones. */
     private final Set<Socket> clients = Collections.synchronizedSet(new HashSet<>());
 
-    /** list of all REGISTERED client connections; maps socket to name */
-    private final HashMap<Socket, ConnectionDetails> registeredClients = new HashMap<>();
-
-    private record ConnectionDetails(String name, Color color, PacketWriter out) {}
+    private record ConnectionDetails(Socket socket, String name, PacketWriter out) {}
 
     public GameServer(GameHandler game) {
         this.game = game;
@@ -73,6 +68,7 @@ public class GameServer implements Runnable {
      */
     public void stop() throws IOException {
         LOG.info("Stopping server gracefully");
+        broadcast(new GamePacket(GamePacket.Type.SRV_SHUTDOWN));
         running = false;
         if (socket != null) {
             LOG.info("Closing server socket now");
@@ -128,7 +124,7 @@ public class GameServer implements Runnable {
                         length = dataInputStream.readInt();
                     } catch (IOException e) {
                         LOG.info("Client {} disconnected", client.getInetAddress());
-                        registeredClients.remove(client);
+                        if (guest.socket == client) guest = null;
                         clients.remove(client);
 
                         MenuHandler menu = game.getActiveScene(MenuHandler.class);
@@ -174,7 +170,7 @@ public class GameServer implements Runnable {
             if (packet.type() == GamePacket.Type.CLT_REQ_CONN) handleClientRegistration(client, packet, out);
 
             // next, if they didn't ask and they still aren't registered, kick them
-            if (!registeredClients.containsKey(client)) {
+            if (guest.socket != client) {
                 LOG.warn("Got packet from unregistered client; closing connection");
                 client.close();
             }
@@ -193,13 +189,11 @@ public class GameServer implements Runnable {
      * packet.
      */
     private void handleClientRegistration(Socket client, GamePacket packet, PacketWriter out) throws IOException {
-        if (registeredClients.size() < MAX_CONNECTIONS) {
+        if (guest == null) {
             PlayerProto.PlayerData data = PlayerProto.PlayerData.parseFrom(packet.payload());
 
             // check if name is already used
-            if (data.getName().equals(GameHandler.getUserConfig().getName()) || // remote client matches host
-                registeredClients.values().stream().anyMatch(
-                        p -> p.name.equals(data.getName()))) { // or remote client matches another client
+            if (data.getName().equals(GameHandler.getUserConfig().getName())) {
                 LOG.info(
                         "Denying connection from {} (name '{}' in use)", client.getInetAddress(),
                         packet.payload());
@@ -221,9 +215,8 @@ public class GameServer implements Runnable {
             }
 
             // all good now! register the client
-            Color color = Color.color(data.getR(), data.getG(), data.getB());
-            registeredClients.put(client, new ConnectionDetails(data.getName(), color, out));
-            LOG.info("Registered new client '{}' with color {} at {}!", data.getName(), color, client.getInetAddress());
+            guest = new ConnectionDetails(client, data.getName(), out);
+            LOG.info("Registered new client '{}' at {}!", data.getName(), client.getInetAddress());
 
             // update everyone's player list
             propagateLobbyUpdate(lobby);
@@ -244,19 +237,18 @@ public class GameServer implements Runnable {
         LOG.info("Propagating update for lobby player list");
         lobby.clearPlayers();
 
-        lobby.addPlayer(
-                GameHandler.getUserConfig().getName(),
-                UserConfigManager.parseColor(GameHandler.getUserConfig()));
-        for (ConnectionDetails player: registeredClients.values())
-            lobby.addPlayer(player.name, player.color);
+        lobby.addPlayer(GameHandler.getUserConfig().getName(), true); // host
+        if (guest != null) lobby.addPlayer(guest.name, false); // guest
 
         // get the players on each team and send them to the client
-        broadcast(new GamePacket(
-                GamePacket.Type.SRV_UPDATE_PLAYERLIST,
-                PlayerProto.Lobby.newBuilder()
-                                 .setName(lobby.getRoomName())
-                                 .addAllPlayers(getPlayers().toList())
-                                 .build()));
+        var dat = PlayerProto.Lobby.newBuilder()
+                                   .setName(lobby.getRoomName())
+                                   .setHost(ProtoBuilder.player(GameHandler.getUserConfig().getName()));
+
+        // only set guest if it exists
+        if (guest != null) dat.setGuest(ProtoBuilder.player(guest.name));
+
+        broadcast(new GamePacket(GamePacket.Type.SRV_UPDATE_PLAYERLIST, dat.build()));
     }
 
     /**
@@ -265,27 +257,13 @@ public class GameServer implements Runnable {
      * @param pkt the packet to broadcast
      */
     public void broadcast(GamePacket pkt) {
-        for (ConnectionDetails conn: registeredClients.values()) {
-            conn.out.send(pkt);
-        }
+        if (guest != null) guest.out.send(pkt);
     }
 
-    public Stream<PlayerProto.PlayerData> getPlayers() {
-        // stream registered clients into player data, filtering only those that match the team
-        Color color = UserConfigManager.parseColor(GameHandler.getUserConfig());
-        return Stream.concat(
-                Stream.of(PlayerProto.PlayerData.newBuilder().setName(GameHandler.getUserConfig().getName())
-                                                .setR((float)color.getRed())
-                                                .setG((float)color.getGreen())
-                                                .setB((float)color.getBlue()).build()),
-                registeredClients.values().stream()
-                                 .map(d -> PlayerProto.PlayerData.newBuilder()
-                                                                 .setName(d.name)
-                                                                 .setR((float)d.color.getRed())
-                                                                 .setG((float)d.color.getGreen())
-                                                                 .setB((float)d.color.getBlue())
-                                                                 .build()
-                                 ));
+    public List<PlayerProto.PlayerData> getPlayers() {
+        return List.of(
+                ProtoBuilder.player(GameHandler.getUserConfig().getName()),
+                ProtoBuilder.player(guest.name));
     }
 
     /**

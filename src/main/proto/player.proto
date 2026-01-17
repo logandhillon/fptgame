@@ -5,14 +5,10 @@ option java_outer_classname = "PlayerProto";
 
 message PlayerData {
   string name = 1;
-
-  // player color
-  float r = 2;
-  float g = 3;
-  float b = 4;
 }
 
 message Lobby {
   string name = 1;
-  repeated PlayerData players = 2;
+  PlayerData host = 2;
+  PlayerData guest = 3;
 }

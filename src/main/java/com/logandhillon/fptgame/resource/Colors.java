@@ -11,22 +11,22 @@ import java.util.List;
  * @author Logan Dhillon
  */
 public final class Colors {
-    public static final Color ACTIVE           = Color.WHITE;
-    public static final Color ACTIVE_TRANS_50  = Color.rgb(255, 255, 255, 0.5);
-    public static final Color ACTIVE_TRANS_015 = Color.rgb(255, 255, 255, 0.15);
-    public static final Color FOREGROUND       = Color.BLACK;
-    public static final Color FOREGROUND_TRANS = Color.rgb(0, 0, 0, 0.4);
+    public static final Color ACTIVE              = Color.WHITE;
+    public static final Color ACTIVE_TRANS_50     = Color.rgb(255, 255, 255, 0.5);
+    public static final Color ACTIVE_TRANS_015    = Color.rgb(255, 255, 255, 0.15);
+    public static final Color FOREGROUND          = Color.BLACK;
+    public static final Color FOREGROUND_TRANS_40 = Color.rgb(0, 0, 0, 0.4);
+    public static final Color FOREGROUND_TRANS_50 = Color.rgb(0, 0, 0, 0.5);
 
-    public static final Color GENERIC_BG = Color.valueOf("#D2D1D1");
+    public static final Color GENERIC_BG = Color.web("#D2D1D1");
 
     public static final Color BUTTON_NORMAL = Color.rgb(207, 209, 235);
-    public static final Color BUTTON_HOVER = Color.rgb(75, 150, 249);
+    public static final Color BUTTON_HOVER  = Color.rgb(75, 150, 249);
 
+    public static final Color       PLAYER_RED   = Color.web("#E23B36");
+    public static final Color       PLAYER_BLUE  = Color.web("#4184E8");
     /**
      * The color of the player skin, indexed by the order they appear on the main menu.
      */
-    public static final List<Color> PLAYER_SKINS = List.of(
-            // red, blue, green, yellow
-            Color.valueOf("#E23B36"), Color.valueOf("#4184E8"), Color.valueOf("#26DE99"), Color.valueOf("#E1DE23")
-    );
+    public static final List<Color> PLAYER_SKINS = List.of(PLAYER_RED, PLAYER_BLUE);
 }

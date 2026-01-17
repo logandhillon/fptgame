@@ -39,7 +39,7 @@ public class MenuController extends Entity {
 
             // select this button if it's hovered by cursor
             buttons[i].setMouseEnterHandler(e -> {
-                if (activeBtnIdx >= 0) buttons[activeBtnIdx].setActive(false, false);
+                if (activeBtnIdx >= 0) buttons[activeBtnIdx].setActive(false);
                 activeBtnIdx = idx;
             });
 
@@ -60,17 +60,17 @@ public class MenuController extends Entity {
         if (e.getCode() == KeyCode.UP || e.getCode() == KeyCode.W ||
             (e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
             if (activeBtnIdx >= 0)
-                buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
+                buttons[activeBtnIdx].setActive(false); // deselect old active button (if any)
             activeBtnIdx = Math.max(0, activeBtnIdx - 1);   // decrement idx (no lower than 0)
-            buttons[activeBtnIdx].setActive(true, false); // select new active button
+            buttons[activeBtnIdx].setActive(true); // select new active button
         }
         // when S/DOWN/TAB pressed, go down (+1) in buttons
         else if (e.getCode() == KeyCode.DOWN || e.getCode() == KeyCode.S ||
                  (!e.isShiftDown() && e.getCode() == KeyCode.TAB)) {
             if (activeBtnIdx >= 0)
-                buttons[activeBtnIdx].setActive(false, false); // deselect old active button (if any)
+                buttons[activeBtnIdx].setActive(false); // deselect old active button (if any)
             activeBtnIdx = Math.min(buttons.length - 1, activeBtnIdx + 1); // increment idx (no higher than highest idx)
-            buttons[activeBtnIdx].setActive(true, false);  // select new active button
+            buttons[activeBtnIdx].setActive(true);  // select new active button
         }
         // when ENTER/SPACE pressed, simulate a click on the active button
         else if ((e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.SPACE) && activeBtnIdx >= 0) {

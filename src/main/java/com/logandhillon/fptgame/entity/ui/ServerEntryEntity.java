@@ -8,20 +8,21 @@ import com.logandhillon.logangamelib.entity.ui.DynamicButtonEntity;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
 public class ServerEntryEntity extends DynamicButtonEntity {
-    private static final Font ADDRESS_FONT = Font.font(Fonts.TREMOLO, 16);
+    private static final Font   ADDRESS_FONT    = Font.font(Fonts.TREMOLO, 16);
+    private static final double ROUNDING_RADIUS = 38;
 
     private static final ButtonEntity.Style DEFAULT_STYLE = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_NORMAL, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 16));
-    private static final ButtonEntity.Style ACTIVE_STYLE  = new ButtonEntity.Style(
-            Colors.FOREGROUND, Colors.BUTTON_HOVER, ButtonEntity.Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 16));
+            Colors.FOREGROUND, Colors.ACTIVE, ButtonEntity.Variant.SOLID, true,
+            Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 16));
 
-    private static final double ROUNDING_RADIUS = 4;
+    private static final ButtonEntity.Style ACTIVE_STYLE = new ButtonEntity.Style(
+            Colors.FOREGROUND, Colors.BUTTON_HOVER, ButtonEntity.Variant.SOLID, true,
+            Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 16));
 
     private String   serverName;
     private String   serverAddress;
@@ -80,7 +81,7 @@ public class ServerEntryEntity extends DynamicButtonEntity {
         g.fillText(this.serverName, x + 12, y + h / 2);
 
         // render server address
-        g.setFill(Color.GREY);
+        g.setFill(Colors.FOREGROUND_TRANS_50);
         g.setFont(ADDRESS_FONT);
         g.fillText(this.serverAddress, x + 216, y + h / 2);
     }
