@@ -5,6 +5,7 @@ import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.entity.physics.PhysicsEntity;
 import com.logandhillon.logangamelib.gfx.AnimationSequence;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * The player is a physics entity that receives inputs via the methods it provides and moves accordingly.
@@ -17,13 +18,16 @@ public class PlayerEntity extends PhysicsEntity {
     private static final float MOVE_SPEED = 6f * PX_PER_METER; // m/s
     private static final int   Y_OFFSET   = 12;
 
+    private final Color color;
+
     private AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();
     private AnimationState    state   = AnimationState.IDLE;
 
     private int moveDirection = 0; // left=-1, 0=none, 1=right
 
-    public PlayerEntity(float x, float y) {
+    public PlayerEntity(float x, float y, int color) {
         super(x, y, 42, 72);
+        this.color = Colors.PLAYER_SKINS.get(color);
     }
 
     @Override
@@ -33,7 +37,7 @@ public class PlayerEntity extends PhysicsEntity {
             texture.drawFrame(g, Textures.PLAYER_JUMP_FRAME, x, y - Y_OFFSET, w, h + Y_OFFSET,
                               Colors.PLAYER_SKINS.getFirst());
         else
-            texture.draw(g, x, y - Y_OFFSET, w, h + Y_OFFSET, Colors.PLAYER_SKINS.getFirst());
+            texture.draw(g, x, y - Y_OFFSET, w, h + Y_OFFSET, color);
     }
 
     @Override
