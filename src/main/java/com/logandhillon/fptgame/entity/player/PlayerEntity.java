@@ -2,10 +2,14 @@ package com.logandhillon.fptgame.entity.player;
 
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Textures;
+import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.entity.physics.CollisionEntity;
 import com.logandhillon.logangamelib.entity.physics.PhysicsEntity;
 import com.logandhillon.logangamelib.gfx.AnimationSequence;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.util.function.Predicate;
 
 /**
  * The player is a physics entity that receives inputs via the methods it provides and moves accordingly.
@@ -58,6 +62,16 @@ public class PlayerEntity extends PhysicsEntity {
         else if (moveDirection > 0) setAnimation(AnimationState.WALK_RIGHT);
         else if (moveDirection < 0) setAnimation(AnimationState.WALK_LEFT);
         else if (state != AnimationState.JUMP) setAnimation(AnimationState.IDLE);
+    }
+
+    /**
+     * Overrides the default collision handler from {@link CollisionEntity} to ignore collisions with other {@link PlayerEntity}
+     * 
+     * @see GameScene#getCollisionIf(float, float, float, float, CollisionEntity, Predicate) 
+     */
+    @Override
+    protected CollisionEntity getCollisionAt(float x, float y, float w, float h, CollisionEntity caller) {
+        return parent.getCollisionIf(x, y, w, h, caller, e -> !(e instanceof PlayerEntity));
     }
 
     /**
