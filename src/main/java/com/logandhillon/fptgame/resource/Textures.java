@@ -1,6 +1,7 @@
 package com.logandhillon.fptgame.resource;
 
 import com.logandhillon.logangamelib.gfx.AnimationSequence;
+import com.logandhillon.logangamelib.gfx.AtlasTile;
 import com.logandhillon.logangamelib.gfx.ParallaxBackground;
 import com.logandhillon.logangamelib.gfx.TextureAtlas;
 import com.logandhillon.logangamelib.resource.ImageResource;
@@ -14,12 +15,17 @@ import java.io.IOException;
  * @author Logan Dhillon
  */
 public class Textures {
-    public static final TextureAtlas PLAYER_IDLE      = new TextureAtlas("player/idle.png");
-    public static final TextureAtlas PLAYER_RUN_LEFT  = new TextureAtlas("player/run_left.png");
-    public static final TextureAtlas PLAYER_RUN_RIGHT = new TextureAtlas("player/run.png");
-    public static final TextureAtlas PLAYER_JUMP      = new TextureAtlas("player/jump.png");
+    public static final int OBJ_SCALE = 40;
 
-    public static final TextureAtlas UNDERGROUND = new TextureAtlas("theme/underground/spritesheet.png");
+    public static final TextureAtlas PLAYER_IDLE      = TextureAtlas.load("player/idle.png");
+    public static final TextureAtlas PLAYER_RUN_LEFT  = TextureAtlas.load("player/run_left.png");
+    public static final TextureAtlas PLAYER_RUN_RIGHT = TextureAtlas.load("player/run.png");
+    public static final TextureAtlas PLAYER_JUMP      = TextureAtlas.load("player/jump.png");
+
+    public static final TextureAtlas UNDERGROUND        = TextureAtlas.load("theme/underground/spritesheet.png");
+    public static final AtlasTile    UNDERGROUND_BRICKS = new AtlasTile(UNDERGROUND, 5, 1);
+    public static final AtlasTile    UNDERGROUND_PIPE   = new AtlasTile(UNDERGROUND, 15, 7);
+    public static final AtlasTile    UNDERGROUND_BG     = new AtlasTile(UNDERGROUND, 11, 11);
 
     public static final AnimationSequence ANIM_PLAYER_IDLE = new AnimationSequence(PLAYER_IDLE, 2,
                                                                                    0, 0,

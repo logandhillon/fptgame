@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option java_package = "com.logandhillon.fptgame.networking.proto";
+option java_outer_classname = "LevelProto";
+
+message AtlasTile {
+  string atlas_path = 1;
+  uint32 row = 2;
+  uint32 col = 3;
+}
+
+message Platform {
+  float w = 1;
+  float h = 2;
+  AtlasTile texture = 3;
+}
+
+message LevelObject {
+  float x = 1;
+  float y = 2;
+
+  oneof data {
+    Platform platform = 3;
+  }
+}
+
+message LevelData {
+  repeated LevelObject objects = 1;
+  AtlasTile background = 2;
+}

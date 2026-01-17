@@ -5,8 +5,13 @@ import com.logandhillon.logangamelib.resource.TextResource;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A texture atlas (commonly known as a tile-set) is an array of multiple textures stitched together in one large
@@ -18,15 +23,25 @@ import java.io.IOException;
  * @author Logan Dhillon
  */
 public class TextureAtlas {
+    private static final Logger LOG = LoggerContext.getContext().getLogger(TextureAtlas.class);
+
+    /**
+     * Stores all loaded textures in runtime, so they can be accessed via the {@link TextureAtlas#path} at {@code O(1)}
+     * time.
+     */
+    private static final Map<String, TextureAtlas> LOADED_TEXTURES = new HashMap<>();
+
     protected final Image    image;
     protected final Metadata meta;
+    protected final String   path;
 
     /**
      * Creates a new texture atlas, loading the {@code gfx/{image.png}} and the {@code gfx/{image.png}.atlas} files.
      *
      * @param path the name of the image (and atlas file) in the gfx folder.
      */
-    public TextureAtlas(String path) {
+    private TextureAtlas(String path) {
+        LOG.info("Computing new texture atlas for '{}'", path);
         try (var img = new ImageResource(path);
              var meta = new TextResource("gfx/" + path + ".atlas")
         ) {
@@ -35,6 +50,19 @@ public class TextureAtlas {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        this.path = path;
+    }
+
+    /**
+     * Tries to load the correct {@link TextureAtlas} from runtime memory, or creates a new one if it has not been
+     * created already.
+     *
+     * @param path the name of the image (and atlas file) in the gfx folder.
+     *
+     * @return loaded/created {@link TextureAtlas} pointer
+     */
+    public static TextureAtlas load(String path) {
+        return LOADED_TEXTURES.computeIfAbsent(path, TextureAtlas::new);
     }
 
     /**
@@ -124,5 +152,14 @@ public class TextureAtlas {
                         " be parsed as integers");
             }
         }
+    }
+
+    /**
+     * Gets the pathname for this {@link TextureAtlas}, which can be used to serialize & retrieve atlases from data.
+     *
+     * @return pathname, string
+     */
+    public String getPath() {
+        return path;
     }
 }
