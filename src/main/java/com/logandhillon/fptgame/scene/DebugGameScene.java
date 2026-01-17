@@ -9,6 +9,8 @@ import com.logandhillon.fptgame.networking.GamePacket;
 import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.ui.TextEntity;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 /**
  * Basic game scene with a player that can run around and interact with physics objects; to aid development.
@@ -16,6 +18,8 @@ import com.logandhillon.logangamelib.entity.ui.TextEntity;
  * @author Logan Dhillon
  */
 public class DebugGameScene extends GameScene {
+    private static final Logger LOG = LoggerContext.getContext().getLogger(DebugGameScene.class);
+
     private final PlayerEntity other;
     private final PeerMovementPoller movePoller;
 
@@ -85,6 +89,7 @@ public class DebugGameScene extends GameScene {
         // poll our peer's move and apply it to our instance.
         GamePacket.Type move = movePoller.poll();
         if (move == null) return;
+        LOG.debug("Processing peer movement '{}'", move);
         switch (move) {
             case COM_JUMP -> other.jump();
             case COM_MOVE_L -> other.setMoveDirection(-1);

@@ -159,7 +159,7 @@ public class GameClient {
                 game.showAlert("SERVER CLOSED", "The server has shut down.");
             }
             // if peer is trying to move, add instruction to queue
-            case COM_JUMP, COM_MOVE_L, COM_MOVE_R -> queuedPeerMovements.add(packet.type());
+            case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> queuedPeerMovements.add(packet.type());
         }
     }
 

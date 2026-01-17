@@ -176,7 +176,7 @@ public class GameServer implements Runnable {
             // finally, parse the request
             switch (packet.type()) {
                 // if peer is trying to move, add instruction to queue
-                case COM_JUMP, COM_MOVE_L, COM_MOVE_R -> queuedPeerMovements.add(packet.type());
+                case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> queuedPeerMovements.add(packet.type());
             }
         } catch (IOException e) {
             LOG.error("Failed to close client at {}", client.getInetAddress(), e);
