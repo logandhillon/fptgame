@@ -37,12 +37,12 @@ public class DebugGameScene extends GameScene {
 
         addEntity(Textures.ocean8());
 
-        addEntity(new PlatformEntity(Textures.UNDERGROUND, Textures.UNDERGROUND, 0, 680, 1280, 40, 13, 3, 11, 11));
-        addEntity(new PlatformEntity(Textures.UNDERGROUND,200, 550, 200, 40, 13, 3, 5));
-        addEntity(new PlatformEntity(Textures.UNDERGROUND,400, 400, 200, 40, 13, 3, 5));
-        addEntity(new PlatformEntity(Textures.UNDERGROUND,600, 280, 200, 40, 13, 3, 5));
-        addEntity(new PlatformEntity(Textures.UNDERGROUND,700, 100, 40, 320, 13, 7, 3));
-        addEntity(new PlatformEntity(Textures.UNDERGROUND,1100, 200, 40, 320, 13, 7, 3));
+//        addEntity(new PlatformEntity(Textures.UNDERGROUND, Textures.UNDERGROUND, 0, 680, 1280, 40, 13, 3, 11, 11));
+//        addEntity(new PlatformEntity(Textures.UNDERGROUND,200, 550, 200, 40, 13, 3, 5));
+//        addEntity(new PlatformEntity(Textures.UNDERGROUND,400, 400, 200, 40, 13, 3, 5));
+//        addEntity(new PlatformEntity(Textures.UNDERGROUND,600, 280, 200, 40, 13, 3, 5));
+//        addEntity(new PlatformEntity(Textures.UNDERGROUND,700, 100, 40, 320, 13, 7, 3));
+//        addEntity(new PlatformEntity(Textures.UNDERGROUND,1100, 200, 40, 320, 13, 7, 3));
 
         self = new ControllablePlayerEntity(0, 0,
                                             role == GameHandler.NetworkRole.SERVER ? 0 : 1,
