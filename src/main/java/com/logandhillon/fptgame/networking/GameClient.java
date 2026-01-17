@@ -128,13 +128,15 @@ public class GameClient {
                 var lobby = new LobbyGameContent(menu, data.getName(), false);
                 lobby.clearPlayers();
 
-                lobby.addPlayer(data.getHost().getName(), true);
-                lobby.addPlayer(data.getGuest().getName(), true);
-
                 game.setInMenu(true);
 
                 // run setContent on the FX thread
-                Platform.runLater(() -> menu.setContent(lobby));
+                Platform.runLater(() -> {
+                    menu.setContent(lobby);
+                    // set lobby players on FX thread, since the content must exist before setting players
+                    lobby.addPlayer(data.getHost().getName(), true);
+                    lobby.addPlayer(data.getGuest().getName(), false);
+                });
             }
             case SRV_DENY_CONN__USERNAME_TAKEN, SRV_DENY_CONN__FULL -> {
                 LOG.error("Failed to join: {}", packet.type());

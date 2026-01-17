@@ -62,8 +62,8 @@ public class LobbyGameContent implements MenuContent {
         }
 
         lobbyModal = new MenuModalEntity(
-                0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, startButton,
-                //TODO: Make this join only when the other player is in lobby (have fun logan ;) )
+                0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu,
+                startButton,
                 new TextEntity.Builder(32, 66).setColor(Colors.ACTIVE)
                                               .setText(roomName.toUpperCase())
                                               .setFont(HEADER_FONT)
@@ -102,6 +102,7 @@ public class LobbyGameContent implements MenuContent {
      */
     public void clearPlayers() {
         LOG.info("Clearing player list");
+        // TODO: move player's name into player icon entity for this predicate to pass
         menu.clearEntities(true, PlayerIconEntity.class::isInstance);
         startButton.setFlags(false, true);
         isStartingAllowed = false;
