@@ -12,6 +12,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * A game client handles all outgoing communications to the {@link GameServer} via a valid network connection.
@@ -23,6 +25,8 @@ import java.net.Socket;
  */
 public class GameClient {
     private static final Logger LOG = LoggerContext.getContext().getLogger(GameClient.class);
+
+    public final Queue<GamePacket.Type> queuedPeerMovements = new LinkedList<>();
 
     private final String      serverAddr;
     private final int         port;
@@ -154,6 +158,8 @@ public class GameClient {
                 LOG.info("Server is shutting down, returning to main menu");
                 game.showAlert("SERVER CLOSED", "The server has shut down.");
             }
+            // if peer is trying to move, add instruction to queue
+            case COM_JUMP, COM_MOVE_L, COM_MOVE_R -> queuedPeerMovements.add(packet.type());
         }
     }
 

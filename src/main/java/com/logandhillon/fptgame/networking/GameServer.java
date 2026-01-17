@@ -12,10 +12,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.*;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A game server handles all outgoing communications to {@link GameClient}s via a valid network connection.
@@ -31,8 +28,9 @@ public class GameServer implements Runnable {
     public static final  int    DEFAULT_PORT   = 20670; // default port for game
     public static final  int    ADVERTISE_PORT = 20671; // for UDP broadcast discovery
 
-    private volatile boolean     running; // if the server is running
-    private final    GameHandler game;
+    private volatile boolean                running; // if the server is running
+    private final    GameHandler            game;
+    public final     Queue<GamePacket.Type> queuedPeerMovements = new LinkedList<>();
 
     private ServerSocket      socket;
     private Thread            advertiser;
@@ -177,7 +175,8 @@ public class GameServer implements Runnable {
 
             // finally, parse the request
             switch (packet.type()) {
-                // TODO: nothing to parse yet (oh how you will miss this future logan)
+                // if peer is trying to move, add instruction to queue
+                case COM_JUMP, COM_MOVE_L, COM_MOVE_R -> queuedPeerMovements.add(packet.type());
             }
         } catch (IOException e) {
             LOG.error("Failed to close client at {}", client.getInetAddress(), e);
@@ -258,12 +257,6 @@ public class GameServer implements Runnable {
      */
     public void broadcast(GamePacket pkt) {
         if (guest != null) guest.out.send(pkt);
-    }
-
-    public List<PlayerProto.PlayerData> getPlayers() {
-        return List.of(
-                ProtoBuilder.player(GameHandler.getUserConfig().getName()),
-                ProtoBuilder.player(guest.name));
     }
 
     /**

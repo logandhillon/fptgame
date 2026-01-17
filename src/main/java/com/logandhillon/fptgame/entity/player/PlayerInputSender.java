@@ -28,13 +28,14 @@ public class PlayerInputSender implements PlayerEntity.PlayerMovementListener {
 
     @Override
     public void onJump() {
-        communicator.send(new GamePacket(GamePacket.Type.CLT_JUMP));
+        communicator.send(new GamePacket(GamePacket.Type.COM_JUMP));
     }
 
     @Override
     public void onMove(int direction) {
-        if (direction == -1) communicator.send(new GamePacket(GamePacket.Type.CLT_MOVE_L));
-        else if (direction == 1) communicator.send(new GamePacket(GamePacket.Type.CLT_MOVE_R));
+        if (direction == -1) communicator.send(new GamePacket(GamePacket.Type.COM_MOVE_L));
+        else if (direction == 1) communicator.send(new GamePacket(GamePacket.Type.COM_MOVE_R));
+        else if (direction == 0) communicator.send(new GamePacket(GamePacket.Type.COM_STOP_MOVING));
     }
 
     private interface Communicator {

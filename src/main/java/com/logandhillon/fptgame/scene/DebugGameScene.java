@@ -5,6 +5,7 @@ import com.logandhillon.fptgame.entity.game.PlatformEntity;
 import com.logandhillon.fptgame.entity.player.ControllablePlayerEntity;
 import com.logandhillon.fptgame.entity.player.PlayerEntity;
 import com.logandhillon.fptgame.entity.player.PlayerInputSender;
+import com.logandhillon.fptgame.networking.GamePacket;
 import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.ui.TextEntity;
@@ -16,9 +17,17 @@ import com.logandhillon.logangamelib.entity.ui.TextEntity;
  */
 public class DebugGameScene extends GameScene {
     private final PlayerEntity other;
+    private final PeerMovementPoller movePoller;
 
     public DebugGameScene() {
         GameHandler.NetworkRole role = GameHandler.getNetworkRole();
+        if (role == GameHandler.NetworkRole.SERVER) {
+            movePoller = GameHandler.getServer().queuedPeerMovements::poll;
+        } else if (role == GameHandler.NetworkRole.CLIENT) {
+            movePoller = GameHandler.getClient().queuedPeerMovements::poll;
+        } else {
+            throw new IllegalStateException("GameHandler is neither SERVER nor CLIENT, cannot poll peer");
+        }
 
         addEntity(Textures.ocean8());
 
@@ -29,12 +38,12 @@ public class DebugGameScene extends GameScene {
         addEntity(new PlatformEntity(700, 100, 40, 300));
         addEntity(new PlatformEntity(1100, 200, 40, 300));
 
-        var player = new ControllablePlayerEntity(1280 / 2f, 200,
+        var player = new ControllablePlayerEntity(0, 0,
                                                   role == GameHandler.NetworkRole.SERVER ? 0 : 1,
                                                   new PlayerInputSender());
         addEntity(player);
 
-        other = new PlayerEntity(100, 500, role == GameHandler.NetworkRole.SERVER ? 1 : 0, null);
+        other = new PlayerEntity(0, 0, role == GameHandler.NetworkRole.SERVER ? 1 : 0, null);
         addEntity(other);
 
         addEntity(new TextEntity.Builder(10, 30)
@@ -67,5 +76,29 @@ public class DebugGameScene extends GameScene {
                                   other.getMoveDirection()))
                           .setFontSize(14)
                           .build());
+    }
+
+    @Override
+    protected void onUpdate(float dt) {
+        super.onUpdate(dt);
+
+        // poll our peer's move and apply it to our instance.
+        GamePacket.Type move = movePoller.poll();
+        if (move == null) return;
+        switch (move) {
+            case COM_JUMP -> other.jump();
+            case COM_MOVE_L -> other.setMoveDirection(-1);
+            case COM_MOVE_R -> other.setMoveDirection(1);
+            case COM_STOP_MOVING -> other.setMoveDirection(0);
+        }
+    }
+
+    private interface PeerMovementPoller {
+        /**
+         * Retrieves and removes the head of this queue, or returns {@code null} if this queue is empty.
+         *
+         * @return the head of this queue, or {@code null} if this queue is empty
+         */
+        GamePacket.Type poll();
     }
 }
