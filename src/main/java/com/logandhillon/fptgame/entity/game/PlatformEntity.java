@@ -1,23 +1,19 @@
 package com.logandhillon.fptgame.entity.game;
 
-import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.level.LevelObject;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.logangamelib.gfx.AtlasTile;
-import com.logandhillon.logangamelib.gfx.TextureAtlas;
 import javafx.scene.canvas.GraphicsContext;
+
+import static com.logandhillon.fptgame.resource.Textures.TEXTURE_SCALE;
 
 /**
  * @author Logan Dhillon, Jack Ross
  */
 public class PlatformEntity extends LevelObject {
-    private static final int          TEXTURE_SCALE = 40;
-    private final        int          shadowOffset;
-    private final        AtlasTile    texture;
-    private final        TextureAtlas themebg;
-    private final        int          bgRow;
-    private final        int          bgCol;
+    private final        int shadowOffset;
+    private final        AtlasTile texture;
 
     /**
      * Creates a collidable entity at the specified position with the specified hitbox
@@ -34,10 +30,7 @@ public class PlatformEntity extends LevelObject {
             throw new IllegalArgumentException("Platform must have a width and height divisible by " + TEXTURE_SCALE);
         }
         this.texture = texture;
-        this.themebg = null;
         this.shadowOffset = 0;
-        this.bgRow = -1;
-        this.bgCol = -1;
     }
 
 //    /**
@@ -61,38 +54,9 @@ public class PlatformEntity extends LevelObject {
 //        this.bgRow = -1;
 //        this.bgCol = -1;
 //    }
-//
-//    /**
-//     * Provides option to draw background with textures instead of a PNG
-//     *
-//     * @param bgRow - row of background texture
-//     * @param bgCol - column of background texture
-//     */
-//    public PlatformEntity(TextureAtlas theme, TextureAtlas themebg, float x, float y, float w, float h, int row,
-//                          int col, int bgRow, int bgCol) {
-//        super(x, y, w, h);
-//
-//        if (w % TEXTURE_SCALE != 0 || h % TEXTURE_SCALE != 0) {
-//            throw new IllegalArgumentException("Platform must have a width and height divisible by " + TEXTURE_SCALE);
-//        }
-//        this.theme = theme;
-//        this.themebg = themebg;
-//        this.row = row;
-//        this.col = col;
-//        this.shadowOffset = 0;
-//        this.bgRow = bgRow;
-//        this.bgCol = bgCol;
-//    }
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        if (themebg != null) {
-            for (int i = 0; i < GameHandler.CANVAS_WIDTH / TEXTURE_SCALE; i++) {
-                for (int j = 0; j < GameHandler.CANVAS_HEIGHT / TEXTURE_SCALE; j++) {
-                    themebg.draw(g, bgRow, bgCol, i * TEXTURE_SCALE, j * TEXTURE_SCALE, TEXTURE_SCALE, TEXTURE_SCALE);
-                }
-            }
-        }
         g.setFill(Colors.FOREGROUND_TRANS_40);
         int tiles;
         if (w > h) { // render right

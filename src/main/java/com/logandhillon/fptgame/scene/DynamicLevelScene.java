@@ -10,9 +10,9 @@ import com.logandhillon.fptgame.networking.GamePacket;
 import com.logandhillon.fptgame.networking.PeerMovementPoller;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
-import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.GameScene;
-import com.logandhillon.logangamelib.entity.ui.TextEntity;
+import com.logandhillon.logangamelib.entity.Renderable;
+import javafx.scene.paint.Color;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -25,10 +25,18 @@ public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
     private final PlayerEntity self;
-    private final PlayerEntity       other;
+    private final PlayerEntity other;
     private final PeerMovementPoller movePoller;
 
     public DynamicLevelScene(LevelProto.LevelData level) {
+        // show the background or a black bg if no background
+        Renderable bg = LevelFactory.buildBgOrNull(level);
+        if (bg != null) addEntity(bg);
+        else addEntity(new Renderable(0, 0, (g, x, y) -> {
+            g.setFill(Color.BLACK);
+            g.fillRect(0, 0, GameHandler.CANVAS_WIDTH, GameHandler.CANVAS_HEIGHT);
+        }));
+
         GameHandler.NetworkRole role = GameHandler.getNetworkRole();
         if (role == GameHandler.NetworkRole.SERVER) {
             movePoller = GameHandler.getServer().queuedPeerMovements::poll;
@@ -37,8 +45,6 @@ public class DynamicLevelScene extends GameScene {
         } else {
             throw new IllegalStateException("GameHandler is neither SERVER nor CLIENT, cannot poll peer");
         }
-
-        addEntity(Textures.ocean8());
 
         for (LevelObject obj: LevelFactory.load(level)) addEntity(obj);
 

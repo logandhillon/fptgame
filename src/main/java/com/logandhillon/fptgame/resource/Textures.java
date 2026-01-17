@@ -15,6 +15,8 @@ import java.io.IOException;
  * @author Logan Dhillon
  */
 public class Textures {
+    public static final int TEXTURE_SCALE = 40;
+
     public static final TextureAtlas PLAYER_IDLE      = TextureAtlas.load("player/idle.png");
     public static final TextureAtlas PLAYER_RUN_LEFT  = TextureAtlas.load("player/run_left.png");
     public static final TextureAtlas PLAYER_RUN_RIGHT = TextureAtlas.load("player/run.png");
@@ -22,6 +24,8 @@ public class Textures {
 
     public static final TextureAtlas UNDERGROUND        = TextureAtlas.load("theme/underground/spritesheet.png");
     public static final AtlasTile    UNDERGROUND_BRICKS = new AtlasTile(UNDERGROUND, 5, 1);
+    public static final AtlasTile    UNDERGROUND_PIPE   = new AtlasTile(UNDERGROUND, 15, 7);
+    public static final AtlasTile    UNDERGROUND_BG     = new AtlasTile(UNDERGROUND, 11, 11);
 
     public static final AnimationSequence ANIM_PLAYER_IDLE = new AnimationSequence(PLAYER_IDLE, 2,
                                                                                    0, 0,

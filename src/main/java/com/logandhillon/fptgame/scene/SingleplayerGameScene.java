@@ -1,13 +1,15 @@
 package com.logandhillon.fptgame.scene;
 
+import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.entity.player.ControllablePlayerEntity;
 import com.logandhillon.fptgame.entity.player.PlayerEntity;
 import com.logandhillon.fptgame.level.LevelFactory;
 import com.logandhillon.fptgame.level.LevelObject;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
-import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.entity.Renderable;
 import com.logandhillon.logangamelib.entity.ui.TextEntity;
+import javafx.scene.paint.Color;
 
 /**
  * Basic game scene with a player that can run around and interact with physics objects; to aid development.
@@ -18,7 +20,13 @@ public class SingleplayerGameScene extends GameScene {
     private final PlayerEntity self;
 
     public SingleplayerGameScene(LevelProto.LevelData level) {
-        addEntity(Textures.ocean8());
+        // show the background or a black bg if no background
+        Renderable bg = LevelFactory.buildBgOrNull(level);
+        if (bg != null) addEntity(bg);
+        else addEntity(new Renderable(0, 0, (g, x, y) -> {
+            g.setFill(Color.BLACK);
+            g.fillRect(0, 0, GameHandler.CANVAS_WIDTH, GameHandler.CANVAS_HEIGHT);
+        }));
 
         self = new ControllablePlayerEntity(0, 0, 0, null);
         addEntity(self);
