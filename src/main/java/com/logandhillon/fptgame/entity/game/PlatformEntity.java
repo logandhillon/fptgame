@@ -102,7 +102,7 @@ public class PlatformEntity extends CollisionEntity {
                 }
             }
         }
-        g.setFill(Colors.FOREGROUND_TRANS);
+        g.setFill(Colors.FOREGROUND_TRANS_40);
         int v;
         if(w > h) { // render right
             v = (int)(w / TEXTURE_SCALE);
