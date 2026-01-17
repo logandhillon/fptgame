@@ -36,8 +36,6 @@ public class GameClient {
     private DataInputStream in;
     private PacketWriter    out;
 
-    private PlayerProto.PlayerData host;
-
     /** if this client is registered with a remote server */
     private boolean isRegistered;
 
@@ -126,7 +124,6 @@ public class GameClient {
                 }
 
                 var data = PlayerProto.Lobby.parseFrom(packet.payload());
-                this.host = data.getHost();
 
                 MenuHandler menu = game.getActiveScene(MenuHandler.class);
                 var lobby = new LobbyGameContent(menu, data.getName(), false);

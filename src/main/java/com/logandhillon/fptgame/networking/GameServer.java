@@ -292,6 +292,7 @@ public class GameServer implements Runnable {
                     );
 
                     socket.send(packet);
+                    //noinspection BusyWait
                     Thread.sleep(2000); // broadcast every 2 seconds
                 }
             } catch (IOException e) {

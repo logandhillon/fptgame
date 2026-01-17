@@ -12,3 +12,15 @@ message Lobby {
   PlayerData host = 2;
   PlayerData guest = 3;
 }
+
+message PlayerMovementData {
+  float x = 1;
+  float y = 2;
+  float vx = 3;
+  float vy = 4;
+}
+
+message PlayerPositionSync {
+  PlayerMovementData host = 1;
+  PlayerMovementData guest = 2;
+}
