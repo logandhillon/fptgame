@@ -26,8 +26,8 @@ public class LobbyGameContent implements MenuContent {
 
     private static final int[][] PLAYER_ICON_ARGS = new int[][]{
             // iconX, iconY, colorIdx, textX, textY
-            { 48, 143, 0, 32, 262 },
-            { 215, 143, 1, 200, 262 } };
+            { 48, 143, 0 },
+            { 215, 143, 1 } };
 
     private final Entity[]        entities;
     private final MenuModalEntity lobbyModal;
@@ -49,11 +49,10 @@ public class LobbyGameContent implements MenuContent {
         this.isHosting = isHosting;
 
         // shows different buttons at bottom depending on if the user is hosting
-        startButton = new MenuButton(
-                isHosting ? "WAITING FOR PLAYER..." : "WAITING FOR HOST...", 32, 640, 304, 48,
-                () -> {
-                    if (isStartingAllowed) menu.getGameHandler().startGame();
-                });
+        startButton = new MenuButton(isHosting ? "WAITING FOR PLAYER..." : "WAITING FOR HOST...",
+                                     32, 640, 304, 48, () -> {
+            if (isStartingAllowed) menu.getGameHandler().startGame();
+        });
 
         if (!isHosting) {
             startButton.setActive(false);
@@ -83,12 +82,7 @@ public class LobbyGameContent implements MenuContent {
     public void addPlayer(String name, boolean isHost) {
         LOG.info("Adding player \"{}\" (host={})", name, isHost);
         int[] args = PLAYER_ICON_ARGS[isHost ? 0 : 1];
-        lobbyModal.addEntity(new PlayerIconEntity(args[0], args[1], args[2]));
-        lobbyModal.addEntity(new TextEntity.Builder(args[3], args[4])
-                                     .setColor(Colors.ACTIVE)
-                                     .setText(name.toUpperCase())
-                                     .setFontSize(18)
-                                     .setBaseline(VPos.TOP).build());
+        lobbyModal.addEntity(new PlayerIconEntity(name, args[0], args[1], args[2]));
         // if a guest joins, and this is the hosting lobby, unlock the start button
         if (!isHost && isHosting) {
             startButton.setLocked(false);
@@ -102,7 +96,6 @@ public class LobbyGameContent implements MenuContent {
      */
     public void clearPlayers() {
         LOG.info("Clearing player list");
-        // TODO: move player's name into player icon entity for this predicate to pass
         menu.clearEntities(true, PlayerIconEntity.class::isInstance);
         startButton.setFlags(false, true);
         isStartingAllowed = false;
