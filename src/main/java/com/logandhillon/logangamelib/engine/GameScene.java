@@ -41,7 +41,7 @@ public abstract class GameScene {
 
     private AnimationTimer lifecycle;
     private GameHandler    game;
-    private Scene scene;
+    private Scene          scene;
 
     public record HandlerRef<T extends Event>(EventType<T> type, EventHandler<? super T> handler) {}
 
@@ -132,7 +132,8 @@ public abstract class GameScene {
      * @apiNote You must ensure it is safe to call this method before using it!!!!
      */
     public void bindAllEvents() {
-        if (scene == null) throw new IllegalStateException("GameScene not bound to engine yet, thus cannot bind events");
+        if (scene == null) throw new IllegalStateException(
+                "GameScene not bound to engine yet, thus cannot bind events");
 
         LOG.info("Binding {} events to engine", handlers.size());
         for (HandlerRef<?> h: handlers) {
@@ -233,7 +234,7 @@ public abstract class GameScene {
                 if (discard) e.onDestroy();
             }
         }
-        LOG.info("Successfully removed all entities from this scene");
+        LOG.info("Successfully removed all matching entities from this scene");
 
         for (Iterator<CollisionEntity> it = collisionEntities.iterator(); it.hasNext(); ) {
             var e = it.next();
@@ -242,7 +243,7 @@ public abstract class GameScene {
                 if (discard) e.onDestroy();
             }
         }
-        LOG.info("Successfully removed all collision entities from this scene");
+        LOG.info("Successfully removed all matching collision entities from this scene");
     }
 
     /**
@@ -310,6 +311,26 @@ public abstract class GameScene {
         for (CollisionEntity e: collisionEntities) {
             if (e == caller) continue; // skip the caller
             if (checkCollision(x, y, w, h, e)) return e;
+        }
+        return null; // no collision found
+    }
+
+    /**
+     * Checks a given (x,y) and size for collisions and returns the entity if there is one that also matches the
+     * predicate
+     *
+     * @param caller          the entity that is checking for collisions (can be null)
+     * @param entityPredicate only check for collisions against entities that match this predicate
+     *
+     * @return entity that target is colliding with, or null
+     *
+     * @see GameScene#checkCollision(CollisionEntity, CollisionEntity)
+     */
+    public CollisionEntity getCollisionIf(float x, float y, float w, float h, CollisionEntity caller,
+                                          Predicate<CollisionEntity> entityPredicate) {
+        for (CollisionEntity e: collisionEntities) {
+            if (e == caller) continue; // skip the caller
+            if (entityPredicate.test(e) && checkCollision(x, y, w, h, e)) return e;
         }
         return null; // no collision found
     }

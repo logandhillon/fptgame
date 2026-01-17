@@ -53,7 +53,7 @@ public class ModalEntity extends Entity {
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        g.setFill(Colors.FOREGROUND_TRANS);
+        g.setFill(Colors.FOREGROUND_TRANS_40);
         g.fillRoundRect(x, y, w, h, cornerDiameter, cornerDiameter);
     }
 

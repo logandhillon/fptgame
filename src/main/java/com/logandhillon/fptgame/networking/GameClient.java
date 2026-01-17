@@ -4,17 +4,16 @@ import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
-import com.logandhillon.logangamelib.engine.disk.UserConfigManager;
 import com.logandhillon.logangamelib.networking.PacketWriter;
 import javafx.application.Platform;
-import javafx.scene.paint.Color;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * A game client handles all outgoing communications to the {@link GameServer} via a valid network connection.
@@ -27,7 +26,9 @@ import java.util.List;
 public class GameClient {
     private static final Logger LOG = LoggerContext.getContext().getLogger(GameClient.class);
 
-    private final String      host;
+    public final Queue<GamePacket.Type> queuedPeerMovements = new LinkedList<>();
+
+    private final String      serverAddr;
     private final int         port;
     private final GameHandler game;
 
@@ -35,21 +36,19 @@ public class GameClient {
     private DataInputStream in;
     private PacketWriter    out;
 
-    private List<PlayerProto.PlayerData> players;
-
     /** if this client is registered with a remote server */
     private boolean isRegistered;
 
     /**
      * Sets up a new client, does not connect to the server.
      *
-     * @param host the FQDN or IP address of the server to connect to
-     * @param port the port (default 20670)
+     * @param serverAddr the FQDN or IP address of the server to connect to
+     * @param port       the port (default 20670)
      *
      * @see GameClient#connect()
      */
-    public GameClient(String host, int port, GameHandler game) {
-        this.host = host;
+    public GameClient(String serverAddr, int port, GameHandler game) {
+        this.serverAddr = serverAddr;
         this.port = port;
         this.game = game;
 
@@ -63,26 +62,18 @@ public class GameClient {
      * @see GameClient#readLoop()
      */
     public void connect() throws IOException {
-        LOG.info("Connecting to server at {}:{}...", host, port);
-        socket = new Socket(host, port);
+        LOG.info("Connecting to server at {}:{}...", serverAddr, port);
+        socket = new Socket(serverAddr, port);
 
         // setup remote IO
         in = new DataInputStream(socket.getInputStream());
         out = new PacketWriter(socket.getOutputStream());
 
         String name = GameHandler.getUserConfig().getName();
-        Color color = UserConfigManager.parseColor(GameHandler.getUserConfig());
 
         // ask to connect
-        LOG.info("Asking to connect as '{}' with color {}", name, color);
-        out.send(new GamePacket(
-                GamePacket.Type.CLT_REQ_CONN,
-                PlayerProto.PlayerData.newBuilder()
-                                      .setName(name)
-                                      .setR((float)color.getRed())
-                                      .setG((float)color.getGreen())
-                                      .setB((float)color.getBlue())
-                                      .build()));
+        LOG.info("Asking to connect as '{}'", name);
+        out.send(new GamePacket(GamePacket.Type.CLT_REQ_CONN, ProtoBuilder.player(name)));
 
         new Thread(this::readLoop, "Client-ReadLoop").start();
     }
@@ -133,30 +124,39 @@ public class GameClient {
                 }
 
                 var data = PlayerProto.Lobby.parseFrom(packet.payload());
-                this.players = data.getPlayersList();
 
                 MenuHandler menu = game.getActiveScene(MenuHandler.class);
                 var lobby = new LobbyGameContent(menu, data.getName(), false);
                 lobby.clearPlayers();
 
-                for (var p: this.players)
-                    lobby.addPlayer(p.getName(), Color.color(p.getR(), p.getG(), p.getB()));
-
                 game.setInMenu(true);
 
                 // run setContent on the FX thread
-                Platform.runLater(() -> menu.setContent(lobby));
+                Platform.runLater(() -> {
+                    menu.setContent(lobby);
+                    // set lobby players on FX thread, since the content must exist before setting players
+                    lobby.addPlayer(data.getHost().getName(), true);
+                    lobby.addPlayer(data.getGuest().getName(), false);
+                });
             }
             case SRV_DENY_CONN__USERNAME_TAKEN, SRV_DENY_CONN__FULL -> {
                 LOG.error("Failed to join: {}", packet.type());
                 Platform.runLater(() -> game.showAlert(
                         "Failed to join server",
-                        "Could not " + host + ": " + packet.type().name()));
+                        "Could not " + serverAddr + ": " + packet.type().name()));
                 this.close();
             }
             case SRV_GAME_STARTING -> {
+                LOG.info("Server has announced that the game is starting");
                 game.startGame();
             }
+            case SRV_SHUTDOWN -> {
+                // going to the main menu will shut down the client
+                LOG.info("Server is shutting down, returning to main menu");
+                game.showAlert("SERVER CLOSED", "The server has shut down.");
+            }
+            // if peer is trying to move, add instruction to queue
+            case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> queuedPeerMovements.add(packet.type());
         }
     }
 
@@ -183,14 +183,5 @@ public class GameClient {
             LOG.info("Closing connection to server");
             socket.close();
         }
-    }
-
-    /**
-     * Gets the players that the server has told this client about.
-     *
-     * @return all players in the client
-     */
-    public List<PlayerProto.PlayerData> getPlayers(int team) {
-        return players;
     }
 }

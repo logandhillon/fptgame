@@ -12,8 +12,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 
 /**
  * This is an input field, which handles user input in a box and can be retrieved as a string.
@@ -25,15 +23,13 @@ import org.apache.logging.log4j.core.LoggerContext;
  * @see InputBoxEntity#onKeyTyped(KeyEvent)
  */
 public class InputBoxEntity extends Clickable {
-    private static final Logger LOG = LoggerContext.getContext().getLogger(InputBoxEntity.class);
-
-    private static final float  INPUT_FONT_SIZE  = 18.5f;
-    private static final int INPUT_CHAR_WIDTH = 11;
-    private static final int CORNER_DIAMETER  = 50;
-    private static final int MARGIN_X         = 16;
-    private static final int  MARGIN_Y         = 12;
-    private static final Font INPUT_FONT       = Font.font(Fonts.TREMOLO, INPUT_FONT_SIZE);
-    private static final Font LABEL_FONT       = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20);
+    private static final float INPUT_FONT_SIZE  = 18.5f;
+    private static final int   INPUT_CHAR_WIDTH = 11;
+    private static final int   CORNER_DIAMETER  = 50;
+    private static final int   MARGIN_X         = 16;
+    private static final int   MARGIN_Y         = 12;
+    private static final Font  INPUT_FONT       = Font.font(Fonts.TREMOLO, INPUT_FONT_SIZE);
+    private static final Font  LABEL_FONT       = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20);
 
     private final   float  maxWidth;
     private final   String placeholder;
@@ -92,7 +88,7 @@ public class InputBoxEntity extends Clickable {
         if (input.isEmpty()) {
             // render placeholder
             g.setTextAlign(TextAlignment.LEFT);
-            g.setFill(Colors.FOREGROUND_TRANS);
+            g.setFill(Colors.FOREGROUND_TRANS_40);
             g.fillText(placeholder, x + MARGIN_X, y + MARGIN_Y, maxWidth);
         } else {
             // render input (font is already white)
@@ -138,7 +134,6 @@ public class InputBoxEntity extends Clickable {
         // ignore blank/control characters
         if (c.isEmpty() || Character.isISOControl(c.charAt(0)) || input.length() >= charLimit) return;
 
-        LOG.debug("Key Typed");
         input.append(c);
         e.consume();
     }
@@ -146,7 +141,6 @@ public class InputBoxEntity extends Clickable {
     @Override
     public void onAttach(GameScene parent) {
         super.onAttach(parent);
-        LOG.debug("Registering key events");
         parent.addHandler(KeyEvent.KEY_PRESSED, this::onKeyPressed);
         parent.addHandler(KeyEvent.KEY_TYPED, this::onKeyTyped);
     }
@@ -172,7 +166,6 @@ public class InputBoxEntity extends Clickable {
 
     @Override
     public void onClick(MouseEvent e) {
-        LOG.debug("Input box clicked");
         this.isActive = true;
     }
 
@@ -182,7 +175,6 @@ public class InputBoxEntity extends Clickable {
 
     @Override
     public void onBlur() {
-        LOG.debug("Input box blurred");
         this.isActive = false;
         if (onBlur != null) onBlur.run();
     }

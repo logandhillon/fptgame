@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
+@Deprecated
 public class SkinOptionsEntity extends Clickable {
     private final Color    color;
     private final Runnable onPress;

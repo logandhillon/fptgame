@@ -2,8 +2,6 @@ package com.logandhillon.logangamelib.engine.disk;
 
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.networking.proto.ConfigProto.UserConfig;
-import com.logandhillon.fptgame.resource.Colors;
-import javafx.scene.paint.Color;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -18,11 +16,10 @@ import java.io.IOException;
  * @author Logan Dhillon
  */
 public class UserConfigManager {
-    private static final Logger LOG  = LoggerContext.getContext().getLogger(UserConfigManager.class);
-    private static final File   FILE = new File("logangamelib.dat");
+    private static final Logger     LOG            = LoggerContext.getContext().getLogger(UserConfigManager.class);
+    private static final UserConfig DEFAULT_CONFIG = ConfigProto.UserConfig.newBuilder().build();
 
-    private static final UserConfig DEFAULT_CONFIG = ConfigProto.UserConfig.newBuilder()
-                                                                           .build();
+    private static File file = new File("logangamelib.dat");
 
     /**
      * Saves the provided {@link UserConfig} to the disk.
@@ -32,17 +29,18 @@ public class UserConfigManager {
      * @throws RuntimeException if the user config cannot be saved to disk
      */
     public static UserConfig save(UserConfig config) {
-        try (FileOutputStream file = new FileOutputStream(FILE)) {
-            if (FILE.getParent() != null) {
+        try (FileOutputStream file = new FileOutputStream(UserConfigManager.file)) {
+            if (UserConfigManager.file.getParent() != null) {
                 LOG.warn("Parent directory for user config file doesn't exist, creating folder(s).");
-                new File(FILE.getParent()).mkdirs();
+                //noinspection ResultOfMethodCallIgnored
+                new File(UserConfigManager.file.getParent()).mkdirs();
             }
 
-            LOG.info("Writing user configuration to {}", FILE.getAbsolutePath());
+            LOG.info("Writing user configuration to {}", UserConfigManager.file.getAbsolutePath());
             config.writeTo(file);
             return config;
         } catch (IOException e) {
-            LOG.error("Failed to save user configuration to {}", FILE.getAbsolutePath());
+            LOG.error("Failed to save user configuration to {}", file.getAbsolutePath());
             throw new RuntimeException(e);
         }
     }
@@ -55,20 +53,28 @@ public class UserConfigManager {
      */
     public static UserConfig load() {
         // if there is no save file, save the default and return
-        if (!FILE.exists()) {
+        if (!file.exists()) {
             LOG.warn("Saved user config doesn't exist, saving default config to disk");
             save(DEFAULT_CONFIG);
             return DEFAULT_CONFIG;
         }
 
-        try (FileInputStream file = new FileInputStream(FILE)) {
-            var c = UserConfig.parseFrom(file);
+        UserConfig c;
+        try (FileInputStream file = new FileInputStream(UserConfigManager.file)) {
+            c = UserConfig.parseFrom(file);
             LOG.info("Successfully loaded user config for '{}' from disk", c.getName());
-            return c;
         } catch (IOException e) {
-            LOG.error("Failed to load user configuration from {}", FILE.getAbsolutePath(), e);
+            LOG.error("Failed to load user configuration from {}", file.getAbsolutePath(), e);
             return DEFAULT_CONFIG;
         }
+
+        if (c.getName().isBlank()) {
+            LOG.warn("Loaded name is blank, setting name to default (Player)");
+            c.toBuilder().setName("Player");
+            save(c);
+        }
+
+        return c;
     }
 
     /**
@@ -85,25 +91,19 @@ public class UserConfigManager {
             builder.setName(partial.getName());
         }
 
-        // Only override if the field is explicitly set (non-default)
-        if (partial.hasColorIdx()) {
-            LOG.info("Setting color to index {}", partial.getColorIdx().getValue());
-            builder.setColorIdx(partial.getColorIdx());
-        }
-
         // Build and save
         UserConfig merged = builder.build();
         return save(merged);
     }
 
     /**
-     * Pure method to get the color index from user config and parse it into a {@link Color}
+     * Sets the user config file to a custom filepath, which will be the file that is managed by this program from this
+     * point onwards.
      *
-     * @param config the user config to get the color idx from
-     *
-     * @return the javafx color
+     * @param filename name of file manage from this point on.
      */
-    public static Color parseColor(UserConfig config) {
-        return Colors.PLAYER_SKINS.get(config.getColorIdx().getValue());
+    public static void setManagedFile(String filename) {
+        LOG.info("Setting managed file to {}", filename);
+        file = new File(filename);
     }
 }

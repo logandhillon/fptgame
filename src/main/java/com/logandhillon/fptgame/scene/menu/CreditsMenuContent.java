@@ -31,7 +31,7 @@ public class CreditsMenuContent implements MenuContent {
                           .build();
 
         entities = new Entity[]{ new ModalEntity(349, 213, 583, 294,
-                                 new MenuButton("BACK TO MENU", 16, 230, 551, 48, menu::goToMainMenu)),
+                                 new MenuButton("BACK TO MENU", 16, 230, 551, 48, () -> menu.getGameHandler().goToMainMenu())),
                                  text};
     }
 

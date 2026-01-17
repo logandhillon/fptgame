@@ -9,6 +9,7 @@ import com.logandhillon.fptgame.scene.DebugGameScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
+import com.logandhillon.fptgame.scene.menu.MainMenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.engine.GameEngine;
 import com.logandhillon.logangamelib.engine.GameScene;
@@ -63,7 +64,10 @@ public class GameHandler extends Application {
         stage.setMinWidth(CANVAS_WIDTH / 2f);
         stage.setMinHeight(CANVAS_HEIGHT / 2f);
 
-        setScene(new MenuHandler());
+        String debugMode = System.getenv("LGL_DEBUG_MODE");
+        setScene(debugMode != null && debugMode.equalsIgnoreCase("true")
+                 ? new DebugGameScene() // debug scene if LGL_DEBUG_MODE is true
+                 : new MenuHandler());
         stage.show();
     }
 
@@ -75,6 +79,9 @@ public class GameHandler extends Application {
      * @see GameHandler#start(Stage)
      */
     public static void main(String[] args) throws IOException {
+        String lglSaveFile = System.getenv("LGL_SAVE_FILE");
+        if (lglSaveFile != null) UserConfigManager.setManagedFile(lglSaveFile);
+
         // load user config first
         userConfig = UserConfigManager.load();
 
@@ -98,10 +105,13 @@ public class GameHandler extends Application {
     }
 
     public void goToMainMenu() {
-        this.setScene(new MenuHandler());
+        var menu = this.getActiveScene(MenuHandler.class);
+        if (menu == null) this.setScene(new MenuHandler());
+        else menu.setContent(new MainMenuContent(menu));
         setInMenu(true);
         terminateClient();
         terminateServer();
+        terminateDiscoverer();
     }
 
     /**
@@ -114,8 +124,7 @@ public class GameHandler extends Application {
         MenuHandler menu = getActiveScene(MenuHandler.class);
         var lobby = new LobbyGameContent(menu, roomName, true);
         menu.setContent(lobby); // set content first so we can populate lobby after
-        lobby.addPlayer(
-                GameHandler.getUserConfig().getName(), UserConfigManager.parseColor(GameHandler.getUserConfig()));
+        lobby.addPlayer(GameHandler.getUserConfig().getName(), true);
 
         if (server != null) throw new IllegalStateException("Server already exists, cannot establish connection");
 
@@ -149,10 +158,6 @@ public class GameHandler extends Application {
         Platform.runLater(() -> setScene(new DebugGameScene()));
     }
 
-    /**
-     * @deprecated not updated to use {@link MenuHandler}, implement that before using this method
-     */
-    @Deprecated
     public void showJoinGameMenu() {
         discoverer = new ServerDiscoverer(this);
         discoverer.start();
@@ -166,6 +171,11 @@ public class GameHandler extends Application {
      * @param serverAddress address and port of the server to join (addr:port)
      */
     public void joinGame(String serverAddress) {
+        if (serverAddress.isBlank()) {
+            LOG.warn("Server address is blank");
+            return;
+        }
+
         String host;
         int port;
         int i = serverAddress.lastIndexOf(':');
@@ -200,6 +210,7 @@ public class GameHandler extends Application {
      * Closes the client and nullifies the pointer.
      */
     private void terminateClient() {
+        LOG.info("Terminating client");
         if (client == null) {
             LOG.warn("Client does not exist, skipping termination");
             return;
@@ -217,6 +228,8 @@ public class GameHandler extends Application {
      * Closes the terminator and nullifies the pointer.
      */
     private static void terminateDiscoverer() {
+        LOG.info("Terminating discoverer");
+
         if (discoverer == null) {
             LOG.warn("Server discoverer does not exist, skipping termination");
             return;
@@ -230,6 +243,8 @@ public class GameHandler extends Application {
      * Stops the server and nullifies the pointer.
      */
     private void terminateServer() {
+        LOG.info("Terminating server");
+
         if (server == null) {
             LOG.warn("Server does not exist, skipping termination");
             return;
@@ -271,7 +286,7 @@ public class GameHandler extends Application {
      *
      * @return SERVER, CLIENT, or NONE
      */
-    public NetworkRole getNetworkRole() {
+    public static NetworkRole getNetworkRole() {
         if (server != null) return NetworkRole.SERVER;
         else if (client != null) return NetworkRole.CLIENT;
         return NetworkRole.NONE;
@@ -314,5 +329,13 @@ public class GameHandler extends Application {
      */
     public static void updateUserConfig(ConfigProto.UserConfig partial) {
         userConfig = UserConfigManager.update(userConfig, partial);
+    }
+
+    public static GameServer getServer() {
+        return server;
+    }
+
+    public static GameClient getClient() {
+        return client;
     }
 }

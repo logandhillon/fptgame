@@ -14,8 +14,8 @@ import java.io.IOException;
  * @author Logan Dhillon
  */
 public class Textures {
-    public static final TextureAtlas PLAYER_IDLE     = new TextureAtlas("player/idle.png");
-    public static final TextureAtlas PLAYER_RUN_LEFT = new TextureAtlas("player/run_left.png");
+    public static final TextureAtlas PLAYER_IDLE      = new TextureAtlas("player/idle.png");
+    public static final TextureAtlas PLAYER_RUN_LEFT  = new TextureAtlas("player/run_left.png");
     public static final TextureAtlas PLAYER_RUN_RIGHT = new TextureAtlas("player/run.png");
     public static final TextureAtlas PLAYER_JUMP      = new TextureAtlas("player/jump.png");
 
@@ -46,9 +46,7 @@ public class Textures {
                                                                                         4, 2,
                                                                                         5, 2);
 
-    public static final AnimationSequence ANIM_PLAYER_JUMP = new AnimationSequence(PLAYER_JUMP, 0,
-                                                                                   3, 0);
-    public static final int PLAYER_JUMP_FRAME = 0;
+    public static final AnimationSequence ANIM_PLAYER_JUMP = new AnimationSequence(PLAYER_JUMP, 0, 3, 0);
 
     /**
      * Generates a new instance of the ocean8 {@link ParallaxBackground}

@@ -19,7 +19,8 @@ public class ImageResource extends Resource<Image> {
     private static final Logger LOG = LoggerContext.getContext().getLogger(ImageResource.class);
 
     /**
-     * A hash-based cache of all recolored images, mapped to their {@link Object#hashCode()} (from the image + the tint)
+     * A hash-based cache of all recolored images, mapped to their {@link Object#hashCode()} (from the image + the
+     * tint)
      */
     private static final HashMap<Integer, Image> CACHED_RECOLORS = new HashMap<>();
 
@@ -51,7 +52,7 @@ public class ImageResource extends Resource<Image> {
         Image cache = CACHED_RECOLORS.get(hash);
         if (cache != null) return cache;
 
-        LOG.debug("Recolored image not cached, calculating");
+        LOG.debug("Recolored image not cached, calculating for color #{}", tint.toString().substring(2));
 
         int w = (int)src.getWidth();
         int h = (int)src.getHeight();
@@ -75,8 +76,6 @@ public class ImageResource extends Resource<Image> {
         CACHED_RECOLORS.put(hash, output);
         return output;
     }
-
-
 
     @Override
     public Image load() {

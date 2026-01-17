@@ -9,7 +9,6 @@ import com.logandhillon.fptgame.resource.Fonts;
 import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.logangamelib.entity.ui.TextEntity;
 import javafx.geometry.VPos;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.apache.logging.log4j.Logger;
@@ -22,20 +21,23 @@ import org.apache.logging.log4j.core.LoggerContext;
  * @see PlayerIconEntity
  */
 public class LobbyGameContent implements MenuContent {
-    private static final Logger LOG = LoggerContext.getContext().getLogger(LobbyGameContent.class);
+    private static final Logger LOG         = LoggerContext.getContext().getLogger(LobbyGameContent.class);
+    private static final Font   HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 40);
 
-    private final Entity[] entities;
+    private static final int[][] PLAYER_ICON_ARGS = new int[][]{
+            // iconX, iconY, colorIdx, textX, textY
+            { 48, 143, 0 },
+            { 215, 143, 1 } };
 
-    private static final Font HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 40);
-
-
-    private static final float ENTITY_GAP = 167.5f;
-
+    private final Entity[]        entities;
     private final MenuModalEntity lobbyModal;
     private final String          roomName;
     private final MenuHandler     menu;
+    private final boolean         isHosting;
+    private final MenuButton      startButton;
 
-    private float playerListDx;
+    private boolean isStartingAllowed;
+    private int     playerCount = 0;
 
     /**
      * @param menu      the game manager responsible for switching active scenes.
@@ -45,22 +47,25 @@ public class LobbyGameContent implements MenuContent {
     public LobbyGameContent(MenuHandler menu, String roomName, boolean isHosting) {
         this.roomName = roomName;
         this.menu = menu;
+        this.isHosting = isHosting;
 
         // shows different buttons at bottom depending on if the user is hosting
-        MenuButton startButton = new MenuButton(
-                isHosting ? "START GAME" : "WAITING FOR HOST TO START...",
-                32, 640, 304, 48, () -> {
-            if (isHosting) menu.startGame();
-            // don't do anything if not hosting (button is disabled)
+        startButton = new MenuButton(isHosting ? "WAITING FOR PARTNER..." : "WAITING FOR HOST...",
+                                     32, 640, 304, 48, () -> {
+            if (isHosting && isStartingAllowed) {
+                menu.getGameHandler().startGame();
+            }
         });
 
         if (!isHosting) {
-            startButton.setActive(false, true);
+            startButton.setActive(false);
+            startButton.setLocked(true);
+            isStartingAllowed = false;
         }
 
         lobbyModal = new MenuModalEntity(
-                0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, startButton, new PlayerIconEntity(48, 143, 0),
-                new PlayerIconEntity(215, 143, 1), //TODO: Make this join only when the other player is in lobby (have fun logan ;) )
+                0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu,
+                startButton,
                 new TextEntity.Builder(32, 66).setColor(Colors.ACTIVE)
                                               .setText(roomName.toUpperCase())
                                               .setFont(HEADER_FONT)
@@ -74,18 +79,27 @@ public class LobbyGameContent implements MenuContent {
     /**
      * Adds a player to the list of players
      *
-     * @param name  player name
-     * @param color player skin's color
+     * @param name   player name
+     * @param isHost if the player is the host of this lobby
      */
-    public void addPlayer(String name, Color color) {
-        LOG.info("Adding player \"{}\" with color {}", name, color.toString());
-        var p = new TextEntity.Builder(0 + playerListDx +  32, 262)
-                .setColor(Colors.ACTIVE)
-                .setText(name.toUpperCase())
-                .setFontSize(18)
-                .setBaseline(VPos.TOP).build();
-        playerListDx += ENTITY_GAP;
-        lobbyModal.addEntity(p);
+    public void addPlayer(String name, boolean isHost) {
+        LOG.info("Adding player \"{}\" (host={})", name, isHost);
+        playerCount++;
+        int[] args = PLAYER_ICON_ARGS[isHost ? 0 : 1];
+        lobbyModal.addEntity(new PlayerIconEntity(name, args[0], args[1], args[2]));
+        // host can only start the game when there are exactly 2 players
+        LOG.info("{} player(s) in lobby", playerCount);
+        if (isHosting) {
+            if (playerCount >= 2) {
+                startButton.setLocked(false);
+                isStartingAllowed = true;
+                startButton.setText("START GAME");
+            } else {
+                startButton.setLocked(true);
+                isStartingAllowed = false;
+                startButton.setText("WAITING FOR PARTNER...");
+            }
+        }
     }
 
     /**
@@ -93,8 +107,15 @@ public class LobbyGameContent implements MenuContent {
      */
     public void clearPlayers() {
         LOG.info("Clearing player list");
-        this.menu.clearEntities(true, PlayerIconEntity.class::isInstance);
-        playerListDx = 0;
+        playerCount = 0;
+        menu.clearEntities(true, PlayerIconEntity.class::isInstance);
+        startButton.setFlags(false, true);
+        isStartingAllowed = false;
+        if (isHosting) {
+            startButton.setText("WAITING FOR PARTNER...");
+        } else {
+            startButton.setText("WAITING FOR HOST...");
+        }
     }
 
     /**
@@ -110,5 +131,4 @@ public class LobbyGameContent implements MenuContent {
     public String getRoomName() {
         return roomName;
     }
-
 }

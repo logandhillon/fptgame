@@ -38,13 +38,14 @@ public abstract class UIScene extends GameScene {
      * Creates a new UI scene and registers the mouse events.
      */
     public UIScene() {
-       this.addMouseEvents(false);
+        this.addMouseEvents(false);
     }
 
     /**
      * Attaches the UI scene's mouse events to the ref list.
      *
-     * @param force if true, will the refs in list. This may be unsafe (duplicate events!) and cause really weird errors. Ensure safety before calling this.
+     * @param force if true, will the refs in list. This may be unsafe (duplicate events!) and cause really weird
+     *              errors. Ensure safety before calling this.
      */
     public void addMouseEvents(boolean force) {
         this.addHandler(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
@@ -76,10 +77,10 @@ public abstract class UIScene extends GameScene {
                 if (discard) e.onDestroy();
             }
         }
-        LOG.info("Safely removed all Clickables from this UI scene");
+        LOG.info("Safely removed all matching Clickables from this UI scene");
 
-        cachedClickables = new Clickable[0];
-        LOG.info("Cleared UI entity cache");
+        cachedClickables = clickables.keySet().toArray(new Clickable[0]);
+        LOG.debug("Reloaded clickable cache");
     }
 
     /**

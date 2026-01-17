@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
  */
 public record GamePacket(Type type, byte[] payload) {
     private static final Logger LOG   = LoggerContext.getContext().getLogger(GamePacket.class);
-    private static final char   US    = (char)31; // unit separator byte
     private static final Type[] TYPES = Type.values();
 
     /**
@@ -44,13 +43,16 @@ public record GamePacket(Type type, byte[] payload) {
         SRV_UPDATE_PLAYERLIST, SRV_DENY_CONN__FULL, SRV_DENY_CONN__USERNAME_TAKEN, // used for managing connections
         SRV_GAME_STARTING, // announces that the game is starting
         SRV_UNEXPECTED, // generic error for if the server wasn't expecting something (e.g. not ready for a request)
-        /**
-         * send on correct key pressed<br> the payload of this packet should be 1 byte: your team number
-         */
-        SRV_KEY_PRESS,
+        SRV_SHUTDOWN,
+        SRV_SYNC_MOVEMENT,
 
         // client-side types
         CLT_REQ_CONN, // used to request registration upon joining a server
+
+        COM_JUMP,
+        COM_MOVE_L,
+        COM_MOVE_R,
+        COM_STOP_MOVING
     }
 
     /**

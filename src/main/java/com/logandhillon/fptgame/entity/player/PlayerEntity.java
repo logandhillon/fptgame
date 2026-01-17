@@ -1,45 +1,46 @@
-package com.logandhillon.fptgame.entity.game;
+package com.logandhillon.fptgame.entity.player;
 
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.GameScene;
+import com.logandhillon.logangamelib.entity.physics.CollisionEntity;
 import com.logandhillon.logangamelib.entity.physics.PhysicsEntity;
 import com.logandhillon.logangamelib.gfx.AnimationSequence;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import javafx.scene.paint.Color;
+
+import java.util.function.Predicate;
 
 /**
- * The player is a physics entity that is controlled by a human either on the device or over the network.
+ * The player is a physics entity that receives inputs via the methods it provides and moves accordingly.
  *
  * @author Logan Dhillon
+ * @see ControllablePlayerEntity
  */
 public class PlayerEntity extends PhysicsEntity {
-    private static final Logger LOG = LoggerContext.getContext().getLogger(PlayerEntity.class);
-
     private static final float JUMP_POWER = 12f * PX_PER_METER; // m/s
     private static final float MOVE_SPEED = 6f * PX_PER_METER; // m/s
     private static final int   Y_OFFSET   = 12;
+
+    private final Color                  color;
+    private final PlayerMovementListener listener;
 
     private AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();
     private AnimationState    state   = AnimationState.IDLE;
 
     private int moveDirection = 0; // left=-1, 0=none, 1=right
 
-    public PlayerEntity(float x, float y) {
+    public PlayerEntity(float x, float y, int color, PlayerMovementListener listener) {
         super(x, y, 42, 72);
+        this.color = Colors.PLAYER_SKINS.get(color);
+        this.listener = listener;
     }
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
         // render the active texture
-        if (state == AnimationState.JUMP) {
-            texture.drawFrame(
-                    g, Textures.PLAYER_JUMP_FRAME, x, y - Y_OFFSET, w, h + Y_OFFSET, Colors.PLAYER_SKINS.getFirst());
-        } else
-            texture.draw(g, x, y - Y_OFFSET, w, h + Y_OFFSET, Colors.PLAYER_SKINS.getFirst());
+        if (state == AnimationState.JUMP) texture.drawFrame(g, 0, x, y - Y_OFFSET, w, h + Y_OFFSET, color);
+        else texture.draw(g, x, y - Y_OFFSET, w, h + Y_OFFSET, color);
     }
 
     @Override
@@ -63,28 +64,44 @@ public class PlayerEntity extends PhysicsEntity {
         else if (state != AnimationState.JUMP) setAnimation(AnimationState.IDLE);
     }
 
+    /**
+     * Overrides the default collision handler from {@link CollisionEntity} to ignore collisions with other
+     * {@link PlayerEntity}
+     *
+     * @see GameScene#getCollisionIf(float, float, float, float, CollisionEntity, Predicate)
+     */
     @Override
-    public void onAttach(GameScene parent) {
-        super.onAttach(parent);
-        LOG.info("Registering events");
-        parent.addHandler(KeyEvent.KEY_PRESSED, this::onKeyPressed);
-        parent.addHandler(KeyEvent.KEY_RELEASED, this::onKeyReleased);
+    protected CollisionEntity getCollisionAt(float x, float y, float w, float h, CollisionEntity caller) {
+        return parent.getCollisionIf(x, y, w, h, caller, e -> !(e instanceof PlayerEntity));
     }
 
-    private void onKeyPressed(KeyEvent e) {
-        if (e.getCode() == KeyCode.SPACE && this.isGrounded()) {
+    /**
+     * Makes this player jump, only works if touching the ground
+     */
+    public void jump() {
+        if (this.isGrounded()) {
             this.vy = -JUMP_POWER;
-            this.texture = Textures.ANIM_PLAYER_JUMP.instance();
+            if (listener != null) listener.onJump();
         }
-
-        if (e.getCode() == KeyCode.A) moveDirection = -1;
-        else if (e.getCode() == KeyCode.D) moveDirection = 1;
     }
 
-    private void onKeyReleased(KeyEvent e) {
-        if ((e.getCode() == KeyCode.A && moveDirection == -1) ||
-            (e.getCode() == KeyCode.D && moveDirection == 1))
-            moveDirection = 0;
+    /**
+     * Sets the move direction of the player, whereof the player will move towards indefinitely.
+     *
+     * @param dir -1=left, 0=none, 1=right
+     */
+    public void setMoveDirection(int dir) {
+        moveDirection = dir;
+        if (listener != null) listener.onMove(dir);
+    }
+
+    /**
+     * Gets the move direction of the player, whereof the player will move towards indefinitely.
+     *
+     * @return -1=left, 0=none, 1=right
+     */
+    public int getMoveDirection() {
+        return moveDirection;
     }
 
     /**
@@ -109,7 +126,18 @@ public class PlayerEntity extends PhysicsEntity {
     /**
      * The current animation that should be visible on the player, each ordinal represents an {@link AnimationSequence}
      */
-    private enum AnimationState {
+    protected enum AnimationState {
         IDLE, JUMP, WALK_LEFT, WALK_RIGHT
+    }
+
+    /**
+     * Abstractly handles movement instructions from a given {@link PlayerEntity}
+     *
+     * @see PlayerInputSender
+     */
+    public interface PlayerMovementListener {
+        void onJump();
+
+        void onMove(int direction);
     }
 }

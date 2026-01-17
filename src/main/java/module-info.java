@@ -12,6 +12,7 @@ module com.logandhillon.fptgame {
     exports com.logandhillon.fptgame;
     exports com.logandhillon.fptgame.entity.ui;
     exports com.logandhillon.fptgame.scene;
+    exports com.logandhillon.fptgame.networking;
     exports com.logandhillon.fptgame.networking.proto;
     exports com.logandhillon.fptgame.entity.ui.component;
     exports com.logandhillon.fptgame.scene.menu;

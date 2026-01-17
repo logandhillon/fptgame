@@ -43,4 +43,4 @@ bin/
 
 ## logangamelib
 logs/
-logangamelib.dat
+logangamelib*.dat

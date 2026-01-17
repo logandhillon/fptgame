@@ -3,8 +3,8 @@ package com.logandhillon.logangamelib.entity.physics;
 import com.logandhillon.logangamelib.entity.Entity;
 
 /**
- * A physics entity is an {@link Entity} that (a) is affected by gravity, (b) has
- * collisions, and (c) has internal velocity that can be modulated to more (physically) accurately move the entity.
+ * A physics entity is an {@link Entity} that (a) is affected by gravity, (b) has collisions, and (c) has internal
+ * velocity that can be modulated to more (physically) accurately move the entity.
  *
  * @author Logan Dhillon
  */
@@ -54,7 +54,7 @@ public abstract class PhysicsEntity extends CollisionEntity {
         // collision handling
         float tx = x + vx * dt;
         float ty = y + vy * dt;
-        var coll = parent.getCollisionAt(tx, ty, w, h, this);
+        var coll = getCollisionAt(tx, ty, w, h, this);
         if (coll == null) {
             // move normally, apply velocities
             x = tx;
@@ -83,9 +83,13 @@ public abstract class PhysicsEntity extends CollisionEntity {
         }
 
         // check if grounded and reset vy if it is
-        var e = parent.getCollisionAt(x, y + PROBE_EPSILON, w, h, this);
+        var e = getCollisionAt(x, y + PROBE_EPSILON, w, h, this);
         grounded = e != null;
         if (grounded) vy = 0;
+    }
+
+    protected CollisionEntity getCollisionAt(float x, float y, float w, float h, CollisionEntity caller) {
+        return parent.getCollisionAt(x, y, w, h, caller);
     }
 
     /**
