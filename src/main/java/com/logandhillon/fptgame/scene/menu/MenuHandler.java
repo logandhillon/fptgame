@@ -52,6 +52,8 @@ public class MenuHandler extends UIScene {
 
         for (Entity e: content.getEntities()) addEntity(e);
         this.addMouseEvents(true); // re-bind the mouse events (they were just removed)
+
+        content.onShow();
     }
 
     /**

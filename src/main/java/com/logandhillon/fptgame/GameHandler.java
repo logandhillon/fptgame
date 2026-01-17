@@ -203,6 +203,7 @@ public class GameHandler extends Application {
      * Closes the client and nullifies the pointer.
      */
     private void terminateClient() {
+        LOG.info("Terminating client");
         if (client == null) {
             LOG.warn("Client does not exist, skipping termination");
             return;
@@ -220,6 +221,8 @@ public class GameHandler extends Application {
      * Closes the terminator and nullifies the pointer.
      */
     private static void terminateDiscoverer() {
+        LOG.info("Terminating discoverer");
+
         if (discoverer == null) {
             LOG.warn("Server discoverer does not exist, skipping termination");
             return;
@@ -233,6 +236,8 @@ public class GameHandler extends Application {
      * Stops the server and nullifies the pointer.
      */
     private void terminateServer() {
+        LOG.info("Terminating server");
+
         if (server == null) {
             LOG.warn("Server does not exist, skipping termination");
             return;

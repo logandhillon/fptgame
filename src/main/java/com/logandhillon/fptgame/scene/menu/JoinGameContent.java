@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 /**
  * The join game menu allows users to join existing servers through manual IP Address searching or local server
  * discovery. When the user has joined a game, they will be transported to the {@link LobbyGameContent}
@@ -31,15 +30,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Jack Ross, Logan Dhillon
  */
 public class JoinGameContent implements MenuContent {
-    private static final Logger LOG       = LoggerContext.getContext().getLogger(JoinGameContent.class);
-    private static final Font   HEADER_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 32);
-    private static final String HEADER      = "Join a Game";
+    private static final Logger LOG             = LoggerContext.getContext().getLogger(JoinGameContent.class);
+    private static final Font   HEADER_FONT     = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 32);
+    private static final String HEADER          = "Join a Game";
+    private static final Font   LABEL_FONT      = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 18);
+    private static final int    ENTITY_GAP      = 16;
+    private static final int    CORNER_DIAMETER = 53;
 
-    private final Entity[] entities;
-
-    private static final Font LABEL_FONT            = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 18);
-    private static final int  ENTITY_GAP            = 16;
-    private static final int CORNER_DIAMETER        = 53;
+    private final Entity[]            entities;
     private final MenuModalEntity     joinModal;
     private final ServerEntryEntity[] serverButtons = new ServerEntryEntity[4];
 
@@ -69,18 +67,17 @@ public class JoinGameContent implements MenuContent {
                 .build();
 
         // join server input field
-        InputBoxEntity joinServer = new InputBoxEntity(32, 193, 328, "ex. 192.168.0.1", "JOIN A SERVER DIRECTLY", 39);
+        InputBoxEntity joinServer = new InputBoxEntity(32, 193, 328, "ex. 192.168.0.1",
+                                                       "JOIN A SERVER DIRECTLY", 39);
 
         // join button (direct)
-        MenuButton joinDirectButton = new MenuButton(
-                "JOIN", 368, 193, 139, 48, () -> {
+        MenuButton joinDirectButton = new MenuButton("JOIN", 368, 193, 139, 48, () -> {
             LOG.info("Attempting to join {} via manual input", joinServer.getInput());
             onJoin.handleJoin(joinServer.getInput());
         });
 
         // join button (discovery)
-        MenuButton joinDiscoverButton = new MenuButton(
-                "JOIN", 32, 640, 459, 48, () -> {
+        MenuButton joinDiscoverButton = new MenuButton("JOIN", 32, 640, 459, 48, () -> {
             if (selectedServerAddr == null) {
                 LOG.warn("Tried to join discovered server, but no server was selected. Ignoring");
                 return;
@@ -90,15 +87,19 @@ public class JoinGameContent implements MenuContent {
         });
 
         joinModal = new MenuModalEntity(
-                0, 0, 585, GameHandler.CANVAS_HEIGHT, true, menu, serverListRect, serverListLabel, joinServer, joinDirectButton,
+                0, 0, 585, GameHandler.CANVAS_HEIGHT, true, menu, serverListRect, serverListLabel, joinServer,
+                joinDirectButton,
                 joinDiscoverButton);
 
         // creates list of entities to be used by menu handler
-        entities = new Entity[]{joinModal, new TextEntity.Builder(32, 66).setColor(Colors.ACTIVE)
-                                                                               .setText(HEADER.toUpperCase())
-                                                                               .setFont(HEADER_FONT)
-                                                                               .setBaseline(VPos.TOP)
-                                                                               .build()};
+        entities = new Entity[]{
+                joinModal,
+                new TextEntity.Builder(32, 66)
+                        .setColor(Colors.ACTIVE)
+                        .setText(HEADER.toUpperCase())
+                        .setFont(HEADER_FONT)
+                        .setBaseline(VPos.TOP).build()
+        };
 
         // create event handler that uses the event and the array of buttons
         menu.addHandler(KeyEvent.KEY_PRESSED, e -> onKeyPressed(e, serverButtons));
@@ -188,8 +189,7 @@ public class JoinGameContent implements MenuContent {
      * @param name    name of the server/room
      * @param address FQDN or IP address of server
      */
-    public record ServerEntry(String name, String address) {
-    }
+    public record ServerEntry(String name, String address) {}
 
     /**
      * @param e       any key event registered by javafx
