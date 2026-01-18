@@ -24,10 +24,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
-    private static final float SYNC_LERP = 0.15f; // how aggressively we correct
+    private static final float SYNC_LERP          = 0.15f; // how aggressively we correct
+    private static final float MAX_DESYNC_DIST_SQ = 192f * 192f; // pixels before hard snap
 
-    private final PlayerEntity self;
-    private final PlayerEntity other;
+    private final PlayerEntity       self;
+    private final PlayerEntity       other;
     private final PeerMovementPoller movePoller;
 
     public DynamicLevelScene(LevelProto.LevelData level) {
@@ -112,21 +113,27 @@ public class DynamicLevelScene extends GameScene {
         // remote player is always authoritative
         other.setPosition(
                 other.getX() + (update.getHost().getX() - other.getX()) * SYNC_LERP,
-                other.getY() + (update.getHost().getY() - other.getY()) * SYNC_LERP
-        );
+                other.getY() + (update.getHost().getY() - other.getY()) * SYNC_LERP);
         other.vx = update.getHost().getVx();
         other.vy = update.getHost().getVy();
 
         // our position is an estimate, we are the authoritative answer; therefore lerp our position
-        if (self.isGrounded()) {
-            // grounded: gently correct position
-            self.setPosition(
-                    self.getX() + (update.getGuest().getX() - self.getX()) * SYNC_LERP,
-                    self.getY() + (update.getGuest().getY() - self.getY()) * SYNC_LERP
-            );
-            self.vx = update.getGuest().getVx();
-            self.vy = update.getGuest().getVy();
+        if (!self.isGrounded()) return; // airborne: ignore position, keep local prediction
+
+        float dx = update.getGuest().getX() - self.getX();
+        float dy = update.getGuest().getY() - self.getY();
+        float distSq = dx * dx + dy * dy;
+
+        if (distSq > MAX_DESYNC_DIST_SQ) {
+            // too far off: hard snap
+            LOG.warn(String.format("Hard snapping player (desync %.2f sq. px.)", distSq));
+            self.setPosition(update.getGuest().getX(), update.getGuest().getY());
+        } else {
+            // small error: smooth correction
+            self.setPosition(self.getX() + dx * SYNC_LERP, self.getY() + dy * SYNC_LERP);
         }
-        // airborne: ignore position, keep local prediction
+
+        self.vx = update.getGuest().getVx();
+        self.vy = update.getGuest().getVy();
     }
 }
