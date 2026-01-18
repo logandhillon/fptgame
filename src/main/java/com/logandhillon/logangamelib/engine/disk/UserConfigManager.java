@@ -91,7 +91,7 @@ public class UserConfigManager {
      * @param partial the partial values, whatever is set here will be updated, otherwise it will remain the same.
      */
     public static UserConfig update(UserConfig current, UserConfig partial) {
-        LOG.debug("Updating user config");
+        LOG.debug("Updating user config with {}", partial.toString());
         UserConfig merged = current.toBuilder().mergeFrom(partial).build();
         return save(merged);
     }
