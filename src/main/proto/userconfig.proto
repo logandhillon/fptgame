@@ -5,4 +5,9 @@ option java_outer_classname = "ConfigProto";
 
 message UserConfig {
   string name = 1;
+
+  string key_move_left = 2;
+  string key_move_right = 3;
+  string key_move_jump = 4;
+  string key_move_interact = 5;
 }
