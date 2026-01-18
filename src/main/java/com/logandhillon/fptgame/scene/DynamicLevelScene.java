@@ -25,7 +25,7 @@ public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
     private static final float SYNC_LERP          = 0.15f; // how aggressively we correct
-    private static final float MAX_DESYNC_DIST_SQ = 192f * 192f; // pixels before hard snap
+    private static final float MAX_DESYNC_DIST_SQ = 48f * 48f; // pixels before hard snap
 
     private final PlayerEntity       self;
     private final PlayerEntity       other;
