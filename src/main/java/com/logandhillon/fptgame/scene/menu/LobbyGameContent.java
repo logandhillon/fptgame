@@ -52,9 +52,7 @@ public class LobbyGameContent implements MenuContent {
         // shows different buttons at bottom depending on if the user is hosting
         startButton = new MenuButton(isHosting ? "WAITING FOR PARTNER..." : "WAITING FOR HOST...",
                                      32, 640, 304, 48, () -> {
-            if (isHosting && isStartingAllowed) {
-                menu.getGameHandler().startGame();
-            }
+            if (isHosting && isStartingAllowed) GameHandler.getServer().startGame();
         });
 
         if (!isHosting) {

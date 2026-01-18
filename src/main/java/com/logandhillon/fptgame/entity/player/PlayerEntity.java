@@ -92,7 +92,7 @@ public class PlayerEntity extends PhysicsEntity {
      */
     public void setMoveDirection(int dir) {
         moveDirection = dir;
-        if (listener != null) listener.onMove(dir);
+        if (listener != null) listener.onMove(dir, x, y, vx, vy);
     }
 
     /**
@@ -138,6 +138,9 @@ public class PlayerEntity extends PhysicsEntity {
     public interface PlayerMovementListener {
         void onJump();
 
-        void onMove(int direction);
+        /**
+         * Called on move, given the direction to move in and the new positions and velocities.
+         */
+        void onMove(int direction, float x, float y, float vx, float vy);
     }
 }

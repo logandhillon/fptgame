@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
-    private final PlayerEntity self;
     private final PlayerEntity other;
     private final PeerMovementPoller movePoller;
 
@@ -48,13 +47,13 @@ public class DynamicLevelScene extends GameScene {
 
         for (LevelObject obj: LevelFactory.load(level)) addEntity(obj);
 
-        self = new ControllablePlayerEntity(0, 0,
-                                            role == GameHandler.NetworkRole.SERVER ? 0 : 1,
-                                            new PlayerInputSender());
-        addEntity(self);
-
         other = new PlayerEntity(0, 0, role == GameHandler.NetworkRole.SERVER ? 1 : 0, null);
         addEntity(other);
+
+        PlayerEntity self = new ControllablePlayerEntity(0, 0,
+                                                         role == GameHandler.NetworkRole.SERVER ? 0 : 1,
+                                                         new PlayerInputSender());
+        addEntity(self); // render self on top of other, we should always be visible first.
     }
 
     @Override
@@ -74,44 +73,15 @@ public class DynamicLevelScene extends GameScene {
     }
 
     /**
-     * Assuming that 'self' is the host, this builds the {@link PlayerProto.PlayerPositionSync} message and returns it.
+     * Takes in the {@link PlayerProto.PlayerMovementData} from the partner/other, and "synchronizes" their
+     * position to the incoming update message.
      *
-     * @return {@link PlayerProto.PlayerPositionSync} with filled-in values
+     * @param update the incoming {@link PlayerProto.PlayerMovementData} update message
      */
-    public PlayerProto.PlayerPositionSync buildMovementSyncMsg() {
-        return PlayerProto.PlayerPositionSync
-                .newBuilder()
-                .setHost(PlayerProto.PlayerMovementData
-                                 .newBuilder()
-                                 .setX(self.getX())
-                                 .setY(self.getY())
-                                 .setVx(self.vx)
-                                 .setVy(self.vy)
-                                 .build())
-                .setGuest(PlayerProto.PlayerMovementData
-                                  .newBuilder()
-                                  .setX(other.getX())
-                                  .setY(other.getY())
-                                  .setVx(other.vx)
-                                  .setVy(other.vy)
-                                  .build())
-                .build();
-    }
-
-    /**
-     * Assuming that `other` is the host, this takes in a {@link PlayerProto.PlayerPositionSync} and "synchronizes" the
-     * incoming update message to this {@link GameScene}
-     *
-     * @param update the incoming {@link PlayerProto.PlayerPositionSync} update message
-     */
-    public void syncMovement(PlayerProto.PlayerPositionSync update) {
+    public void syncMovement(PlayerProto.PlayerMovementData update) {
         LOG.debug("Updating movement from remote");
-        other.setPosition(update.getHost().getX(), update.getHost().getY());
-        other.vx = update.getHost().getVx();
-        other.vy = update.getHost().getVy();
-
-        self.setPosition(update.getGuest().getX(), update.getGuest().getY());
-        self.vx = update.getGuest().getVx();
-        self.vy = update.getGuest().getVy();
+        other.setPosition(update.getX(), update.getY());
+        other.vx = update.getVx();
+        other.vy = update.getVy();
     }
 }

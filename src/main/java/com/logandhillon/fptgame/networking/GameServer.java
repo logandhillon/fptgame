@@ -1,11 +1,15 @@
 package com.logandhillon.fptgame.networking;
 
 import com.logandhillon.fptgame.GameHandler;
+import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
+import com.logandhillon.fptgame.resource.Levels;
+import com.logandhillon.fptgame.scene.DynamicLevelScene;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.networking.PacketWriter;
+import javafx.application.Platform;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -125,9 +129,9 @@ public class GameServer implements Runnable {
                         if (guest.socket == client) guest = null;
                         clients.remove(client);
 
-                        MenuHandler menu = game.getActiveScene(MenuHandler.class);
-                        if (menu != null) {
-                            MenuContent content = menu.getContent();
+                        Optional<MenuHandler> menu = game.getActiveScene(MenuHandler.class);
+                        if (menu.isPresent()) {
+                            MenuContent content = menu.get().getContent();
                             if (content instanceof LobbyGameContent lobby) {
                                 propagateLobbyUpdate(lobby);
                             }
@@ -176,7 +180,26 @@ public class GameServer implements Runnable {
             // finally, parse the request
             switch (packet.type()) {
                 // if peer is trying to move, add instruction to queue
-                case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> queuedPeerMovements.add(packet.type());
+                case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> {
+                    queuedPeerMovements.add(packet.type());
+
+                    // JUMP packets don't contain movement data
+                    if (packet.type() == GamePacket.Type.COM_JUMP) return;
+
+                    // sync other's movement
+                    Optional<DynamicLevelScene> level = game.getActiveScene(DynamicLevelScene.class);
+                    if (level.isEmpty()) {
+                        LOG.warn("Tried to sync movement, but was not in DynamicLevelScene; skipping message");
+                        return;
+                    }
+                    level.get().syncMovement(PlayerProto.PlayerMovementData.parseFrom(packet.payload()));
+                }
+
+                case CLT_DISCONNECT -> {
+                    // going to the main menu will shut down the server
+                    LOG.info("Client disconnected, returning to main menu");
+                    Platform.runLater(() -> game.showAlert("PARTNER DISCONNECTED", "Your partner has left the game."));
+                }
             }
         } catch (IOException e) {
             LOG.error("Failed to close client at {}", client.getInetAddress(), e);
@@ -202,8 +225,8 @@ public class GameServer implements Runnable {
             }
 
             // get the lobby in advance, so it can get null if we shouldn't do this
-            var menu = game.getActiveScene(MenuHandler.class);
-            if (menu == null || !(menu.getContent() instanceof LobbyGameContent lobby)) {
+            Optional<MenuHandler> menu = game.getActiveScene(MenuHandler.class);
+            if (menu.isEmpty() || !(menu.get().getContent() instanceof LobbyGameContent lobby)) {
                 // if lobby IS null, then just throw a warn and return early ;)
                 LOG.warn(
                         "Server got a registration request, but was not ready for it. Closing client at {}.",
@@ -260,6 +283,18 @@ public class GameServer implements Runnable {
     }
 
     /**
+     * Starts the game for the server: broadcasts the level to connected client(s) and sets the
+     * {@link com.logandhillon.logangamelib.engine.GameScene}.
+     */
+    public void startGame() {
+        LevelProto.LevelData level = Levels.DEBUG_LEVEL; // XXX: hardcode level for server
+        broadcast(new GamePacket(GamePacket.Type.SRV_GAME_STARTING, level));
+        game.setInMenu(false);
+
+        Platform.runLater(() -> game.setScene(new DynamicLevelScene(level)));
+    }
+
+    /**
      * Starts advertising this server on the IP broadcast channel with UDP discovery packets.
      */
     public void startAdvertising() {
@@ -273,8 +308,8 @@ public class GameServer implements Runnable {
                 while (running) {
                     // only listen in lobby
                     if (game.isInGame()) continue;
-                    var menu = game.getActiveScene(MenuHandler.class);
-                    if (!(menu.getContent() instanceof LobbyGameContent lobby)) {
+                    Optional<MenuHandler> menu = game.getActiveScene(MenuHandler.class);
+                    if (menu.isEmpty() || !(menu.get().getContent() instanceof LobbyGameContent lobby)) {
                         LOG.warn("Supposed to be in lobby, but lobby was null. Will not advertise this frame.");
                         return;
                     }

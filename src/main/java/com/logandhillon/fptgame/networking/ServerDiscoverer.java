@@ -12,6 +12,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Logan Dhillon
@@ -21,8 +22,8 @@ public class ServerDiscoverer {
 
     private final List<JoinGameContent.ServerEntry> discoveredServers = new ArrayList<>();
     private final GameHandler                       game;
-    private       Thread                          discoverer;
-    private       Thread                          purger;
+    private       Thread                            discoverer;
+    private       Thread                            purger;
 
     private volatile boolean listening        = false;
     private volatile long    lastUpdateMillis = System.currentTimeMillis();
@@ -108,8 +109,8 @@ public class ServerDiscoverer {
     }
 
     private void updateJoinGameScene() {
-        var menu = game.getActiveScene(MenuHandler.class);
-        if (!(menu.getContent() instanceof JoinGameContent scene)) return;
+        Optional<MenuHandler> menu = game.getActiveScene(MenuHandler.class);
+        if (menu.isEmpty() || !(menu.get().getContent() instanceof JoinGameContent scene)) return;
         LOG.debug("Updating join game scene with {} servers", discoveredServers.size());
         scene.setDiscoveredServers(discoveredServers);
     }

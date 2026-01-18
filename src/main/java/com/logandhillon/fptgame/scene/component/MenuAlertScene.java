@@ -25,21 +25,20 @@ public class MenuAlertScene implements MenuContent {
     public MenuAlertScene(String title, String msg, MenuHandler menu) {
         String t = title.toUpperCase();
 
-        entities = new Entity[]{ new ModalEntity(
-                375, 229.5f, 530, 262,
-                new TextEntity.Builder(265, 16).setText(t)
+        entities = new Entity[]{ new ModalEntity(375, 229.5f, 530, 262),
+                new TextEntity.Builder(640, 246).setText(t)
                                                .setFont(TITLE_FONT)
                                                .setColor(Colors.ACTIVE)
                                                .setAlign(TextAlignment.CENTER)
                                                .setBaseline(VPos.TOP)
                                                .build(),
-                new TextEntity.Builder(265, 74).setText(msg)
+                new TextEntity.Builder(640, 304).setText(msg)
                                                .setFont(BODY_FONT)
                                                .setColor(Colors.ACTIVE)
                                                .setAlign(TextAlignment.CENTER)
                                                .setBaseline(VPos.TOP)
                                                .build(),
-                new MenuButton("BACK TO MAIN MENU", 16, 198, 498, 48, () -> menu.getGameHandler().goToMainMenu()))};
+                new MenuButton("BACK TO MAIN MENU", 391, 428, 498, 48, () -> menu.getGameHandler().goToMainMenu())};
     }
 
     @Override

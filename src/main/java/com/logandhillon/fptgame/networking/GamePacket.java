@@ -27,6 +27,7 @@ public record GamePacket(Type type, byte[] payload) {
         this(type, new byte[0]);
     }
 
+    @Deprecated
     public GamePacket(Type type, String payload) {
         this(type, payload.getBytes(StandardCharsets.UTF_8));
     }
@@ -44,10 +45,10 @@ public record GamePacket(Type type, byte[] payload) {
         SRV_GAME_STARTING, // announces that the game is starting
         SRV_UNEXPECTED, // generic error for if the server wasn't expecting something (e.g. not ready for a request)
         SRV_SHUTDOWN,
-        SRV_SYNC_MOVEMENT,
 
         // client-side types
         CLT_REQ_CONN, // used to request registration upon joining a server
+        CLT_DISCONNECT,
 
         COM_JUMP,
         COM_MOVE_L,

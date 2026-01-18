@@ -19,8 +19,3 @@ message PlayerMovementData {
   float vx = 3;
   float vy = 4;
 }
-
-message PlayerPositionSync {
-  PlayerMovementData host = 1;
-  PlayerMovementData guest = 2;
-}

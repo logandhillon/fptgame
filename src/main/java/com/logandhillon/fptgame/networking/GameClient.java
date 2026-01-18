@@ -1,7 +1,9 @@
 package com.logandhillon.fptgame.networking;
 
 import com.logandhillon.fptgame.GameHandler;
+import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
+import com.logandhillon.fptgame.scene.DynamicLevelScene;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.networking.PacketWriter;
@@ -13,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 
 /**
@@ -125,15 +128,19 @@ public class GameClient {
 
                 var data = PlayerProto.Lobby.parseFrom(packet.payload());
 
-                MenuHandler menu = game.getActiveScene(MenuHandler.class);
-                var lobby = new LobbyGameContent(menu, data.getName(), false);
+                Optional<MenuHandler> menu = game.getActiveScene(MenuHandler.class);
+                if (menu.isEmpty()) {
+                    LOG.error("Illegal operation: attempted to update player list; not in MenuHandler");
+                    return;
+                }
+                var lobby = new LobbyGameContent(menu.get(), data.getName(), false);
                 lobby.clearPlayers();
 
                 game.setInMenu(true);
 
                 // run setContent on the FX thread
                 Platform.runLater(() -> {
-                    menu.setContent(lobby);
+                    menu.get().setContent(lobby);
                     // set lobby players on FX thread, since the content must exist before setting players
                     lobby.addPlayer(data.getHost().getName(), true);
                     lobby.addPlayer(data.getGuest().getName(), false);
@@ -148,15 +155,28 @@ public class GameClient {
             }
             case SRV_GAME_STARTING -> {
                 LOG.info("Server has announced that the game is starting");
-                game.startGame();
+                startGame(LevelProto.LevelData.parseFrom(packet.payload()));
             }
             case SRV_SHUTDOWN -> {
                 // going to the main menu will shut down the client
                 LOG.info("Server is shutting down, returning to main menu");
-                game.showAlert("SERVER CLOSED", "The server has shut down.");
+                Platform.runLater(() -> game.showAlert("SERVER CLOSED", "The server has shut down."));
             }
             // if peer is trying to move, add instruction to queue
-            case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> queuedPeerMovements.add(packet.type());
+            case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> {
+                queuedPeerMovements.add(packet.type());
+
+                // JUMP packets don't contain movement data
+                if (packet.type() == GamePacket.Type.COM_JUMP) return;
+
+                // sync other's movement
+                Optional<DynamicLevelScene> level = game.getActiveScene(DynamicLevelScene.class);
+                if (level.isEmpty()) {
+                    LOG.warn("Tried to sync movement, but was not in DynamicLevelScene; skipping message");
+                    return;
+                }
+                level.get().syncMovement(PlayerProto.PlayerMovementData.parseFrom(packet.payload()));
+            }
         }
     }
 
@@ -174,12 +194,27 @@ public class GameClient {
     }
 
     /**
+     * Starts the game for the client, showing the {@link DynamicLevelScene} with the correct level data.
+     *
+     * @param level provided level data from server
+     */
+    public void startGame(LevelProto.LevelData level) {
+        game.setInMenu(false);
+        Platform.runLater(() -> game.setScene(new DynamicLevelScene(level)));
+    }
+
+    /**
      * Terminates the active connection with the server
      *
      * @throws IOException if the socket fails to close
      */
     public void close() throws IOException {
-        if (socket != null) {
+        if (socket != null && !socket.isClosed()) {
+            if (out != null) {
+                LOG.info("Active connection to peer, sending CLT_DISCONNECT");
+                sendServer(new GamePacket(GamePacket.Type.CLT_DISCONNECT));
+            }
+
             LOG.info("Closing connection to server");
             socket.close();
         }

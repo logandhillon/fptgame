@@ -1,13 +1,11 @@
 package com.logandhillon.fptgame;
 
 import com.logandhillon.fptgame.networking.GameClient;
-import com.logandhillon.fptgame.networking.GamePacket;
 import com.logandhillon.fptgame.networking.GameServer;
 import com.logandhillon.fptgame.networking.ServerDiscoverer;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.resource.Levels;
 import com.logandhillon.fptgame.scene.SingleplayerGameScene;
-import com.logandhillon.fptgame.scene.DynamicLevelScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
@@ -24,6 +22,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.util.Optional;
 
 public class GameHandler extends Application {
     private static final Logger LOG               = LoggerContext.getContext().getLogger(GameHandler.class);
@@ -66,10 +65,17 @@ public class GameHandler extends Application {
         stage.setMinWidth(CANVAS_WIDTH / 2f);
         stage.setMinHeight(CANVAS_HEIGHT / 2f);
 
+        stage.setOnCloseRequest(e -> {
+            LOG.info("Received window close request");
+            shutdown();
+            Platform.exit();
+        });
+
         String debugMode = System.getenv("LGL_DEBUG_MODE");
         setScene(debugMode != null && debugMode.equalsIgnoreCase("true")
                  ? new SingleplayerGameScene(Levels.DEBUG_LEVEL) // debug scene if LGL_DEBUG_MODE is true
                  : new MenuHandler());
+
         stage.show();
     }
 
@@ -80,20 +86,34 @@ public class GameHandler extends Application {
      *
      * @see GameHandler#start(Stage)
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         String lglSaveFile = System.getenv("LGL_SAVE_FILE");
         if (lglSaveFile != null) UserConfigManager.setManagedFile(lglSaveFile);
 
         // load user config first
         userConfig = UserConfigManager.load();
 
+        // register shutdown hook (handles SIGTERM/crashes)
+        Runtime.getRuntime().addShutdownHook(new Thread(GameHandler::shutdown, "Shutdown-Hook"));
+
         // then start the javafx program
         launch();
+    }
 
-        // this runs AFTER the javafx window closes
+    private static void shutdown() {
         LOG.info("Program terminated, exiting cleanly");
-        if (server != null) server.stop();
-        if (client != null) client.close();
+        try {
+            if (server != null) server.stop();
+        } catch (IOException e) {
+            LOG.error("Error stopping server during shutdown", e);
+        }
+
+        try {
+            if (client != null) client.close();
+        } catch (IOException e) {
+            LOG.error("Error closing client during shutdown", e);
+        }
+
         terminateDiscoverer();
     }
 
@@ -107,9 +127,9 @@ public class GameHandler extends Application {
     }
 
     public void goToMainMenu() {
-        var menu = this.getActiveScene(MenuHandler.class);
-        if (menu == null) this.setScene(new MenuHandler());
-        else menu.setContent(new MainMenuContent(menu));
+        Optional<MenuHandler> menu = this.getActiveScene(MenuHandler.class);
+        if (menu.isEmpty()) this.setScene(new MenuHandler());
+        else menu.get().setContent(new MainMenuContent(menu.get()));
         setInMenu(true);
         terminateClient();
         terminateServer();
@@ -123,9 +143,11 @@ public class GameHandler extends Application {
      */
     public void createLobby(String roomName) {
         LOG.info("Creating lobby named {}", roomName);
-        MenuHandler menu = getActiveScene(MenuHandler.class);
-        var lobby = new LobbyGameContent(menu, roomName, true);
-        menu.setContent(lobby); // set content first so we can populate lobby after
+        Optional<MenuHandler> menu = getActiveScene(MenuHandler.class);
+        if (menu.isEmpty()) throw new IllegalStateException("Cannot create lobby without active MenuHandler");
+
+        var lobby = new LobbyGameContent(menu.get(), roomName, true);
+        menu.get().setContent(lobby); // set content first so we can populate lobby after
         lobby.addPlayer(GameHandler.getUserConfig().getName(), true);
 
         if (server != null) throw new IllegalStateException("Server already exists, cannot establish connection");
@@ -139,33 +161,12 @@ public class GameHandler extends Application {
         }
     }
 
-    /**
-     * Handles a game start
-     *
-     * @throws IllegalStateException if there is no active server or client
-     */
-    public void startGame() {
-        if (server != null) {
-            // TODO: broadcast game start to clients via server
-            server.broadcast(new GamePacket(GamePacket.Type.SRV_GAME_STARTING));
-        } else if (client != null) {
-            // TODO: handle game scene setup from GameClient
-            // nothing to do for now !!
-        } else {
-            throw new IllegalStateException("You cannot start the game without an active server or client!");
-        }
-
-        isInMenu = false;
-
-        // TODO: dont load debug level here
-        Platform.runLater(() -> setScene(new DynamicLevelScene(Levels.DEBUG_LEVEL)));
-    }
-
     public void showJoinGameMenu() {
         discoverer = new ServerDiscoverer(this);
         discoverer.start();
-        MenuHandler menu = getActiveScene(MenuHandler.class);
-        menu.setContent(new JoinGameContent(menu, this::joinGame));
+        Optional<MenuHandler> menu = getActiveScene(MenuHandler.class);
+        if (menu.isEmpty()) throw new IllegalStateException("Cannot show game menu without active MenuHandler");
+        menu.get().setContent(new JoinGameContent(menu.orElse(null), this::joinGame));
     }
 
     /**
@@ -265,8 +266,15 @@ public class GameHandler extends Application {
      * Discards the current scene and shows a new {@link MenuAlertScene} with the provided alert details.
      */
     public void showAlert(String title, String message) {
-        MenuHandler menu = getActiveScene(MenuHandler.class);
-        menu.setContent(new MenuAlertScene(title, message, menu));
+        LOG.info("Showing alert {}: {}", title, message);
+        Optional<MenuHandler> menu = getActiveScene(MenuHandler.class);
+
+        if (menu.isPresent()) {
+            menu.get().setContent(new MenuAlertScene(title, message, menu.get()));
+        } else {
+            LOG.debug("No MenuHandler active, creating new one");
+            setScene(MenuHandler.alert(title, message));
+        }
     }
 
     /**
@@ -277,11 +285,11 @@ public class GameHandler extends Application {
      *
      * @return the active {@link GameScene} if it is the right type, or null if it's not
      */
-    public <T extends GameScene> T getActiveScene(Class<T> type) {
+    public <T extends GameScene> Optional<T> getActiveScene(Class<T> type) {
         if (!type.isInstance(activeScene))
-            return null;
+            return Optional.empty();
 
-        return type.cast(activeScene);
+        return Optional.of(type.cast(activeScene));
     }
 
     /**
