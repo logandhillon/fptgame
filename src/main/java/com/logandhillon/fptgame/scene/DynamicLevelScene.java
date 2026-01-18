@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
-    private static final float VALID_POS_TOLERANCE = 0;
+    private static final float VALID_POS_TOLERANCE = 96f * 96f; // sq px to trigger position correction
 
     private final PlayerEntity self;
     private final PlayerEntity other;
