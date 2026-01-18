@@ -56,7 +56,7 @@ public class DynamicButtonEntity extends ButtonEntity {
     }
 
     public void setLocked(boolean locked) {
-        LOG.info("{}ing button: {}", locked ? "Lock" : "Unlock", this);
+        LOG.debug("{}ing button: {}", locked ? "Lock" : "Unlock", this);
         this.locked = locked;
     }
 
