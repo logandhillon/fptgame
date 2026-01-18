@@ -24,10 +24,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
-    private static final float SYNC_LERP = 0.15f; // how aggressively we correct
+    private static final float SYNC_LERP      = 0.15f; // how aggressively we correct per second
+    private static final float SYNC_THRESHOLD = 0.25f; // sq px to consider a position "valid"
 
-    private final PlayerEntity self;
-    private final PlayerEntity other;
+    // our real position as per the server
+    private float   selfTx;
+    private float   selfTy;
+    private boolean hasSelfTarget = false;
+
+    private final PlayerEntity       self;
+    private final PlayerEntity       other;
     private final PeerMovementPoller movePoller;
 
     public DynamicLevelScene(LevelProto.LevelData level) {
@@ -65,13 +71,30 @@ public class DynamicLevelScene extends GameScene {
 
         // poll our peer's move and apply it to our instance.
         GamePacket.Type move = movePoller.poll();
-        if (move == null) return;
-        LOG.debug("Processing peer movement '{}'", move);
-        switch (move) {
-            case COM_JUMP -> other.jump();
-            case COM_MOVE_L -> other.setMoveDirection(-1);
-            case COM_MOVE_R -> other.setMoveDirection(1);
-            case COM_STOP_MOVING -> other.setMoveDirection(0);
+        if (move != null) {
+            LOG.debug("Processing peer movement '{}'", move);
+            switch (move) {
+                case COM_JUMP -> other.jump();
+                case COM_MOVE_L -> other.setMoveDirection(-1);
+                case COM_MOVE_R -> other.setMoveDirection(1);
+                case COM_STOP_MOVING -> other.setMoveDirection(0);
+            }
+        }
+
+        // continuous lerp for local player
+        if (hasSelfTarget && self.isGrounded()) {
+            float alpha = 1f - (float)Math.exp(-SYNC_LERP * dt);
+            float nx = self.getX() + (selfTx - self.getX()) * alpha;
+            float ny = self.getY() + (selfTy - self.getY()) * alpha;
+            self.setPosition(nx, ny);
+
+            // stop correcting when close enough
+            float dx = selfTx - nx;
+            float dy = selfTy - ny;
+            if (dx * dx + dy * dy < SYNC_THRESHOLD) {
+                self.setPosition(selfTx, selfTy);
+                hasSelfTarget = false;
+            }
         }
     }
 
@@ -118,24 +141,11 @@ public class DynamicLevelScene extends GameScene {
         other.vy = update.getHost().getVy();
 
         // our position is an estimate, we are the authoritative answer; therefore lerp our position
-        if (!self.isGrounded()) return;// airborne: ignore position, keep local prediction
+        if (!self.isGrounded()) return; // airborne: ignore position, keep local prediction
 
-        float tx = update.getGuest().getX();
-        float ty = update.getGuest().getY();
-
-        // lerp if moving, teleport if not moving
-        if (Math.abs(self.vx) > 0.001f ||
-            Math.abs(self.vy) > 0.001f ||
-            self.getMoveDirection() != 0) {
-            // is moving, lerp to real position
-            self.setPosition(
-                    self.getX() + (tx - self.getX()) * SYNC_LERP,
-                    self.getY() + (ty - self.getY()) * SYNC_LERP
-            );
-        } else {
-            // not moving, hard snap to authoritative position
-//            self.setPosition(tx, ty);
-        }
+        selfTx = update.getGuest().getX();
+        selfTy = update.getGuest().getY();
+        hasSelfTarget = true;
 
         self.vx = update.getGuest().getVx();
         self.vy = update.getGuest().getVy();
