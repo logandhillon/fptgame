@@ -184,7 +184,7 @@ public class GameServer implements Runnable {
                     queuedPeerMovements.add(packet.type());
 
                     // only send SYNC packet if partner isn't moving
-                    if (packet.type() != GamePacket.Type.COM_STOP_MOVING) return;
+                    if (packet.type() == GamePacket.Type.COM_JUMP) return;
                     Optional<DynamicLevelScene> level = game.getActiveScene(DynamicLevelScene.class);
                     if (level.isEmpty()) {
                         LOG.warn("Tried to sync movement, but was not in DynamicLevelScene; skipping message");
