@@ -15,7 +15,6 @@ import com.logandhillon.logangamelib.engine.GameEngine;
 import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.engine.disk.UserConfigManager;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -68,23 +67,6 @@ public class GameHandler extends Application {
         setScene(debugMode != null && debugMode.equalsIgnoreCase("true")
                  ? new SingleplayerGameScene(Levels.DEBUG_LEVEL) // debug scene if LGL_DEBUG_MODE is true
                  : new MenuHandler());
-        stage.setOnCloseRequest(event -> {
-            LOG.info("JavaFX window close requested");
-            try {
-                if (server != null) server.stop();
-            } catch (Exception e) {
-                LOG.error("Error stopping server on window close", e);
-            }
-
-            try {
-                if (client != null) client.close();
-            } catch (Exception e) {
-                LOG.error("Error closing client on window close", e);
-            }
-
-            terminateDiscoverer();
-            Platform.exit();
-        });
 
         stage.show();
     }
@@ -273,7 +255,13 @@ public class GameHandler extends Application {
      * Discards the current scene and shows a new {@link MenuAlertScene} with the provided alert details.
      */
     public void showAlert(String title, String message) {
+        LOG.info("Showing alert {}: {}", title, message);
         MenuHandler menu = getActiveScene(MenuHandler.class);
+        if (menu == null) {
+            LOG.debug("No MenuHandler active, creating new one");
+            menu = new MenuHandler();
+            setScene(menu);
+        }
         menu.setContent(new MenuAlertScene(title, message, menu));
     }
 

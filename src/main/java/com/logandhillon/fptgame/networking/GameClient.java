@@ -155,7 +155,7 @@ public class GameClient {
             case SRV_SHUTDOWN -> {
                 // going to the main menu will shut down the client
                 LOG.info("Server is shutting down, returning to main menu");
-                game.showAlert("SERVER CLOSED", "The server has shut down.");
+                Platform.runLater(() -> game.showAlert("SERVER CLOSED", "The server has shut down."));
             }
             // if peer is trying to move, add instruction to queue
             case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> queuedPeerMovements.add(packet.type());
