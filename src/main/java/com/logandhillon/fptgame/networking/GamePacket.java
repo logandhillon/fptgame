@@ -27,6 +27,7 @@ public record GamePacket(Type type, byte[] payload) {
         this(type, new byte[0]);
     }
 
+    @Deprecated
     public GamePacket(Type type, String payload) {
         this(type, payload.getBytes(StandardCharsets.UTF_8));
     }
