@@ -30,6 +30,7 @@ public abstract class UIScene extends GameScene {
     private       Clickable[]                        cachedClickables = new Clickable[0];
 
     private static final class ClickableFlags {
+        private boolean isDragging = false;
         private boolean isHovering = false;
         private boolean isActive   = false;
     }
@@ -50,6 +51,8 @@ public abstract class UIScene extends GameScene {
     public void addMouseEvents(boolean force) {
         this.addHandler(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
         this.addHandler(MouseEvent.MOUSE_MOVED, this::onMouseMoved);
+        this.addHandler(MouseEvent.MOUSE_DRAGGED, this::onMouseDragged);
+        this.addHandler(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
         if (force) {
             this.bindAllEvents();
         }
@@ -164,6 +167,31 @@ public abstract class UIScene extends GameScene {
             else if (!checkHitbox(e, c) && flags.isHovering) {
                 c.onMouseLeave(e);
                 flags.isHovering = false; // mark as not active
+            }
+        }
+    }
+
+    protected void onMouseDragged(MouseEvent e) {
+        for(Clickable c: cachedClickables) {
+            ClickableFlags flags = clickables.get(c);
+
+            if (flags == null) continue;
+
+            if (checkHitbox(e, c) && !flags.isDragging) {
+                c.onDrag(e);
+                flags.isDragging = true;
+            }
+        }
+    }
+
+
+    protected void onMouseRelease(MouseEvent e) {
+        for (Clickable c: cachedClickables) {
+            ClickableFlags flags = clickables.get(c);
+
+            if (checkHitbox(e, c) && flags.isDragging) {
+                c.onDrop(e);
+                flags.isDragging = false;
             }
         }
     }

@@ -22,6 +22,7 @@ public final class Colors {
 
     public static final Color BUTTON_NORMAL = Color.rgb(207, 209, 235);
     public static final Color BUTTON_HOVER  = Color.rgb(75, 150, 249);
+    public static final Color SLIDER_HEAD   = Color.rgb(217, 217, 217);
 
     public static final Color       PLAYER_RED   = Color.web("#E23B36");
     public static final Color       PLAYER_BLUE  = Color.web("#4184E8");

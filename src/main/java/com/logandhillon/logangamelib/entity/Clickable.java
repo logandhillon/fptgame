@@ -56,6 +56,19 @@ public abstract class Clickable extends BoundEntity<UIScene> {
      */
     public void onMouseLeave(MouseEvent e) {}
 
+
+    /** Runs the mouse drag handler
+     *
+     * @param e the mouse event provided by JavaFX
+     */
+    public void onDrag(MouseEvent e){}
+
+    /**
+     * Runs when the dragged element has been dropped
+     * @param e
+     */
+    public void onDrop(MouseEvent e){}
+
     public float getWidth() {
         return w;
     }
