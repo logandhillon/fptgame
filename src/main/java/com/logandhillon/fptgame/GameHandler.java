@@ -267,13 +267,14 @@ public class GameHandler extends Application {
      */
     public void showAlert(String title, String message) {
         LOG.info("Showing alert {}: {}", title, message);
-        MenuHandler menu = getActiveScene(MenuHandler.class).orElseGet(() -> {
+        Optional<MenuHandler> menu = getActiveScene(MenuHandler.class);
+
+        if (menu.isPresent()) {
+            menu.get().setContent(new MenuAlertScene(title, message, menu.get()));
+        } else {
             LOG.debug("No MenuHandler active, creating new one");
-            MenuHandler scene = new MenuHandler();
-            setScene(scene);
-            return scene;
-        });
-        menu.setContent(new MenuAlertScene(title, message, menu));
+            setScene(MenuHandler.alert(title, message));
+        }
     }
 
     /**

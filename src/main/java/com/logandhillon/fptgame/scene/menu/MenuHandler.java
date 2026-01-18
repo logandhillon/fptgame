@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.scene.menu;
 
 import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.resource.Textures;
+import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.logangamelib.engine.UIScene;
 import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.logangamelib.gfx.ParallaxBackground;
@@ -25,8 +26,30 @@ public class MenuHandler extends UIScene {
 
     private MenuContent content;
 
+    /**
+     * Creates a new menu handler that has default content of {@link MainMenuContent}
+     */
     public MenuHandler() {
         this.content = new MainMenuContent(this);
+    }
+
+    /**
+     * Internal constructor to create alert scene
+     */
+    private MenuHandler(String title, String msg) {
+        this.content = new MenuAlertScene(title, msg, this);
+    }
+
+    /**
+     * Creates a menu handler that has starting content as a {@link MenuAlertScene}
+     *
+     * @param title title of alert
+     * @param msg   body of alert
+     *
+     * @return new menu content
+     */
+    public static MenuHandler alert(String title, String msg) {
+        return new MenuHandler(title, msg);
     }
 
     /**
