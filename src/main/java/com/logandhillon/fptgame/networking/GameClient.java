@@ -209,7 +209,7 @@ public class GameClient {
      * @throws IOException if the socket fails to close
      */
     public void close() throws IOException {
-        if (socket != null) {
+        if (socket != null && !socket.isClosed()) {
             if (out != null) {
                 LOG.info("Active connection to peer, sending CLT_DISCONNECT");
                 sendServer(new GamePacket(GamePacket.Type.CLT_DISCONNECT));
