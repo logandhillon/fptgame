@@ -86,6 +86,7 @@ public class DynamicLevelScene extends GameScene {
             // if not moving, move directly to target
             if (self.getMoveDirection() == 0) {
                 self.setPosition(selfTx, selfTy);
+                hasSelfTarget = false;
             } else {
                 // otherwise lerp towards it
                 float alpha = 1f - (float)Math.exp(-SYNC_LERP * dt);
