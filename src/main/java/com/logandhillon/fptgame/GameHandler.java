@@ -1,14 +1,11 @@
 package com.logandhillon.fptgame;
 
 import com.logandhillon.fptgame.networking.GameClient;
-import com.logandhillon.fptgame.networking.GamePacket;
 import com.logandhillon.fptgame.networking.GameServer;
 import com.logandhillon.fptgame.networking.ServerDiscoverer;
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
-import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.resource.Levels;
 import com.logandhillon.fptgame.scene.SingleplayerGameScene;
-import com.logandhillon.fptgame.scene.DynamicLevelScene;
 import com.logandhillon.fptgame.scene.component.MenuAlertScene;
 import com.logandhillon.fptgame.scene.menu.JoinGameContent;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
@@ -71,6 +68,24 @@ public class GameHandler extends Application {
         setScene(debugMode != null && debugMode.equalsIgnoreCase("true")
                  ? new SingleplayerGameScene(Levels.DEBUG_LEVEL) // debug scene if LGL_DEBUG_MODE is true
                  : new MenuHandler());
+        stage.setOnCloseRequest(event -> {
+            LOG.info("JavaFX window close requested");
+            try {
+                if (server != null) server.stop();
+            } catch (Exception e) {
+                LOG.error("Error stopping server on window close", e);
+            }
+
+            try {
+                if (client != null) client.close();
+            } catch (Exception e) {
+                LOG.error("Error closing client on window close", e);
+            }
+
+            terminateDiscoverer();
+            Platform.exit();
+        });
+
         stage.show();
     }
 
@@ -81,20 +96,34 @@ public class GameHandler extends Application {
      *
      * @see GameHandler#start(Stage)
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         String lglSaveFile = System.getenv("LGL_SAVE_FILE");
         if (lglSaveFile != null) UserConfigManager.setManagedFile(lglSaveFile);
 
         // load user config first
         userConfig = UserConfigManager.load();
 
+        // register shutdown hook (handles SIGTERM/crashes)
+        Runtime.getRuntime().addShutdownHook(new Thread(GameHandler::shutdown, "Shutdown-Hook"));
+
         // then start the javafx program
         launch();
+    }
 
-        // this runs AFTER the javafx window closes
+    private static void shutdown() {
         LOG.info("Program terminated, exiting cleanly");
-        if (server != null) server.stop();
-        if (client != null) client.close();
+        try {
+            if (server != null) server.stop();
+        } catch (IOException e) {
+            LOG.error("Error stopping server during shutdown", e);
+        }
+
+        try {
+            if (client != null) client.close();
+        } catch (IOException e) {
+            LOG.error("Error closing client during shutdown", e);
+        }
+
         terminateDiscoverer();
     }
 
