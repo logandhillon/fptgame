@@ -24,11 +24,10 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
-    private static final float SYNC_LERP          = 0.15f; // how aggressively we correct
-    private static final float MAX_DESYNC_DIST_SQ = 48f * 48f; // pixels before hard snap
+    private static final float SYNC_LERP = 0.15f; // how aggressively we correct
 
-    private final PlayerEntity       self;
-    private final PlayerEntity       other;
+    private final PlayerEntity self;
+    private final PlayerEntity other;
     private final PeerMovementPoller movePoller;
 
     public DynamicLevelScene(LevelProto.LevelData level) {
@@ -113,24 +112,29 @@ public class DynamicLevelScene extends GameScene {
         // remote player is always authoritative
         other.setPosition(
                 other.getX() + (update.getHost().getX() - other.getX()) * SYNC_LERP,
-                other.getY() + (update.getHost().getY() - other.getY()) * SYNC_LERP);
+                other.getY() + (update.getHost().getY() - other.getY()) * SYNC_LERP
+        );
         other.vx = update.getHost().getVx();
         other.vy = update.getHost().getVy();
 
         // our position is an estimate, we are the authoritative answer; therefore lerp our position
-        if (!self.isGrounded()) return; // airborne: ignore position, keep local prediction
+        if (!self.isGrounded()) return;// airborne: ignore position, keep local prediction
 
-        float dx = update.getGuest().getX() - self.getX();
-        float dy = update.getGuest().getY() - self.getY();
-        float distSq = dx * dx + dy * dy;
+        float tx = update.getGuest().getX();
+        float ty = update.getGuest().getY();
 
-        if (distSq > MAX_DESYNC_DIST_SQ) {
-            // too far off: hard snap
-            LOG.warn(String.format("Hard snapping player (desync %.2f sq. px.)", distSq));
-            self.setPosition(update.getGuest().getX(), update.getGuest().getY());
+        // lerp if moving, teleport if not moving
+        if (Math.abs(self.vx) > 0.001f ||
+            Math.abs(self.vy) > 0.001f ||
+            self.getMoveDirection() != 0) {
+            // is moving, lerp to real position
+            self.setPosition(
+                    self.getX() + (tx - self.getX()) * SYNC_LERP,
+                    self.getY() + (ty - self.getY()) * SYNC_LERP
+            );
         } else {
-            // small error: smooth correction
-            self.setPosition(self.getX() + dx * SYNC_LERP, self.getY() + dy * SYNC_LERP);
+            // not moving, hard snap to authoritative position
+            self.setPosition(tx, ty);
         }
 
         self.vx = update.getGuest().getVx();
