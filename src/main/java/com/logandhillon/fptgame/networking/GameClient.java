@@ -163,15 +163,19 @@ public class GameClient {
                 Platform.runLater(() -> game.showAlert("SERVER CLOSED", "The server has shut down."));
             }
             // if peer is trying to move, add instruction to queue
-            case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> queuedPeerMovements.add(packet.type());
+            case COM_JUMP, COM_MOVE_L, COM_MOVE_R, COM_STOP_MOVING -> {
+                queuedPeerMovements.add(packet.type());
 
-            case SRV_SYNC_MOVEMENT -> {
+                // JUMP packets don't contain movement data
+                if (packet.type() == GamePacket.Type.COM_JUMP) return;
+
+                // sync other's movement
                 Optional<DynamicLevelScene> level = game.getActiveScene(DynamicLevelScene.class);
                 if (level.isEmpty()) {
                     LOG.warn("Tried to sync movement, but was not in DynamicLevelScene; skipping message");
                     return;
                 }
-                level.get().syncMovement(PlayerProto.PlayerPositionSync.parseFrom(packet.payload()));
+                level.get().syncMovement(PlayerProto.PlayerMovementData.parseFrom(packet.payload()));
             }
         }
     }

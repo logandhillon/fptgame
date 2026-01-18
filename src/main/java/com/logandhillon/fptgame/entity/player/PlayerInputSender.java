@@ -1,7 +1,10 @@
 package com.logandhillon.fptgame.entity.player;
 
 import com.logandhillon.fptgame.GameHandler;
+import com.logandhillon.fptgame.networking.GameClient;
 import com.logandhillon.fptgame.networking.GamePacket;
+import com.logandhillon.fptgame.networking.GameServer;
+import com.logandhillon.fptgame.networking.proto.PlayerProto;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -41,21 +44,32 @@ public class PlayerInputSender implements PlayerEntity.PlayerMovementListener {
     }
 
     /**
-     * Sends movement packets to the {@link Communicator}
+     * Sends movement packets to the {@link Communicator}, which contain the direction (as the packet type) and the
+     * {@link com.logandhillon.fptgame.networking.proto.PlayerProto.PlayerMovementData} (positions, velocities, etc.)
      */
     @Override
-    public void onMove(int direction) {
-        if (direction == -1) communicator.send(new GamePacket(GamePacket.Type.COM_MOVE_L));
-        else if (direction == 1) communicator.send(new GamePacket(GamePacket.Type.COM_MOVE_R));
-        else if (direction == 0) communicator.send(new GamePacket(GamePacket.Type.COM_STOP_MOVING));
+    public void onMove(int direction, float x, float y, float vx, float vy) {
+        communicator.send(new GamePacket(switch (direction) {
+            case -1 -> GamePacket.Type.COM_MOVE_L;
+            case 0 -> GamePacket.Type.COM_STOP_MOVING;
+            case 1 -> GamePacket.Type.COM_MOVE_R;
+            default -> throw new IllegalStateException("Illegal direction: " + direction);
+        }, PlayerProto.PlayerMovementData.newBuilder()
+                                         .setX(x).setY(y)
+                                         .setVx(vx).setVy(vy)
+                                         .build()));
     }
 
     /**
-     * An interface that handles communication with an anonymous party, such as a
-     * {@link com.logandhillon.fptgame.networking.GameClient} or {@link com.logandhillon.fptgame.networking.GameServer}.
-     * This interface is expected to ensure the packet is sent to the recipient.
+     * An interface that handles communication with an anonymous party, such as a {@link GameClient} or
+     * {@link GameServer}. This interface is expected to ensure the packet is sent to the recipient.
      */
     private interface Communicator {
+        /**
+         * Sends a packet to the recipient.
+         *
+         * @param pkt packet to send
+         */
         void send(GamePacket pkt);
     }
 }
