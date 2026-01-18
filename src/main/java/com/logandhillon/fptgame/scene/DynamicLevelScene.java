@@ -24,16 +24,10 @@ import org.apache.logging.log4j.core.LoggerContext;
 public class DynamicLevelScene extends GameScene {
     private static final Logger LOG = LoggerContext.getContext().getLogger(DynamicLevelScene.class);
 
-    private static final float SYNC_LERP      = 0.5f; // how aggressively we correct per second
-    private static final float SYNC_THRESHOLD = 0.25f; // sq px to consider a position "valid"
+    private static final float VALID_POS_TOLERANCE = 48f * 48f;
 
-    // our real position as per the server
-    private float   selfTx;
-    private float   selfTy;
-    private boolean hasSelfTarget = false;
-
-    private final PlayerEntity       self;
-    private final PlayerEntity       other;
+    private final PlayerEntity self;
+    private final PlayerEntity other;
     private final PeerMovementPoller movePoller;
 
     public DynamicLevelScene(LevelProto.LevelData level) {
@@ -71,29 +65,13 @@ public class DynamicLevelScene extends GameScene {
 
         // poll our peer's move and apply it to our instance.
         GamePacket.Type move = movePoller.poll();
-        if (move != null) {
-            LOG.debug("Processing peer movement '{}'", move);
-            switch (move) {
-                case COM_JUMP -> other.jump();
-                case COM_MOVE_L -> other.setMoveDirection(-1);
-                case COM_MOVE_R -> other.setMoveDirection(1);
-                case COM_STOP_MOVING -> other.setMoveDirection(0);
-            }
-        }
-
-        // continuous lerp for local player
-        if (hasSelfTarget && self.isGrounded()) {
-            float alpha = 1f - (float)Math.exp(-SYNC_LERP * dt);
-            float nx = self.getX() + (selfTx - self.getX()) * alpha;
-            // Y is authoritative, snap immediately
-            self.setPosition(nx, selfTy);
-
-            // stop correcting when close enough
-            float dx = selfTx - nx;
-            if (dx * dx < SYNC_THRESHOLD) {
-                self.setPosition(selfTx, selfTy);
-                hasSelfTarget = false;
-            }
+        if (move == null) return;
+        LOG.debug("Processing peer movement '{}'", move);
+        switch (move) {
+            case COM_JUMP -> other.jump();
+            case COM_MOVE_L -> other.setMoveDirection(-1);
+            case COM_MOVE_R -> other.setMoveDirection(1);
+            case COM_STOP_MOVING -> other.setMoveDirection(0);
         }
     }
 
@@ -130,20 +108,23 @@ public class DynamicLevelScene extends GameScene {
      */
     public void syncMovement(PlayerProto.PlayerPositionSync update) {
         LOG.debug("Updating movement from remote");
-
-        // remote player is always authoritative
-        other.setPosition(
-                other.getX() + (update.getHost().getX() - other.getX()) * SYNC_LERP,
-                other.getY() + (update.getHost().getY() - other.getY()) * SYNC_LERP
-        );
+        other.setPosition(update.getHost().getX(), update.getHost().getY());
         other.vx = update.getHost().getVx();
         other.vy = update.getHost().getVy();
 
-        // our position is an estimate, we are the authoritative answer; therefore lerp our position
-        if (!self.isGrounded()) return; // airborne: ignore position, keep local prediction
+        if (!self.isGrounded()) {
+            LOG.debug("Ignoring sync request as we are not grounded");
+            return;
+        }
 
-        selfTx = update.getGuest().getX();
-        selfTy = update.getGuest().getY();
-        hasSelfTarget = true;
+        float dx = update.getGuest().getX() - self.getX();
+        float dy = update.getGuest().getY() - self.getY();
+
+        if (dx*dx+dy*dy > VALID_POS_TOLERANCE) {
+            LOG.debug("Exceeded valid position tolerance, synchronizing to remote");
+            self.setPosition(update.getGuest().getX(), update.getGuest().getY());
+        }
+//        self.vx = update.getGuest().getVx();
+//        self.vy = update.getGuest().getVy();
     }
 }
