@@ -15,6 +15,7 @@ import com.logandhillon.logangamelib.engine.GameEngine;
 import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.engine.disk.UserConfigManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -63,6 +64,12 @@ public class GameHandler extends Application {
         stage.setHeight(CANVAS_HEIGHT);
         stage.setMinWidth(CANVAS_WIDTH / 2f);
         stage.setMinHeight(CANVAS_HEIGHT / 2f);
+
+        stage.setOnCloseRequest(e -> {
+            LOG.info("Received window close request");
+            shutdown();
+            Platform.exit();
+        });
 
         String debugMode = System.getenv("LGL_DEBUG_MODE");
         setScene(debugMode != null && debugMode.equalsIgnoreCase("true")
