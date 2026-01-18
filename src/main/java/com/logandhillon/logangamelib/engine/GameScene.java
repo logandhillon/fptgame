@@ -344,6 +344,11 @@ public abstract class GameScene {
         handlers.add(new HandlerRef<>(type, handler));
     }
 
+    /**
+     * Binds an event handler to the scene when the scene is built
+     * @param type    the type of event to fire on
+     * @param handler the event handler itself (the method that will run)
+     */
 
     public <T extends Event> void bindHandler(EventType<T> type, EventHandler<? super T> handler) {
         this.addHandler(type, handler);

@@ -21,7 +21,6 @@ import javafx.scene.text.TextAlignment;
  * The settings menu allows users to customize audio and gameplay settings
  *
  * @author Jack Ross
- * @see BindControlContent
  */
 public class SettingsMenuContent implements MenuContent{
     private final        String   HEADER      = "SETTINGS";
