@@ -2,8 +2,8 @@ package com.logandhillon.fptgame.entity.game;
 
 import com.logandhillon.fptgame.level.LevelObject;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
+import com.logandhillon.fptgame.resource.Textures;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 /**
  * A platformer button, when pressed, inverts {@link PlatformEntity} colors and moves any available
@@ -24,9 +24,7 @@ public class LevelButtonEntity extends LevelObject {
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        // TODO: use texture
-        g.setFill(Color.WHITE);
-        g.fillRect(x, y, w, h);
+        g.drawImage(Textures.LEVEL_BUTTON, x, y, w, h);
     }
 
     @Override

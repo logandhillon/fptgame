@@ -30,6 +30,8 @@ public class PlayerEntity extends PhysicsEntity {
     private final   LevelProto.Color  color;
     private final   Color             tint;
     protected final PlayerInputSender listener;
+    private final   float             spawnX;
+    private final   float             spawnY;
 
     private AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();
     private AnimationState    state   = AnimationState.IDLE;
@@ -41,6 +43,8 @@ public class PlayerEntity extends PhysicsEntity {
     public PlayerEntity(float x, float y, int color, PlayerInputSender listener) {
         super(x, y, 42, 72);
         if (color != 0 && color != 1) throw new IllegalArgumentException("Color must be 0 (red) or 1 (blue)");
+        spawnX = x;
+        spawnY = y;
 
         this.color = color == 0 ? LevelProto.Color.RED : LevelProto.Color.BLUE;
         this.tint = Colors.PLAYER_SKINS.get(color);
@@ -66,6 +70,15 @@ public class PlayerEntity extends PhysicsEntity {
 
         // move player based on move direction
         if (Math.abs(moveDirection) > 0) x += MOVE_SPEED * dt * moveDirection;
+
+        // handle player falling out of map
+        if (y > 2000) {
+            Sounds.playSfx(Sounds.GAME_RESPAWN);
+            setPosition(spawnX, spawnY);
+            this.vx = 0;
+            this.vy = 0;
+            setMoveDirection(0); // update position and communicate to peer
+        }
 
         // update animation state
         if (state == AnimationState.JUMP && isGrounded()) setAnimation(AnimationState.IDLE);

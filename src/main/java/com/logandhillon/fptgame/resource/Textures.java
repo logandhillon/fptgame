@@ -77,6 +77,8 @@ public class Textures {
                 new ParallaxBackground.Layer("bg/ocean8/4.png", 80f));
     }
 
+    public static final Image LEVEL_BUTTON;
+
     public static final Image SETTINGS_ICON;
     public static final Image X_ICON;
 
@@ -86,8 +88,15 @@ public class Textures {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         try (var res = new ImageResource("menuicons/x.png")) {
             X_ICON = res.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (var res = new ImageResource("button.png")) {
+            LEVEL_BUTTON = res.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
