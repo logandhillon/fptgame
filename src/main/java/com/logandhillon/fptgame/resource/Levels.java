@@ -50,11 +50,39 @@ public class Levels {
                 .build();
     }
 
+    public static final LevelProto.LevelData LEVEL_3 = LevelProto.LevelData
+            .newBuilder()
+            .setLevelName("Locked Out")
+            .setLevelDifficulty("Easy")
+//            .setNextLevel(DEBUG_LEVEL_2)
+            .setBackground(Textures.UNDERGROUND_BG.serialize())
+
+            .setPlayer1SpawnX(23).setPlayer1SpawnY(128)
+            .setPlayer2SpawnX(80).setPlayer2SpawnY(128)
+
+            // floor
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 0, 720 - 40, 1280, 40).serialize())
+
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 0, 480, 200, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_PIPE, 200, 480, 40, 200,
+                                           LevelProto.Color.BLUE).serialize())
+
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 1080, 480, 1280, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_PIPE, 1040, 480, 40, 200,
+                                           LevelProto.Color.RED).serialize())
+
+            .addObjects(new LevelButtonEntity(620, 660).serialize())
+
+            .addObjects(new PortalEntity(80, 580, true).serialize())
+            .addObjects(new PortalEntity(1160, 580, false).serialize())
+
+            .build();
+
     public static final LevelProto.LevelData LEVEL_2 = LevelProto.LevelData
             .newBuilder()
             .setLevelName("Hallway")
             .setLevelDifficulty("Easy")
-//            .setNextLevel(DEBUG_LEVEL_2)
+            .setNextLevel(LEVEL_3)
             .setBackground(Textures.UNDERGROUND_BG.serialize())
 
             .setPlayer1SpawnX(23).setPlayer1SpawnY(128)
