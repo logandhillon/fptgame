@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.entity.player;
 
 import com.logandhillon.fptgame.entity.game.LevelButtonEntity;
 import com.logandhillon.fptgame.entity.game.PlatformEntity;
+import com.logandhillon.fptgame.entity.game.PortalEntity;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Sounds;
@@ -22,7 +23,7 @@ import java.util.function.Predicate;
  * @see ControllablePlayerEntity
  */
 public class PlayerEntity extends PhysicsEntity {
-    private static final float JUMP_POWER    = 12f * PX_PER_METER; // m/s
+    private static final float JUMP_POWER    = 13.5f * PX_PER_METER; // m/s
     private static final float MOVE_SPEED    = 6f * PX_PER_METER; // m/s
     private static final int   Y_OFFSET      = 12;
     private static final float STRIDE_LENGTH = 60f; // px per footstep
@@ -110,7 +111,8 @@ public class PlayerEntity extends PhysicsEntity {
         return parent.getCollisionIf(
                 x, y, w, h, caller, e -> !(e instanceof PlayerEntity) &&
                                          (!(e instanceof PlatformEntity p) || p.getColor() != color) &&
-                                         !(e instanceof LevelButtonEntity));
+                                         !(e instanceof LevelButtonEntity) &&
+                                         !(e instanceof PortalEntity));
     }
 
     /**

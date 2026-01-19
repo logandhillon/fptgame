@@ -66,4 +66,7 @@ message LevelData {
   float player1_spawn_y = 5;
   float player2_spawn_x = 6;
   float player2_spawn_y = 7;
+
+  string level_name = 8;
+  string level_difficulty = 9;
 }

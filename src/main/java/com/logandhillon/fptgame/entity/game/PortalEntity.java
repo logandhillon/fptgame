@@ -25,7 +25,7 @@ public class PortalEntity extends LevelObject {
      * @param isRed true=red, false=blue
      */
     public PortalEntity(float x, float y, boolean isRed) {
-        super(x, y, 64, 128);
+        super(x, y, 50, 100);
         this.anim = PORTAL_ANIM.instance();
         this.isRed = isRed;
         this.color = isRed ? Colors.PLAYER_RED : Colors.PLAYER_BLUE;
@@ -33,7 +33,7 @@ public class PortalEntity extends LevelObject {
 
     @Override
     protected void onRender(GraphicsContext g, float x, float y) {
-        anim.draw(g, x - 64, y, w + 64, h, color);
+        anim.draw(g, x - 32, y, w + 64, h, color);
     }
 
     @Override

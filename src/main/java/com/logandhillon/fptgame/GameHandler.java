@@ -79,7 +79,7 @@ public class GameHandler extends Application {
 
         String debugMode = System.getenv("LGL_DEBUG_MODE");
         setScene(debugMode != null && debugMode.equalsIgnoreCase("true")
-                 ? new SingleplayerGameScene(Levels.DEBUG_LEVEL) // debug scene if LGL_DEBUG_MODE is true
+                 ? new SingleplayerGameScene(Levels.LEVEL_1) // debug scene if LGL_DEBUG_MODE is true
                  : new MenuHandler());
 
         stage.show();

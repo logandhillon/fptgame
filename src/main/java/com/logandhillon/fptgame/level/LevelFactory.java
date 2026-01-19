@@ -14,9 +14,20 @@ import java.util.List;
 import static com.logandhillon.fptgame.resource.Textures.OBJ_SCALE;
 
 /**
+ * The level factory is responsible for building protobuf types (i.e.
+ * {@link com.logandhillon.fptgame.networking.proto.LevelProto.LevelObject} into valid entities (i.e.
+ * {@link LevelObject}).
+ *
  * @author Logan Dhillon
  */
 public class LevelFactory {
+    /**
+     * Loads level object data into an level object entity
+     *
+     * @param msg message data
+     *
+     * @return entity
+     */
     public static LevelObject loadObject(LevelProto.LevelObject msg) {
         return switch (msg.getDataCase()) {
             case PLATFORM -> PlatformEntity.load(msg);
@@ -27,6 +38,13 @@ public class LevelFactory {
         };
     }
 
+    /**
+     * Loads the entire level data into a list of level object entities
+     *
+     * @param data raw level data
+     *
+     * @return level object entities list
+     */
     public static List<LevelObject> load(LevelProto.LevelData data) {
         return data.getObjectsList().stream().map(LevelFactory::loadObject).toList();
     }

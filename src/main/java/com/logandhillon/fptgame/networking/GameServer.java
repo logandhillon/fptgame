@@ -295,7 +295,7 @@ public class GameServer implements Runnable {
      * {@link com.logandhillon.logangamelib.engine.GameScene}.
      */
     public void startGame() {
-        LevelProto.LevelData level = Levels.DEBUG_LEVEL; // XXX: hardcode level for server
+        LevelProto.LevelData level = Levels.LEVEL_1; // XXX: hardcode level for server
         broadcast(new GamePacket(GamePacket.Type.SRV_GAME_STARTING, level));
         game.setInMenu(false);
 
