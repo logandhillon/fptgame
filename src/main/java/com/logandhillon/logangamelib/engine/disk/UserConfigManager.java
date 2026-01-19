@@ -2,6 +2,7 @@ package com.logandhillon.logangamelib.engine.disk;
 
 import com.logandhillon.fptgame.networking.proto.ConfigProto;
 import com.logandhillon.fptgame.networking.proto.ConfigProto.UserConfig;
+import javafx.scene.input.KeyCode;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -17,7 +18,17 @@ import java.io.IOException;
  */
 public class UserConfigManager {
     private static final Logger     LOG            = LoggerContext.getContext().getLogger(UserConfigManager.class);
-    private static final UserConfig DEFAULT_CONFIG = ConfigProto.UserConfig.newBuilder().build();
+    private static final UserConfig DEFAULT_CONFIG = ConfigProto.UserConfig
+            .newBuilder()
+            .setName("Player")
+            .setKeyMoveLeft(KeyCode.A.name())
+            .setKeyMoveRight(KeyCode.D.name())
+            .setKeyMoveJump(KeyCode.SPACE.name())
+            .setKeyMoveInteract(KeyCode.E.name())
+            .setMasterVolume(1f)
+            .setMusicVolume(1f)
+            .setSfxVolume(1f)
+            .build();
 
     private static File file = new File("logangamelib.dat");
 
@@ -61,7 +72,7 @@ public class UserConfigManager {
 
         UserConfig c;
         try (FileInputStream file = new FileInputStream(UserConfigManager.file)) {
-            c = UserConfig.parseFrom(file);
+            c = DEFAULT_CONFIG.toBuilder().mergeFrom(UserConfig.parseFrom(file)).build();
             LOG.info("Successfully loaded user config for '{}' from disk", c.getName());
         } catch (IOException e) {
             LOG.error("Failed to load user configuration from {}", file.getAbsolutePath(), e);
@@ -83,16 +94,8 @@ public class UserConfigManager {
      * @param partial the partial values, whatever is set here will be updated, otherwise it will remain the same.
      */
     public static UserConfig update(UserConfig current, UserConfig partial) {
-        LOG.debug("Updating user config");
-        UserConfig.Builder builder = current.toBuilder();
-
-        if (!partial.getName().isEmpty()) {
-            LOG.info("Setting name to {}", partial.getName());
-            builder.setName(partial.getName());
-        }
-
-        // Build and save
-        UserConfig merged = builder.build();
+        LOG.debug("Updating user config with {}", partial.toString());
+        UserConfig merged = current.toBuilder().mergeFrom(partial).build();
         return save(merged);
     }
 

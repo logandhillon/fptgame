@@ -78,7 +78,6 @@ public class MenuHandler extends UIScene {
 
         content.onShow();
     }
-
     /**
      * Renders the constants for all menus
      *
@@ -88,6 +87,7 @@ public class MenuHandler extends UIScene {
     protected void render(GraphicsContext g) {
         background.render(g);
         super.render(g);
+        content.onRender(g);
     }
 
     @Override
@@ -107,4 +107,6 @@ public class MenuHandler extends UIScene {
     public MenuContent getContent() {
         return content;
     }
+
+
 }

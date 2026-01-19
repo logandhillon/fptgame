@@ -4,9 +4,8 @@ import com.logandhillon.logangamelib.engine.UIScene;
 import javafx.scene.input.MouseEvent;
 
 /**
- * A Clickable is a special type of {@link Entity} that can be clicked by the mouse.
- * It can only be used within a {@link UIScene} (it <i>can</i> be used in all GameScenes, but it will not be
- * clickable).
+ * A Clickable is a special type of {@link Entity} that can be clicked by the mouse. It can only be used within a
+ * {@link UIScene} (it <i>can</i> be used in all GameScenes, but it will not be clickable).
  *
  * @author Logan Dhillon
  * @see MouseEvent
@@ -43,6 +42,14 @@ public abstract class Clickable extends BoundEntity<UIScene> {
     public void onBlur() {}
 
     /**
+     * Called when the mouse is pressed (not clicked) on this Clickable.
+     *
+     * @param e javafx mouse event
+     * @see MouseEvent#MOUSE_PRESSED
+     */
+    public void onMouseDown(MouseEvent e) {}
+
+    /**
      * Runs the mouse enter handler if it was set.
      *
      * @param e the mouse event provided by JavaFX
@@ -64,7 +71,7 @@ public abstract class Clickable extends BoundEntity<UIScene> {
         return h;
     }
 
-    public void setSize(float w, float h){
+    public void setSize(float w, float h) {
         this.w = w;
         this.h = h;
     }

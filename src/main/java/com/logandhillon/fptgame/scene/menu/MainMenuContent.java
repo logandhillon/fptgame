@@ -61,7 +61,7 @@ public class MainMenuContent implements MenuContent {
                 }),
 
                 new MenuButton(Textures.SETTINGS_ICON, x, y + 3 * dy, 120, 48, 75.84f, 651.17f, 28, 28, () -> {
-                    throw new IllegalStateException("Settings menu does not exist");
+                    menu.setContent(new SettingsMenuContent(menu));
                 }),
 
                 new MenuButton(Textures.X_ICON, x + 136, y + 3 * dy, 120, 48, 218, 654, 20, 20, () -> System.exit(0))

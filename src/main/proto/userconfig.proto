@@ -5,4 +5,13 @@ option java_outer_classname = "ConfigProto";
 
 message UserConfig {
   string name = 1;
+
+  string key_move_left = 2;
+  string key_move_right = 3;
+  string key_move_jump = 4;
+  string key_move_interact = 5;
+
+  float master_volume = 6;
+  float music_volume = 7;
+  float sfx_volume = 8;
 }

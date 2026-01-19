@@ -334,7 +334,6 @@ public abstract class GameScene {
         }
         return null; // no collision found
     }
-
     /**
      * Registers an event handler that will be attached to the scene when it is built.
      *
@@ -344,6 +343,18 @@ public abstract class GameScene {
     public <T extends Event> void addHandler(EventType<T> type, EventHandler<? super T> handler) {
         handlers.add(new HandlerRef<>(type, handler));
     }
+
+    /**
+     * Binds an event handler to the scene when the scene is built
+     * @param type    the type of event to fire on
+     * @param handler the event handler itself (the method that will run)
+     */
+
+    public <T extends Event> void bindHandler(EventType<T> type, EventHandler<? super T> handler) {
+        this.addHandler(type, handler);
+        scene.addEventHandler(type, handler);
+    }
+
 
     /**
      * Safely unregister and delete all handlers
