@@ -74,7 +74,7 @@ public class GameHandler extends Application {
         // initialize resources so they are loaded in memory
         Colors.init();
         Fonts.init();
-        Sounds.init();
+        Sounds.calcVolume();
         Textures.init();
 
         String debugMode = System.getenv("LGL_DEBUG_MODE");

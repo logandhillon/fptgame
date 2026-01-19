@@ -11,10 +11,17 @@ import javafx.scene.media.AudioClip;
 public class Sounds {
     public static final AudioClip MENU_CLICK = ResourceLoader.loadSafe(AudioResource.class, "menu_click.wav");
 
+    private static float musicVol;
+    private static float sfxVol;
+
     /**
-     * no-op to force the class to load
+     * Recalculates volumes from {@link GameHandler#getUserConfig()}
      */
-    public static void init() {}
+    public static void calcVolume() {
+        var c = GameHandler.getUserConfig();
+        musicVol = c.getMasterVolume() * c.getMusicVolume();
+        sfxVol = c.getMasterVolume() * c.getSfxVolume();
+    }
 
     /**
      * Plays a specified {@link AudioClip} with the volume in the user's config.
@@ -22,9 +29,7 @@ public class Sounds {
      * @param sound sound clip to play
      */
     public static void playSfx(AudioClip sound) {
-        var c = GameHandler.getUserConfig();
-        System.out.println("playing sound with vol: " + c.getMasterVolume() * c.getSfxVolume());
-        sound.play(c.getMasterVolume() * c.getSfxVolume());
+        sound.play(sfxVol);
     }
 
     /**
@@ -33,7 +38,6 @@ public class Sounds {
      * @param sound music clip to play
      */
     public static void playMusic(AudioClip sound) {
-        var c = GameHandler.getUserConfig();
-        sound.play(c.getMasterVolume() * c.getMusicVolume());
+        sound.play(musicVol);
     }
 }
