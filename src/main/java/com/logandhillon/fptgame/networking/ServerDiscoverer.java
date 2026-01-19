@@ -20,10 +20,11 @@ import java.util.Optional;
 public class ServerDiscoverer {
     private static final Logger LOG = LoggerContext.getContext().getLogger(ServerDiscoverer.class);
 
-    private final List<JoinGameContent.ServerEntry> discoveredServers = new ArrayList<>();
-    private final GameHandler                       game;
-    private       Thread                            discoverer;
-    private       Thread                            purger;
+    private final    List<JoinGameContent.ServerEntry> discoveredServers = new ArrayList<>();
+    private final    GameHandler                       game;
+    private          Thread                            discoverer;
+    private          Thread                            purger;
+    private volatile DatagramSocket                    socket;
 
     private volatile boolean listening        = false;
     private volatile long    lastUpdateMillis = System.currentTimeMillis();
@@ -40,11 +41,15 @@ public class ServerDiscoverer {
         listening = true;
 
         discoverer = new Thread(() -> {
-            try (DatagramSocket socket = new DatagramSocket(GameServer.ADVERTISE_PORT)) {
+            try {
+                socket = new DatagramSocket(GameServer.ADVERTISE_PORT);
                 byte[] buffer = new byte[256];
 
-                while (listening) {
-                    if (game.isInGame()) continue; // only listen in lobby
+                while (listening && !Thread.currentThread().isInterrupted()) {
+                    if (game.isInGame()) {
+                        Thread.yield();
+                        continue; // only listen in lobby
+                    }
 
                     // dump all discovered servers— if they don't advertise again, they are probably gone
                     discoveredServers.clear();
@@ -74,15 +79,27 @@ public class ServerDiscoverer {
                 LOG.info("UDP listener socket closed");
             } catch (IOException e) {
                 LOG.error("Exception while receiving server discovery packet", e);
+            } finally {
+                if (socket != null && !socket.isClosed()) {
+                    socket.close();
+                }
             }
         }, "UDP-ServerDiscovery");
         discoverer.start();
 
         // updates the server list if it becomes stale
         purger = new Thread(() -> {
-            while (listening) {
+            while (listening && !Thread.currentThread().isInterrupted()) {
                 // only update 4s after the last update
-                if (lastUpdateMillis + 4000 > System.currentTimeMillis()) continue;
+                if (lastUpdateMillis + 4000 > System.currentTimeMillis()) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                    continue;
+                }
 
                 updateJoinGameScene();
 
@@ -102,10 +119,15 @@ public class ServerDiscoverer {
      * Stops the server discoverer
      */
     public void stop() {
-        LOG.info("Interrupting discovery threads");
+        LOG.info("Stopping discovery threads");
         listening = false;
-        discoverer.interrupt();
-        purger.interrupt();
+
+        if (socket != null && !socket.isClosed()) {
+            socket.close(); // force-unblock receive()
+        }
+
+        if (discoverer != null) discoverer.interrupt();
+        if (purger != null) purger.interrupt();
     }
 
     private void updateJoinGameScene() {
