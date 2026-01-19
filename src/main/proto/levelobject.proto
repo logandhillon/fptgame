@@ -23,6 +23,21 @@ message Platform {
   optional Color color = 4;
 }
 
+message MovingPlatform {
+  float w = 1;
+  float h = 2;
+  AtlasTile texture = 3;
+
+  optional Color color = 4;
+
+  // position the platform will move to
+  float dest_x = 5;
+  float dest_y = 6;
+  float speed = 7; // speed of platform in m/s
+
+  bool going_towards_dest = 8;
+}
+
 message Portal {
   bool isRed = 1;
 }
@@ -34,6 +49,7 @@ message LevelObject {
   oneof data {
     Platform platform = 3;
     Portal portal = 4;
+    MovingPlatform movingPlatform = 5;
   }
 }
 

@@ -16,9 +16,9 @@ import static com.logandhillon.fptgame.resource.Textures.OBJ_SCALE;
  * @author Logan Dhillon
  */
 public class PlatformEntity extends LevelObject {
-    private final AtlasTile        texture;
-    private final LevelProto.Color color;
-    private final Color            tint;
+    protected final AtlasTile        texture;
+    protected final LevelProto.Color color;
+    private final   Color            tint;
 
     /**
      * Creates a collidable entity at the specified position with the specified hitbox

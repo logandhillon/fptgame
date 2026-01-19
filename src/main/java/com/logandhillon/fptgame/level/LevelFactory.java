@@ -1,6 +1,7 @@
 package com.logandhillon.fptgame.level;
 
 import com.logandhillon.fptgame.GameHandler;
+import com.logandhillon.fptgame.entity.game.MovingPlatformEntity;
 import com.logandhillon.fptgame.entity.game.PlatformEntity;
 import com.logandhillon.fptgame.entity.game.PortalEntity;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
@@ -19,6 +20,7 @@ public class LevelFactory {
         return switch (msg.getDataCase()) {
             case PLATFORM -> PlatformEntity.load(msg);
             case PORTAL -> PortalEntity.load(msg);
+            case MOVINGPLATFORM -> MovingPlatformEntity.load(msg);
             default -> throw new IllegalStateException("Illegal LevelObject type");
         };
     }
