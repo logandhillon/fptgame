@@ -24,18 +24,26 @@ import java.util.HashMap;
 /**
  * The settings menu allows users to customize audio and gameplay settings
  *
- * @author Jack Ross
+ * @author Jack Ross, Logan Dhillon
  */
 public class SettingsMenuContent implements MenuContent {
-    private static final Logger LOG              = LoggerContext.getContext().getLogger(SettingsMenuContent.class);
-    private static final Font   HEADER_FONT      = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 32);
-    private static final Font   SUBHEADER_FONT   = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 24);
-    private static final Font   CONTROLS_FONT    = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 19);
-    private static final Font   INSTRUCTION_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20);
+    private static final Logger LOG = LoggerContext.getContext().getLogger(SettingsMenuContent.class);
+
+    private static final Font HEADER_FONT      = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 32);
+    private static final Font SUBHEADER_FONT   = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 24);
+    private static final Font CONTROLS_FONT    = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 19);
+    private static final Font INSTRUCTION_FONT = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20);
 
     private final MenuHandler                  menu;
     private final Entity[]                     entities;
+    /**
+     * Map of key bind {@link MenuButton} to their corresponding {@link KeyBind} enum value.
+     */
     private final HashMap<KeyBind, MenuButton> KEY_BIND_BUTTONS = new HashMap<>();
+    /**
+     * List of all key binds that are in use; maps {@link KeyBind} to key code string representation.
+     */
+    private final HashMap<KeyBind, String>     USED_KEY_BINDS   = new HashMap<>();
 
     private KeyBind currentKeyBind;
 
@@ -45,8 +53,15 @@ public class SettingsMenuContent implements MenuContent {
      * @param menu the {@link MenuHandler} responsible for switching active scenes.
      */
     public SettingsMenuContent(MenuHandler menu) {
-
         this.menu = menu;
+        var config = GameHandler.getUserConfig();
+
+        // populate used keybinds list
+        USED_KEY_BINDS.put(KeyBind.LEFT, config.getKeyMoveLeft());
+        USED_KEY_BINDS.put(KeyBind.RIGHT, config.getKeyMoveRight());
+        USED_KEY_BINDS.put(KeyBind.JUMP, config.getKeyMoveJump());
+        USED_KEY_BINDS.put(KeyBind.INTERACT, config.getKeyMoveInteract());
+
         // volume sliders
         SliderEntity master = new SliderEntity(32, 227, 327, 6, 190);
         SliderEntity music = new SliderEntity(32, 296, 327, 6, 190);
@@ -55,23 +70,19 @@ public class SettingsMenuContent implements MenuContent {
         // key bind buttons
         KEY_BIND_BUTTONS.put(
                 KeyBind.LEFT,
-                new MenuButton(GameHandler.getUserConfig().getKeyMoveLeft(),
-                               259, 457, 100, 40,
+                new MenuButton(config.getKeyMoveLeft(), 259, 457, 100, 40,
                                () -> currentKeyBind = KeyBind.LEFT));
         KEY_BIND_BUTTONS.put(
                 KeyBind.RIGHT,
-                new MenuButton(GameHandler.getUserConfig().getKeyMoveRight(),
-                               259, 513, 100, 40,
+                new MenuButton(config.getKeyMoveRight(), 259, 513, 100, 40,
                                () -> currentKeyBind = KeyBind.RIGHT));
         KEY_BIND_BUTTONS.put(
                 KeyBind.JUMP,
-                new MenuButton(GameHandler.getUserConfig().getKeyMoveJump(),
-                               259, 569, 100, 40,
+                new MenuButton(config.getKeyMoveJump(), 259, 569, 100, 40,
                                () -> currentKeyBind = KeyBind.JUMP));
         KEY_BIND_BUTTONS.put(
                 KeyBind.INTERACT,
-                new MenuButton(GameHandler.getUserConfig().getKeyMoveInteract(),
-                               259, 625, 100, 40,
+                new MenuButton(config.getKeyMoveInteract(), 259, 625, 100, 40,
                                () -> currentKeyBind = KeyBind.INTERACT));
 
         entities = new Entity[]{
@@ -204,8 +215,8 @@ public class SettingsMenuContent implements MenuContent {
     }
 
     private void onKeyPressed(KeyEvent e) {
-        if (currentKeyBind == null) return;
-        // TODO: ignore duplicate keys
+        // ignore duplicate keys
+        if (currentKeyBind == null || USED_KEY_BINDS.containsValue(e.getCode().name())) return;
 
         LOG.info("Setting {} to {}", currentKeyBind, e.getCode().name());
 
@@ -232,6 +243,7 @@ public class SettingsMenuContent implements MenuContent {
                             .buildPartial());
         }
 
+        USED_KEY_BINDS.put(currentKeyBind, e.getCode().name()); // update map to check duplicates against
         KEY_BIND_BUTTONS.get(currentKeyBind).setText(e.getCode().name()); // update btn text
         currentKeyBind = null;
     }
