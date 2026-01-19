@@ -2,6 +2,7 @@ package com.logandhillon.fptgame.entity.player;
 
 import com.logandhillon.fptgame.entity.game.LevelButtonEntity;
 import com.logandhillon.fptgame.entity.game.PlatformEntity;
+import com.logandhillon.fptgame.entity.game.PortalEntity;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Sounds;
@@ -110,7 +111,8 @@ public class PlayerEntity extends PhysicsEntity {
         return parent.getCollisionIf(
                 x, y, w, h, caller, e -> !(e instanceof PlayerEntity) &&
                                          (!(e instanceof PlatformEntity p) || p.getColor() != color) &&
-                                         !(e instanceof LevelButtonEntity));
+                                         !(e instanceof LevelButtonEntity) &&
+                                         !(e instanceof PortalEntity));
     }
 
     /**
