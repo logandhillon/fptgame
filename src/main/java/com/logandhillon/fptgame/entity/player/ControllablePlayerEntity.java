@@ -50,8 +50,9 @@ public class ControllablePlayerEntity extends PlayerEntity {
         if (e.getCode().name().equals(keyInteract) &&
             parent.getCollisionIf(x, y, w, h, this, LevelButtonEntity.class::isInstance) != null &&
             !buttonPressed) {
+            LOG.info("Button pressed");
             buttonPressed = true;
-            listener.onButtonPressed();
+            if (listener != null) listener.onButtonPressed();
             // since the player can only be in a level, cast to LevelScene and trigger button press.
             ((LevelScene)parent).onButtonPressed();
         }
