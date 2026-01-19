@@ -39,7 +39,10 @@ message MovingPlatform {
 }
 
 message Portal {
-  bool isRed = 1;
+  bool is_red = 1;
+}
+
+message LevelButton {
 }
 
 message LevelObject {
@@ -49,14 +52,15 @@ message LevelObject {
   oneof data {
     Platform platform = 3;
     Portal portal = 4;
-    MovingPlatform movingPlatform = 5;
+    MovingPlatform moving_platform = 5;
+    LevelButton level_button = 6;
   }
 }
 
 message LevelData {
   repeated LevelObject objects = 1;
   AtlasTile background = 2;
-  optional LevelData nextLevel = 3;
+  optional LevelData next_level = 3;
 
   float player1_spawn_x = 4;
   float player1_spawn_y = 5;

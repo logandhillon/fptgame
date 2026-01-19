@@ -9,12 +9,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
 /**
- * Network implementation of {@link PlayerEntity.PlayerMovementListener}, which listens for movements and uses an
- * abstract {@link Communicator} to send them over the network to the correct recipient.
+ * Network player movement listener, which listens for movements and uses an abstract {@link Communicator} to send them
+ * over the network to the correct recipient.
  *
  * @author Logan Dhillon
  */
-public class PlayerInputSender implements PlayerEntity.PlayerMovementListener {
+public class PlayerInputSender {
     private static final Logger LOG = LoggerContext.getContext().getLogger(PlayerInputSender.class);
 
     private final Communicator communicator;
@@ -38,7 +38,6 @@ public class PlayerInputSender implements PlayerEntity.PlayerMovementListener {
     /**
      * Sends a jump packet to the {@link Communicator}
      */
-    @Override
     public void onJump() {
         communicator.send(new GamePacket(GamePacket.Type.COM_JUMP));
     }
@@ -47,7 +46,6 @@ public class PlayerInputSender implements PlayerEntity.PlayerMovementListener {
      * Sends movement packets to the {@link Communicator}, which contain the direction (as the packet type) and the
      * {@link com.logandhillon.fptgame.networking.proto.PlayerProto.PlayerMovementData} (positions, velocities, etc.)
      */
-    @Override
     public void onMove(int direction, float x, float y, float vx, float vy) {
         communicator.send(new GamePacket(switch (direction) {
             case -1 -> GamePacket.Type.COM_MOVE_L;
@@ -58,6 +56,14 @@ public class PlayerInputSender implements PlayerEntity.PlayerMovementListener {
                                          .setX(x).setY(y)
                                          .setVx(vx).setVy(vy)
                                          .build()));
+    }
+
+    /**
+     * Called when the player INTERACTS with a {@link com.logandhillon.fptgame.entity.game.LevelButtonEntity}; sends the
+     * packet over the {@link Communicator}
+     */
+    public void onButtonPressed() {
+        communicator.send(new GamePacket(GamePacket.Type.COM_PRESS_BUTTON));
     }
 
     /**

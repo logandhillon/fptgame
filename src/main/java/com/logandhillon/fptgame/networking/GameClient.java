@@ -4,6 +4,7 @@ import com.logandhillon.fptgame.GameHandler;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
 import com.logandhillon.fptgame.scene.DynamicLevelScene;
+import com.logandhillon.fptgame.scene.LevelScene;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.networking.PacketWriter;
@@ -176,6 +177,14 @@ public class GameClient {
                     return;
                 }
                 level.get().syncMovement(PlayerProto.PlayerMovementData.parseFrom(packet.payload()));
+            }
+            case COM_PRESS_BUTTON -> {
+                Optional<LevelScene> level = game.getActiveScene(LevelScene.class);
+                if (level.isEmpty()) {
+                    LOG.warn("Tried to handle COM_PRESS_BUTTON, but was not in LevelScene; skipping");
+                    return;
+                }
+                level.get().onButtonPressed();
             }
         }
     }

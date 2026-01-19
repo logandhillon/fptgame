@@ -53,7 +53,8 @@ public record GamePacket(Type type, byte[] payload) {
         COM_JUMP,
         COM_MOVE_L,
         COM_MOVE_R,
-        COM_STOP_MOVING
+        COM_STOP_MOVING,
+        COM_PRESS_BUTTON
     }
 
     /**

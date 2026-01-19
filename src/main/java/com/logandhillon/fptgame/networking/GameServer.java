@@ -5,6 +5,7 @@ import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.networking.proto.PlayerProto;
 import com.logandhillon.fptgame.resource.Levels;
 import com.logandhillon.fptgame.scene.DynamicLevelScene;
+import com.logandhillon.fptgame.scene.LevelScene;
 import com.logandhillon.fptgame.scene.menu.LobbyGameContent;
 import com.logandhillon.fptgame.scene.menu.MenuContent;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
@@ -194,7 +195,14 @@ public class GameServer implements Runnable {
                     }
                     level.get().syncMovement(PlayerProto.PlayerMovementData.parseFrom(packet.payload()));
                 }
-
+                case COM_PRESS_BUTTON -> {
+                    Optional<LevelScene> level = game.getActiveScene(LevelScene.class);
+                    if (level.isEmpty()) {
+                        LOG.warn("Tried to handle COM_PRESS_BUTTON, but was not in LevelScene; skipping");
+                        return;
+                    }
+                    level.get().onButtonPressed();
+                }
                 case CLT_DISCONNECT -> {
                     // going to the main menu will shut down the server
                     LOG.info("Client disconnected, returning to main menu");

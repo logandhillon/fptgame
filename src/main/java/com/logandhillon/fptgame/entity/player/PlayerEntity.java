@@ -1,5 +1,6 @@
 package com.logandhillon.fptgame.entity.player;
 
+import com.logandhillon.fptgame.entity.game.LevelButtonEntity;
 import com.logandhillon.fptgame.entity.game.PlatformEntity;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.resource.Colors;
@@ -26,9 +27,9 @@ public class PlayerEntity extends PhysicsEntity {
     private static final int   Y_OFFSET      = 12;
     private static final float STRIDE_LENGTH = 60f; // px per footstep
 
-    private final LevelProto.Color       color;
-    private final Color                  tint;
-    private final PlayerMovementListener listener;
+    private final   LevelProto.Color  color;
+    private final   Color             tint;
+    protected final PlayerInputSender listener;
 
     private AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();
     private AnimationState    state   = AnimationState.IDLE;
@@ -37,7 +38,7 @@ public class PlayerEntity extends PhysicsEntity {
     private boolean didJump;
     private float   lastFootstepX = -100;
 
-    public PlayerEntity(float x, float y, int color, PlayerMovementListener listener) {
+    public PlayerEntity(float x, float y, int color, PlayerInputSender listener) {
         super(x, y, 42, 72);
         if (color != 0 && color != 1) throw new IllegalArgumentException("Color must be 0 (red) or 1 (blue)");
 
@@ -93,8 +94,10 @@ public class PlayerEntity extends PhysicsEntity {
      */
     @Override
     protected CollisionEntity getCollisionAt(float x, float y, float w, float h, CollisionEntity caller) {
-        return parent.getCollisionIf(x, y, w, h, caller, e -> !(e instanceof PlayerEntity) &&
-                                                              (e instanceof PlatformEntity p && p.getColor() != color));
+        return parent.getCollisionIf(
+                x, y, w, h, caller, e -> !(e instanceof PlayerEntity) &&
+                                         (!(e instanceof PlatformEntity p) || p.getColor() != color) &&
+                                         !(e instanceof LevelButtonEntity));
     }
 
     /**
@@ -152,19 +155,5 @@ public class PlayerEntity extends PhysicsEntity {
      */
     protected enum AnimationState {
         IDLE, JUMP, WALK_LEFT, WALK_RIGHT
-    }
-
-    /**
-     * Abstractly handles movement instructions from a given {@link PlayerEntity}
-     *
-     * @see PlayerInputSender
-     */
-    public interface PlayerMovementListener {
-        void onJump();
-
-        /**
-         * Called on move, given the direction to move in and the new positions and velocities.
-         */
-        void onMove(int direction, float x, float y, float vx, float vy);
     }
 }

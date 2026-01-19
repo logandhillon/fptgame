@@ -68,6 +68,10 @@ public class MovingPlatformEntity extends PlatformEntity {
         ty = goingTowardsDest ? destY : originY;
     }
 
+    public void invertGoingTowardsDest() {
+        setGoingTowardsDest(!goingTowardsDest);
+    }
+
     @Override
     public LevelProto.LevelObject serialize() {
         return LevelProto.LevelObject

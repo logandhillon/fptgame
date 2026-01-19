@@ -17,8 +17,8 @@ import static com.logandhillon.fptgame.resource.Textures.OBJ_SCALE;
  */
 public class PlatformEntity extends LevelObject {
     protected final AtlasTile        texture;
-    protected final LevelProto.Color color;
-    private final   Color            tint;
+    protected       LevelProto.Color color;
+    private         Color            tint;
 
     /**
      * Creates a collidable entity at the specified position with the specified hitbox
@@ -36,10 +36,8 @@ public class PlatformEntity extends LevelObject {
         if (w % OBJ_SCALE != 0 || h % OBJ_SCALE != 0)
             throw new IllegalArgumentException("Platform must have a width and height divisible by " + OBJ_SCALE);
 
-        this.color = color;
         this.texture = texture;
-        this.tint = color == LevelProto.Color.RED ? Colors.PLAYER_RED :
-                    color == LevelProto.Color.BLUE ? Colors.PLAYER_BLUE : null;
+        setColor(color);
     }
 
     public PlatformEntity(AtlasTile texture, float x, float y, float w, float h) {
@@ -72,6 +70,23 @@ public class PlatformEntity extends LevelObject {
 
     public LevelProto.Color getColor() {
         return color;
+    }
+
+    /**
+     * Sets this color and recalculates the tint
+     */
+    public void setColor(LevelProto.Color color) {
+        this.color = color;
+        this.tint = color == LevelProto.Color.RED ? Colors.PLAYER_RED :
+                    color == LevelProto.Color.BLUE ? Colors.PLAYER_BLUE : null;
+    }
+
+    /**
+     * Inverts the color from RED to BLUE, or does nothing if the color is NONE.
+     */
+    public void invertColor() {
+        if (color == null || color == LevelProto.Color.NONE) return;
+        setColor(color == LevelProto.Color.RED ? LevelProto.Color.BLUE : LevelProto.Color.RED);
     }
 
     @Override
