@@ -25,5 +25,6 @@ public class Levels {
             .addObjects(new PlatformEntity(Textures.UNDERGROUND_PIPE, 600, 200, 40, 320).serialize())
             .addObjects(new PortalEntity(800, 500, true).serialize())
             .setNextLevel(DEBUG_LEVEL_2)
+            .setPlayer1SpawnX(100).setPlayer1SpawnY(600)
             .build();
 }

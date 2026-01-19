@@ -16,7 +16,7 @@ public class SingleplayerGameScene extends LevelScene {
 
     public SingleplayerGameScene(LevelProto.LevelData level) {
         super(level);
-        self = new ControllablePlayerEntity(0, 0, 0, null);
+        self = new ControllablePlayerEntity(level.getPlayer1SpawnX(), level.getPlayer1SpawnY(), 0, null);
         addEntity(self);
 
         addEntity(new TextEntity.Builder(10, 30)

@@ -33,4 +33,9 @@ message LevelData {
   repeated LevelObject objects = 1;
   AtlasTile background = 2;
   optional LevelData nextLevel = 3;
+
+  float player1_spawn_x = 4;
+  float player1_spawn_y = 5;
+  float player2_spawn_x = 6;
+  float player2_spawn_y = 7;
 }

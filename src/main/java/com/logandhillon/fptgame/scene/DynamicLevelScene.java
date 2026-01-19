@@ -38,12 +38,17 @@ public class DynamicLevelScene extends LevelScene {
         }
 
         isServer = role == GameHandler.NetworkRole.SERVER;
+        // dynamically get spawn positions, given server is player 1 and client is player 2
+        float[][] spawns = isServer ? new float[][]{ { level.getPlayer1SpawnX(), level.getPlayer1SpawnY() },
+                                                     { level.getPlayer2SpawnX(), level.getPlayer2SpawnY() } }
+                                    : new float[][]{ { level.getPlayer2SpawnX(), level.getPlayer2SpawnY() },
+                                                     { level.getPlayer1SpawnX(), level.getPlayer1SpawnY() } };
 
         // other player has inverted colors compared to us
-        other = new PlayerEntity(0, 0, isServer ? 1 : 0, null);
+        other = new PlayerEntity(spawns[0][0], spawns[0][1], isServer ? 1 : 0, null);
         addEntity(other);
 
-        self = new ControllablePlayerEntity(0, 0, isServer ? 0 : 1, new PlayerInputSender());
+        self = new ControllablePlayerEntity(spawns[1][0], spawns[1][1], isServer ? 0 : 1, new PlayerInputSender());
         addEntity(self); // render self on top of other, we should always be visible first.
     }
 
