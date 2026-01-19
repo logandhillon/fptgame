@@ -5,6 +5,7 @@ import com.logandhillon.fptgame.entity.ui.component.MenuButton;
 import com.logandhillon.fptgame.entity.ui.component.MenuModalEntity;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.entity.Entity;
 import com.logandhillon.logangamelib.entity.ui.InputBoxEntity;
 import com.logandhillon.logangamelib.entity.ui.TextEntity;
@@ -22,8 +23,9 @@ public class HostGameContent implements MenuContent {
     private static final String   HEADER            = "Host a New Game";
     private static final Font     HEADER_FONT       = Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 32);
     private final        Entity[] entities;
-
-    private final InputBoxEntity nameInput;
+    private final        MenuButton[] menuButtons;
+    private final InputBoxEntity  nameInput;
+    private       int             selectedLevel;
 
     /**
      * Creates a new main menu
@@ -36,17 +38,34 @@ public class HostGameContent implements MenuContent {
         MenuButton startButton = new MenuButton(
                 "START GAME", 32, 640, 304, 48, () -> menu.getGameHandler().createLobby(getRoomName()));
 
-        entities = new Entity[]{
-                new MenuModalEntity(
-                        0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, nameInput, startButton),
-                new TextEntity.Builder(32, 66)
-                        .setColor(Colors.ACTIVE)
-                        .setText(HEADER.toUpperCase())
-                        .setFont(HEADER_FONT)
-                        .setBaseline(VPos.TOP)
-                        .build()
-        };
-    }
+        float[][] levelButtons = {{32, 304}, {112, 304}, {192, 304}, {32, 392}, {112, 392}, {192, 392}, {32, 480}, {112, 480}, {192, 480}};
+
+        menuButtons = new MenuButton[9];
+
+        entities = new Entity[11];
+        entities[0]        = new MenuModalEntity(0, 0, 442, GameHandler.CANVAS_HEIGHT, true, menu, nameInput, startButton);
+        entities[1]       = new TextEntity.Builder(32, 66)
+                            .setColor(Colors.ACTIVE)
+                            .setText(HEADER.toUpperCase())
+                            .setFont(HEADER_FONT)
+                            .setBaseline(VPos.TOP)
+                            .build();
+
+        //TODO: Add lock.png and greyscale button to locked levels
+        for (int i = 0; i < levelButtons.length; i++){
+            int finalI = i;
+            entities[i + 2] = new MenuButton(String.valueOf(i + 1), levelButtons[i][0], levelButtons[i][1], 64, 64, true, false, () -> {
+                selectedLevel = finalI + 1;
+                for(MenuButton b: menuButtons) {
+                    b.setFlags(false, false);
+                    if (b == menuButtons[finalI]) {
+                        b.setFlags(true, true);
+                    }
+                }
+            });
+            menuButtons[i] = (MenuButton) entities[i + 2];
+        }
+    };
 
     /**
      * Allows {@link MenuHandler} to access content for this menu

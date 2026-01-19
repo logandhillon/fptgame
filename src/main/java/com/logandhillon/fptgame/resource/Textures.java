@@ -70,6 +70,7 @@ public class Textures {
 
     public static final Image SETTINGS_ICON;
     public static final Image X_ICON;
+    public static final Image LOCK_ICON;
 
     static {
         try (var res = new ImageResource("menuicons/cog.png")) {
@@ -82,5 +83,11 @@ public class Textures {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        try (var res = new ImageResource("menuicons/lock.png")) {
+            LOCK_ICON = res.load();
+        } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+
     }
 }

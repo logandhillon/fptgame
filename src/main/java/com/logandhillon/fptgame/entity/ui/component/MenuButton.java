@@ -20,28 +20,34 @@ public class MenuButton extends DynamicButtonEntity {
             Colors.FOREGROUND, Colors.BUTTON_NORMAL, Variant.SOLID, true,
             Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 20));
     private static final Style ACTIVE_STYLE  = new Style(
-            Colors.FOREGROUND, Colors.BUTTON_HOVER, Variant.SOLID, true,
-            Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 21));
+            Colors.FOREGROUND, Colors.BUTTON_HOVER, Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 21));
+    private static final Style LEVEL_DEFAULT_STYLE = new Style(
+            Colors.FOREGROUND, Colors.BUTTON_NORMAL, Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 24));
+    private static final Style LEVEL_ACTIVE_STYLE = new Style(
+            Colors.FOREGROUND, Colors.BUTTON_HOVER, Variant.SOLID, true, Font.font(Fonts.TREMOLO, FontWeight.MEDIUM, 25));
 
     private final Runnable pressHandler;
-
+    private final boolean level;
     private final Image icon;
     private final float ix;
     private final float iy;
     private final float iw;
     private final float ih;
+    private final boolean arrows;
 
     private MenuButton(String label, Image icon, float x, float y, float w, float h, float ix, float iy, float iw,
-                       float ih, Runnable onPress) {
+                       float ih, boolean level, boolean arrows, Runnable onPress) {
         super(label, x, y, w, h, e -> {
                   Sounds.playSfx(Sounds.UI_CLICK);
                   onPress.run();
               },
-              DEFAULT_STYLE, ACTIVE_STYLE);
+              level ? LEVEL_DEFAULT_STYLE : DEFAULT_STYLE, level ? LEVEL_ACTIVE_STYLE : ACTIVE_STYLE);
         this.pressHandler = () -> {
             Sounds.playSfx(Sounds.UI_CLICK);
             onPress.run();
         };
+        this.level = level;
+        this.arrows = arrows;
         this.icon = icon;
         this.ix = ix;
         this.iy = iy;
@@ -58,9 +64,12 @@ public class MenuButton extends DynamicButtonEntity {
      * @param onPress the action that should happen when this button is clicked
      */
     public MenuButton(String label, float x, float y, float w, float h, Runnable onPress) {
-        this(label.toUpperCase(), null, x, y, w, h, -1, -1, -1, -1, onPress);
+        this(label.toUpperCase(), null, x, y, w, h, -1, -1, -1, -1, false, true, onPress);
     }
 
+    public MenuButton(String label, float x, float y, float w, float h, boolean level, boolean arrows, Runnable onPress) {
+        this(label.toUpperCase(), null, x, y, w, h, -1, -1, -1, -1, level, arrows, onPress);
+    }
     /**
      * Creates a new dynamic button entity with an icon instead of text
      *
@@ -68,7 +77,7 @@ public class MenuButton extends DynamicButtonEntity {
      */
     public MenuButton(Image icon, float x, float y, float w, float h, float ix, float iy, float iw, float ih,
                       Runnable onPress) {
-        this(null, icon, x, y, w, h, ix, iy, iw, ih, onPress);
+        this(null, icon, x, y, w, h, ix, iy, iw, ih, false, true, onPress);
     }
 
     /**
@@ -87,7 +96,7 @@ public class MenuButton extends DynamicButtonEntity {
             g.setImageSmoothing(false);
             g.drawImage(icon, ix, iy, iw, ih);
         }
-        if (this.isActive()) {
+        if (this.isActive() && arrows) {
             // left arrow
             g.setTextAlign(TextAlignment.LEFT);
             g.fillText(">", x + 16, y + h / 2);

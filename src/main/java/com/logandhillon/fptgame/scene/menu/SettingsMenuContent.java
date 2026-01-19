@@ -93,19 +93,19 @@ public class SettingsMenuContent implements MenuContent {
         // key bind buttons
         KEY_BIND_BUTTONS.put(
                 KeyBind.LEFT,
-                new MenuButton(config.getKeyMoveLeft(), 259, 457, 100, 40,
+                new MenuButton(config.getKeyMoveLeft(), 259, 457, 100, 40, false, false,
                                () -> currentKeyBind = KeyBind.LEFT));
         KEY_BIND_BUTTONS.put(
                 KeyBind.RIGHT,
-                new MenuButton(config.getKeyMoveRight(), 259, 513, 100, 40,
+                new MenuButton(config.getKeyMoveRight(), 259, 513, 100, 40,false, false,
                                () -> currentKeyBind = KeyBind.RIGHT));
         KEY_BIND_BUTTONS.put(
                 KeyBind.JUMP,
-                new MenuButton(config.getKeyMoveJump(), 259, 569, 100, 40,
+                new MenuButton(config.getKeyMoveJump(), 259, 569, 100, 40,false, false,
                                () -> currentKeyBind = KeyBind.JUMP));
         KEY_BIND_BUTTONS.put(
                 KeyBind.INTERACT,
-                new MenuButton(config.getKeyMoveInteract(), 259, 625, 100, 40,
+                new MenuButton(config.getKeyMoveInteract(), 259, 625, 100, 40,false, false,
                                () -> currentKeyBind = KeyBind.INTERACT));
 
         entities = new Entity[]{
