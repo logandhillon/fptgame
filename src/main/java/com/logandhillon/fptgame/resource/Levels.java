@@ -7,7 +7,11 @@ import com.logandhillon.fptgame.entity.game.PortalEntity;
 import com.logandhillon.fptgame.networking.proto.LevelProto;
 
 /**
- * @author Logan Dhillon
+ * Contains programmatic {@link LevelProto.LevelData} used in the built-in levels.
+ * <p>
+ * Level design for levels 1-9 by Jack Ross.
+ *
+ * @author Logan Dhillon, Jack Ross
  */
 public class Levels {
     public static final LevelProto.LevelData DEBUG_LEVEL_2 = LevelProto.LevelData
