@@ -1,6 +1,7 @@
 package com.logandhillon.fptgame.entity.player;
 
 import com.logandhillon.fptgame.resource.Colors;
+import com.logandhillon.fptgame.resource.Sounds;
 import com.logandhillon.fptgame.resource.Textures;
 import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.physics.CollisionEntity;
@@ -20,7 +21,8 @@ import java.util.function.Predicate;
 public class PlayerEntity extends PhysicsEntity {
     private static final float JUMP_POWER = 12f * PX_PER_METER; // m/s
     private static final float MOVE_SPEED = 6f * PX_PER_METER; // m/s
-    private static final int   Y_OFFSET   = 12;
+    private static final int   Y_OFFSET      = 12;
+    private static final float STRIDE_LENGTH = 60f; // px per footstep
 
     private final Color                  color;
     private final PlayerMovementListener listener;
@@ -28,7 +30,9 @@ public class PlayerEntity extends PhysicsEntity {
     private AnimationSequence texture = Textures.ANIM_PLAYER_IDLE.instance();
     private AnimationState    state   = AnimationState.IDLE;
 
-    private int moveDirection = 0; // left=-1, 0=none, 1=right
+    private int     moveDirection = 0; // left=-1, 0=none, 1=right
+    private boolean didJump;
+    private float lastFootstepX = -100;
 
     public PlayerEntity(float x, float y, int color, PlayerMovementListener listener) {
         super(x, y, 42, 72);
@@ -62,6 +66,17 @@ public class PlayerEntity extends PhysicsEntity {
         else if (moveDirection > 0) setAnimation(AnimationState.WALK_RIGHT);
         else if (moveDirection < 0) setAnimation(AnimationState.WALK_LEFT);
         else if (state != AnimationState.JUMP) setAnimation(AnimationState.IDLE);
+
+        // play sounds
+        if (isGrounded() && didJump) {
+            Sounds.playSfx(Sounds.GAME_LAND);
+            didJump = false;
+        }
+
+        if (Math.abs(lastFootstepX - x) > STRIDE_LENGTH && isGrounded()) {
+            Sounds.playSfx(Sounds.GAME_STEP);
+            lastFootstepX = x;
+        }
     }
 
     /**
@@ -81,6 +96,8 @@ public class PlayerEntity extends PhysicsEntity {
     public void jump() {
         if (this.isGrounded()) {
             this.vy = -JUMP_POWER;
+            Sounds.playSfx(Sounds.GAME_JUMP);
+            didJump = true;
             if (listener != null) listener.onJump();
         }
     }
