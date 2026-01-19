@@ -47,13 +47,47 @@ public class Levels {
                                 Textures.UNDERGROUND_BRICKS, 0, 500, 160, 40, LevelProto.Color.RED).serialize())
                 .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 500, 500, 40, 40,
                                                LevelProto.Color.BLUE).serialize())
-                .addObjects(new MovingPlatformEntity(Textures.UNDERGROUND_PIPE, 300, 500, 120, 40, 800, 600, 0.15f,
+                .addObjects(new MovingPlatformEntity(Textures.UNDERGROUND_PIPE, 300, 500, 120, 40, 300, 100, 0.15f,
                                                      false, LevelProto.Color.NONE).serialize())
                 .addObjects(new PortalEntity(800, 500, true).serialize())
                 .addObjects(new LevelButtonEntity(50, 660).serialize())
 
                 .build();
     }
+
+    public static final LevelProto.LevelData LEVEL_4 = LevelProto.LevelData
+            .newBuilder()
+            .setLevelName("Eye Of The Storm")
+            .setLevelDifficulty("Easy")
+            .setBackground(Textures.UNDERGROUND_BG.serialize())
+
+            .setPlayer1SpawnX(540).setPlayer1SpawnY(368)
+            .setPlayer2SpawnX(698).setPlayer2SpawnY(368)
+
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 0, 720 - 40, 1280, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 0, 555, 80, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 200, 440, 80, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 0, 315, 80, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 880, 315, 80, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 1200, 555, 80, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 1000, 440, 80, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 1200, 315, 80, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 1000, 200, 80, 40).serialize())
+
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 280, 240, 40, 440).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 200, 200, 560, 40).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 960, 0, 40, 480).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 520, 440, 440, 40).serialize())
+
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 320, 440, 200, 40, LevelProto.Color.RED).serialize())
+            .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 760, 200, 200, 40, LevelProto.Color.BLUE).serialize())
+
+            .addObjects(new LevelButtonEntity(620, 420).serialize())
+
+            .addObjects(new PortalEntity(120, 580, true).serialize())
+            .addObjects(new PortalEntity(1115, 0, false).serialize())
+
+            .build();
 
     public static final LevelProto.LevelData LEVEL_3 = LevelProto.LevelData
             .newBuilder()
@@ -62,8 +96,8 @@ public class Levels {
 //            .setNextLevel(DEBUG_LEVEL_2)
             .setBackground(Textures.UNDERGROUND_BG.serialize())
 
-            .setPlayer1SpawnX(23).setPlayer1SpawnY(128)
-            .setPlayer2SpawnX(80).setPlayer2SpawnY(128)
+            .setPlayer1SpawnX(80).setPlayer1SpawnY(128)
+            .setPlayer2SpawnX(1158).setPlayer2SpawnY(128)
 
             // floor
             .addObjects(new PlatformEntity(Textures.UNDERGROUND_BRICKS, 0, 720 - 40, 1280, 40).serialize())
