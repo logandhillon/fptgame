@@ -247,6 +247,7 @@ public class SettingsMenuContent implements MenuContent {
         var code = e.getCode().name();
         if (USED_KEY_BINDS.containsValue(code)) {
             updateKeyBindStatus = String.format("'%s' is in-use", code);
+            Sounds.playSfx(Sounds.UI_FAIL);
             return;
         }
 
@@ -263,8 +264,10 @@ public class SettingsMenuContent implements MenuContent {
                     ConfigProto.UserConfig.newBuilder().setKeyMoveInteract(code).buildPartial());
         }
 
+        Sounds.playSfx(Sounds.UI_CLICK);
         USED_KEY_BINDS.put(currentKeyBind, code); // update map to check duplicates against
         KEY_BIND_BUTTONS.get(currentKeyBind).setText(code); // update btn text
         currentKeyBind = null;
+        updateKeyBindStatus = "";
     }
 }

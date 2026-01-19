@@ -1,6 +1,7 @@
 package com.logandhillon.fptgame.entity.ui.component;
 
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.fptgame.resource.Sounds;
 import com.logandhillon.fptgame.scene.menu.MenuHandler;
 import com.logandhillon.logangamelib.entity.Clickable;
 import javafx.geometry.VPos;
@@ -38,6 +39,7 @@ public final class BackButtonEntity extends Clickable {
      */
     @Override
     public void onClick(MouseEvent e) {
+        Sounds.playSfx(Sounds.UI_CLICK);
         // ask the handler to go to main menu, so it can shut down any threads
         menu.getGameHandler().goToMainMenu();
     }

@@ -2,6 +2,7 @@ package com.logandhillon.logangamelib.entity.ui;
 
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.fptgame.resource.Fonts;
+import com.logandhillon.fptgame.resource.Sounds;
 import com.logandhillon.logangamelib.engine.GameScene;
 import com.logandhillon.logangamelib.entity.Clickable;
 import javafx.geometry.VPos;
@@ -167,6 +168,7 @@ public class InputBoxEntity extends Clickable {
     @Override
     public void onClick(MouseEvent e) {
         this.isActive = true;
+        Sounds.playSfx(Sounds.UI_CLICK);
     }
 
     public boolean getIsActive() {

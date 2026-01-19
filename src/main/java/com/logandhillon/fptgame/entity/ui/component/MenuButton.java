@@ -34,12 +34,12 @@ public class MenuButton extends DynamicButtonEntity {
     private MenuButton(String label, Image icon, float x, float y, float w, float h, float ix, float iy, float iw,
                        float ih, Runnable onPress) {
         super(label, x, y, w, h, e -> {
-                  Sounds.playSfx(Sounds.MENU_CLICK);
+                  Sounds.playSfx(Sounds.UI_CLICK);
                   onPress.run();
               },
               DEFAULT_STYLE, ACTIVE_STYLE);
         this.pressHandler = () -> {
-            Sounds.playSfx(Sounds.MENU_CLICK);
+            Sounds.playSfx(Sounds.UI_CLICK);
             onPress.run();
         };
         this.icon = icon;
