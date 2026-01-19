@@ -56,22 +56,22 @@ public class SettingsMenuContent implements MenuContent {
         KEY_BIND_BUTTONS.put(
                 KeyBind.LEFT,
                 new MenuButton(GameHandler.getUserConfig().getKeyMoveLeft(),
-                               279, 457, 80, 40,
+                               259, 457, 100, 40,
                                () -> currentKeyBind = KeyBind.LEFT));
         KEY_BIND_BUTTONS.put(
                 KeyBind.RIGHT,
                 new MenuButton(GameHandler.getUserConfig().getKeyMoveRight(),
-                               279, 513, 80, 40,
+                               259, 513, 100, 40,
                                () -> currentKeyBind = KeyBind.RIGHT));
         KEY_BIND_BUTTONS.put(
                 KeyBind.JUMP,
                 new MenuButton(GameHandler.getUserConfig().getKeyMoveJump(),
-                               279, 569, 80, 40,
+                               259, 569, 100, 40,
                                () -> currentKeyBind = KeyBind.JUMP));
         KEY_BIND_BUTTONS.put(
                 KeyBind.INTERACT,
                 new MenuButton(GameHandler.getUserConfig().getKeyMoveInteract(),
-                               279, 625, 80, 40,
+                               259, 625, 100, 40,
                                () -> currentKeyBind = KeyBind.INTERACT));
 
         entities = new Entity[]{
