@@ -88,10 +88,6 @@ public abstract class PhysicsEntity extends CollisionEntity {
         if (grounded) vy = 0;
     }
 
-    protected CollisionEntity getCollisionAt(float x, float y, float w, float h, CollisionEntity caller) {
-        return parent.getCollisionAt(x, y, w, h, caller);
-    }
-
     /**
      * @return if this object is grounded
      */

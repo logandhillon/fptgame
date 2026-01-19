@@ -3,6 +3,12 @@ syntax = "proto3";
 option java_package = "com.logandhillon.fptgame.networking.proto";
 option java_outer_classname = "LevelProto";
 
+enum Color {
+  NONE = 0;
+  RED = 1;
+  BLUE = 2;
+}
+
 message AtlasTile {
   string atlas_path = 1;
   uint32 row = 2;
@@ -13,6 +19,8 @@ message Platform {
   float w = 1;
   float h = 2;
   AtlasTile texture = 3;
+
+  optional Color color = 4;
 }
 
 message Portal {

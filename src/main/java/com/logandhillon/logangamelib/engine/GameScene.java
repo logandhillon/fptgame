@@ -271,31 +271,12 @@ public abstract class GameScene {
      * @param b entity 2
      *
      * @return is collision happening
-     *
-     * @see GameScene#getEntityCollision(CollisionEntity)
      */
     public boolean checkCollision(CollisionEntity a, CollisionEntity b) {
         return a.getX() < b.getX() + b.getWidth() &&
                a.getX() + a.getWidth() > b.getX() &&
                a.getY() < b.getY() + b.getHeight() &&
                a.getY() + a.getHeight() > b.getY();
-    }
-
-    /**
-     * Checks if an entity is colliding with ANY other entity
-     *
-     * @param target entity to check collisions for
-     *
-     * @return entity that target is colliding with, or null
-     *
-     * @see GameScene#checkCollision(CollisionEntity, CollisionEntity)
-     */
-    public CollisionEntity getEntityCollision(CollisionEntity target) {
-        for (CollisionEntity e: collisionEntities) {
-            if (e == target) continue; // skip the target
-            if (checkCollision(target, e)) return e; // short-circuit; return if collision is found
-        }
-        return null; // no collision found
     }
 
     /**

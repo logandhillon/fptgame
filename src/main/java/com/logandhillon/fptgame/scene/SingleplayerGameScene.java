@@ -26,13 +26,11 @@ public class SingleplayerGameScene extends LevelScene {
                                   isGrounded: %s
                                   pos: %.1f, %.1f
                                   vel: %.1f, %.1f
-                                  collision: %s
                                   dir: %s""",
 
                                   self.isGrounded(),
                                   self.getX(), self.getY(),
                                   self.vx, self.vy,
-                                  self.getCollision() != null,
                                   self.getMoveDirection()))
                           .setFontSize(14)
                           .build());

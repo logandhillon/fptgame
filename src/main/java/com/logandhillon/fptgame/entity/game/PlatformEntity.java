@@ -5,6 +5,7 @@ import com.logandhillon.fptgame.networking.proto.LevelProto;
 import com.logandhillon.fptgame.resource.Colors;
 import com.logandhillon.logangamelib.gfx.AtlasTile;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import static com.logandhillon.fptgame.resource.Textures.OBJ_SCALE;
 
@@ -15,24 +16,34 @@ import static com.logandhillon.fptgame.resource.Textures.OBJ_SCALE;
  * @author Logan Dhillon
  */
 public class PlatformEntity extends LevelObject {
-    private final int       shadowOffset;
-    private final AtlasTile texture;
+    private final AtlasTile        texture;
+    private final LevelProto.Color color;
+    private final Color            tint;
 
     /**
      * Creates a collidable entity at the specified position with the specified hitbox
      *
-     * @param x x-position (from left)
-     * @param y y-position (from top)
-     * @param w width of hitbox
-     * @param h height of hitbox
+     * @param texture texture to tile over this platform
+     * @param x       x-position (from left)
+     * @param y       y-position (from top)
+     * @param w       width of hitbox
+     * @param h       height of hitbox
+     * @param color   (optional) color of platform: changes which player can interact with it.
      */
-    public PlatformEntity(AtlasTile texture, float x, float y, float w, float h) {
+    public PlatformEntity(AtlasTile texture, float x, float y, float w, float h, LevelProto.Color color) {
         super(x, y, w, h);
 
         if (w % OBJ_SCALE != 0 || h % OBJ_SCALE != 0)
             throw new IllegalArgumentException("Platform must have a width and height divisible by " + OBJ_SCALE);
+
+        this.color = color;
         this.texture = texture;
-        this.shadowOffset = 0;
+        this.tint = color == LevelProto.Color.RED ? Colors.PLAYER_RED :
+                    color == LevelProto.Color.BLUE ? Colors.PLAYER_BLUE : null;
+    }
+
+    public PlatformEntity(AtlasTile texture, float x, float y, float w, float h) {
+        this(texture, x, y, w, h, LevelProto.Color.NONE);
     }
 
     @Override
@@ -40,15 +51,11 @@ public class PlatformEntity extends LevelObject {
         g.setFill(Colors.FOREGROUND_TRANS_40);
         if (w > h) { // render right
             for (int i = 0; i < w / OBJ_SCALE; i++) {
-                if (shadowOffset != 0) // render shadow right
-                    g.fillRect(x + (i * OBJ_SCALE) - shadowOffset, y + shadowOffset, OBJ_SCALE, OBJ_SCALE);
-                texture.draw(g, x + (i * OBJ_SCALE), y, OBJ_SCALE, OBJ_SCALE);
+                texture.draw(g, x + (i * OBJ_SCALE), y, OBJ_SCALE, OBJ_SCALE, tint);
             }
         } else { // render down
             for (int i = 0; i < h / OBJ_SCALE; i++) {
-                if (shadowOffset != 0) // render shadow down
-                    g.fillRect(x - shadowOffset, y + (i * OBJ_SCALE) + shadowOffset, OBJ_SCALE, OBJ_SCALE);
-                texture.draw(g, x, y + (i * OBJ_SCALE), OBJ_SCALE, OBJ_SCALE);
+                texture.draw(g, x, y + (i * OBJ_SCALE), OBJ_SCALE, OBJ_SCALE, tint);
             }
         }
     }
@@ -63,6 +70,10 @@ public class PlatformEntity extends LevelObject {
 
     }
 
+    public LevelProto.Color getColor() {
+        return color;
+    }
+
     @Override
     public LevelProto.LevelObject serialize() {
         return LevelProto.LevelObject
@@ -74,6 +85,7 @@ public class PlatformEntity extends LevelObject {
                                      .setH(h)
                                      .setW(w)
                                      .setTexture(texture.serialize())
+                                     .setColor(color)
                                      .build())
                 .build();
     }
@@ -84,6 +96,7 @@ public class PlatformEntity extends LevelObject {
                 msg.getX(),
                 msg.getY(),
                 msg.getPlatform().getW(),
-                msg.getPlatform().getH());
+                msg.getPlatform().getH(),
+                msg.getPlatform().getColor());
     }
 }

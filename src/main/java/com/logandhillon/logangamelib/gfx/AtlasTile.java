@@ -57,7 +57,8 @@ public class AtlasTile implements ProtoSerializable<LevelProto.AtlasTile> {
      * @see ImageResource#recolor(Image, Color)
      */
     public void draw(GraphicsContext g, float x, float y, float w, float h, Color color) {
-        atlas.draw(g, row, col, x, y, w, h, color);
+        if (color == null) this.draw(g, x, y, w, h);
+        else atlas.draw(g, row, col, x, y, w, h, color);
     }
 
     @Override
