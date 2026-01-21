@@ -3,6 +3,11 @@
 
 name: compile (jlink) for all platforms
 
+permissions:
+  contents: read
+  packages: write
+  actions: read
+
 on:
   release:
     types: [ published ]
@@ -60,12 +65,6 @@ jobs:
         with:
           name: jlink-image-macos-latest
           path: artifacts/macos
-
-      # temp debug runner
-      - name: inspect Ubuntu artifact contents
-        run: |
-          ls -la artifacts/ubuntu
-          find artifacts/ubuntu -maxdepth 3 -type d
 
       - name: zip Ubuntu image
         run: |
