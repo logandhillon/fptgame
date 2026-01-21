@@ -61,6 +61,12 @@ jobs:
           name: jlink-image-macos-latest
           path: artifacts/macos
 
+      # temp debug runner
+      - name: inspect Ubuntu artifact contents
+        run: |
+          ls -la artifacts/ubuntu
+          find artifacts/ubuntu -maxdepth 3 -type d
+
       - name: zip Ubuntu image
         run: |
           cd artifacts/ubuntu
