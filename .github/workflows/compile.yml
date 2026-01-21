@@ -61,25 +61,20 @@ jobs:
           name: jlink-image-macos-latest
           path: artifacts/macos
 
-      - name: list downloaded files
-        run: |
-          ls -la artifacts/ubuntu
-          find artifacts/ubuntu -maxdepth 3 -type d
-
       - name: zip Ubuntu image
         run: |
           cd artifacts/ubuntu
-          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-ubuntu.zip build/image
+          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-ubuntu.zip .
 
       - name: zip Windows image
         run: |
           cd artifacts/windows
-          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-windows.zip build/image
+          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-windows.zip .
 
       - name: zip macOS image
         run: |
           cd artifacts/macos
-          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-macos.zip build/image
+          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-macos.zip .
 
       - name: create release assets
         uses: softprops/action-gh-release@v2
