@@ -1,7 +1,7 @@
 # (C) 2025-2026 Logan Dhillon (www.logandhillon.com)
 # this CI cleans and links the project to an executable for all platforms.
 
-name: compile (jlink) for all platforms
+name: compile for all platforms
 
 permissions:
   contents: read
@@ -35,14 +35,14 @@ jobs:
         if: runner.os != 'Windows'
         run: chmod +x ./gradlew
 
-      - name: build jlink image
-        run: ./gradlew clean jlink
+      - name: build image and package executable
+        run: ./gradlew clean jlink jpackage
 
-      - name: upload JLink image artifact
+      - name: upload jpackage installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: jlink-image-${{ matrix.os }}
-          path: build/image
+          name: jpackage-${{ matrix.os }}
+          path: build/jpackage
           retention-days: 30
 
   attach-to-release:
@@ -53,33 +53,35 @@ jobs:
       - name: download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: jlink-image-ubuntu-latest
+          name: jpackage-ubuntu-latest
           path: artifacts/ubuntu
+
       - name: download artifacts (Windows)
         uses: actions/download-artifact@v4
         with:
-          name: jlink-image-windows-latest
+          name: jpackage-windows-latest
           path: artifacts/windows
+
       - name: download artifacts (macOS)
         uses: actions/download-artifact@v4
         with:
-          name: jlink-image-macos-latest
+          name: jpackage-macos-latest
           path: artifacts/macos
 
-      - name: zip Ubuntu image
+      - name: zip Ubuntu installer
         run: |
           cd artifacts/ubuntu
-          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-ubuntu.zip .
+          zip -r crossing-paths-${{ github.event.release.tag_name }}-ubuntu.zip .
 
-      - name: zip Windows image
+      - name: zip Windows installer
         run: |
           cd artifacts/windows
-          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-windows.zip .
+          zip -r crossing-paths-${{ github.event.release.tag_name }}-windows.zip .
 
-      - name: zip macOS image
+      - name: zip macOS installer
         run: |
           cd artifacts/macos
-          zip -r ../../crossing-paths-${{ github.event.release.tag_name }}-macos.zip .
+          zip -r crossing-paths-${{ github.event.release.tag_name }}-macos.zip .
 
       - name: create release assets
         uses: softprops/action-gh-release@v2
