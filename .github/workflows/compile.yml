@@ -94,6 +94,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: list files
+        run: ls -R
+
       - name: upload release assets
         uses: softprops/action-gh-release@v2
         with:
